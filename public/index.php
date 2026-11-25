@@ -31,6 +31,7 @@ use App\Controllers\HomeController;
 use App\Controllers\CustomerAuthController;
 use App\Controllers\CheckoutController;
 use App\Controllers\ContactController;
+use App\Controllers\AdminController;
 
 $router = new Router();
 
@@ -51,5 +52,22 @@ $router->post('/api/checkout/pay', [CheckoutController::class, 'pay']);
 
 // Contact Route
 $router->post('/api/contact', [ContactController::class, 'send']);
+
+// Dashboard Admin Routes (Langkah 2)
+$router->get('/admin', [AdminController::class, 'index']);
+$router->get('/admin/login', [AdminController::class, 'index']);
+$router->get('/admin/reports/export-csv', [AdminController::class, 'exportCsv']);
+$router->get('/admin/{section}', [AdminController::class, 'index']);
+
+$router->get('/api/admin/state', [AdminController::class, 'state']);
+$router->post('/api/admin/login', [AdminController::class, 'login']);
+$router->post('/api/admin/logout', [AdminController::class, 'logout']);
+$router->post('/api/admin/events/save', [AdminController::class, 'saveEvent']);
+$router->post('/api/admin/events/delete', [AdminController::class, 'deleteEvent']);
+$router->post('/api/admin/events/restore', [AdminController::class, 'restoreEvent']);
+$router->post('/api/admin/categories/save', [AdminController::class, 'saveCategory']);
+$router->post('/api/admin/categories/delete', [AdminController::class, 'deleteCategory']);
+$router->post('/api/admin/transactions/create', [AdminController::class, 'createTransaction']);
+$router->post('/api/admin/users/create', [AdminController::class, 'createUser']);
 
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

@@ -406,6 +406,14 @@
   if (btnKamera) btnKamera.addEventListener('click', startKamera);
   if (btnStopKamera) btnStopKamera.addEventListener('click', stopKamera);
 
+  var btnLogoutStaff = document.getElementById('btnLogoutStaff');
+  if (btnLogoutStaff) {
+    btnLogoutStaff.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.location.href = '/staff/logout';
+    });
+  }
+
   // Initialize
   renderDemoQrs();
 

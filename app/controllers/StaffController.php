@@ -108,8 +108,19 @@ class StaffController extends Controller
                 'Petugas keluar dari sistem check-in'
             );
         }
-        unset($_SESSION['staff_user']);
-        header('Location: /staff/login');
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            unset($_SESSION['staff_user']);
+            $_SESSION = [];
+            session_destroy();
+        }
+
+        if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->json(['ok' => true, 'redirect' => '/']);
+            return;
+        }
+
+        header('Location: /');
         exit;
     }
 

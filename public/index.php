@@ -57,6 +57,7 @@ $router->post('/api/contact', [ContactController::class, 'send']);
 // Dashboard Admin Routes (Langkah 2)
 $router->get('/admin', [AdminController::class, 'index']);
 $router->get('/admin/login', [AdminController::class, 'index']);
+$router->get('/admin/logout', [AdminController::class, 'logout']);
 $router->get('/admin/reports/export-csv', [AdminController::class, 'exportCsv']);
 $router->get('/admin/{section}', [AdminController::class, 'index']);
 

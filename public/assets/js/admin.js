@@ -915,9 +915,11 @@
 
   document.getElementById('btnLogout').addEventListener('click', function (e) {
     e.preventDefault();
-    apiPost('/api/admin/logout', {}).then(function () {
+    apiPost('/api/admin/logout', {}).then(function (res) {
       currentAdmin = null;
-      showPage('login');
+      window.location.href = (res.body && res.body.redirect) ? res.body.redirect : '/';
+    }).catch(function () {
+      window.location.href = '/';
     });
   });
 

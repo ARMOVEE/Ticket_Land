@@ -170,20 +170,24 @@ class CustomerAuthController extends Controller
 
     public function logout(): void
     {
-        $input = $this->readInput();
-        $_POST['csrf_token'] = $input['csrf_token'] ?? ($_POST['csrf_token'] ?? '');
-        if (!$this->verifyCsrf()) {
-            $this->json(['ok' => false, 'message' => 'Token keamanan (CSRF) tidak valid.'], 403);
-            return;
-        }
-
         if (!empty($_SESSION['customer']['email'])) {
             $email = (string) $_SESSION['customer']['email'];
             $log = new ActivityLog();
-            $log->record(null, $email, 'logout', 'akun_user', "Customer {$email} keluar dari sesi.");
+            $log->record(null, $email, 'LOGOUT', 'akun_user', "Customer {$email} keluar dari sesi.");
         }
 
-        unset($_SESSION['customer']);
-        $this->json(['ok' => true]);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            unset($_SESSION['customer']);
+            $_SESSION = [];
+            session_destroy();
+        }
+
+        if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->json(['ok' => true, 'redirect' => '/']);
+            return;
+        }
+
+        header('Location: /');
+        exit;
     }
 }

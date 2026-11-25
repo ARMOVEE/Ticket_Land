@@ -96,7 +96,7 @@
             <div class="profile-name" id="profileName">Afrizal Tazul Aripin</div>
             <div class="job" id="profileJob">admin</div>
           </div>
-          <a href="/admin/login" class="logout-btn" id="btnLogout" aria-label="Logout" title="Logout"><i class="bx bx-log-out" aria-hidden="true"></i></a>
+          <a href="/admin/logout" class="logout-btn" id="btnLogout" aria-label="Logout" title="Logout"><i class="bx bx-log-out" aria-hidden="true"></i></a>
         </div>
       </nav>
 

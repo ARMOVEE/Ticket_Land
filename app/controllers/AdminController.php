@@ -192,27 +192,31 @@ class AdminController extends Controller
 
     public function logout(): void
     {
-        $input = $this->readInput();
-        $_POST['csrf_token'] = $input['csrf_token'] ?? ($_POST['csrf_token'] ?? '');
-        if (!$this->verifyCsrf()) {
-            $this->json(['ok' => false, 'message' => 'Token keamanan (CSRF) tidak valid.'], 403);
-            return;
-        }
-
         $admin = $this->currentAdmin();
         if ($admin !== null) {
             $log = new ActivityLog();
             $log->record(
                 (int) $admin['id'],
                 (string) $admin['username'],
-                'logout',
-                'auth',
+                'LOGOUT',
+                'users',
                 "Pengguna {$admin['username']} keluar dari Dashboard Admin."
             );
         }
 
-        unset($_SESSION['admin_user']);
-        $this->json(['ok' => true]);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            unset($_SESSION['admin_user']);
+            $_SESSION = [];
+            session_destroy();
+        }
+
+        if (strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+            $this->json(['ok' => true, 'redirect' => '/']);
+            return;
+        }
+
+        header('Location: /');
+        exit;
     }
 
     public function state(): void

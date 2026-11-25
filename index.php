@@ -2,12 +2,29 @@
 
 declare(strict_types=1);
 
-// Support running php -S localhost:8000 directly from the Tiket_Land root directory.
 if (PHP_SAPI === 'cli-server') {
     $uriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-    $publicFile = __DIR__ . '/public' . $uriPath;
-    if ($uriPath !== '/' && is_file($publicFile)) {
-        return false;
+    if ($uriPath !== '/' && !str_contains($uriPath, '..')) {
+        $publicFile = __DIR__ . '/public' . $uriPath;
+        if (is_file($publicFile)) {
+            $ext = strtolower(pathinfo($publicFile, PATHINFO_EXTENSION));
+            $mimes = [
+                'css'  => 'text/css; charset=utf-8',
+                'js'   => 'application/javascript; charset=utf-8',
+                'json' => 'application/json; charset=utf-8',
+                'svg'  => 'image/svg+xml',
+                'png'  => 'image/png',
+                'jpg'  => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'webp' => 'image/webp',
+                'ico'  => 'image/x-icon',
+            ];
+            if (isset($mimes[$ext])) {
+                header('Content-Type: ' . $mimes[$ext]);
+            }
+            readfile($publicFile);
+            exit;
+        }
     }
 }
 

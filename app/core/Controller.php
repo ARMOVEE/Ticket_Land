@@ -47,8 +47,13 @@ abstract class Controller
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
-        $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-        return is_string($token)
+        $token = '';
+        if (!empty($_POST['csrf_token']) && is_string($_POST['csrf_token'])) {
+            $token = $_POST['csrf_token'];
+        } elseif (!empty($_SERVER['HTTP_X_CSRF_TOKEN']) && is_string($_SERVER['HTTP_X_CSRF_TOKEN'])) {
+            $token = $_SERVER['HTTP_X_CSRF_TOKEN'];
+        }
+        return $token !== ''
             && !empty($_SESSION['csrf_token'])
             && hash_equals((string) $_SESSION['csrf_token'], $token);
     }

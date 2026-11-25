@@ -1,0 +1,2997 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>Ticket Land — Your Best Event Partner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        color-scheme: light;
+        --green:#17684b;
+        --green-dark:#0f5138;
+        --green-mid:#6fae97;
+        --mint:#dcefe3;
+        --panel:#f7f7f4;
+        --section:#f3f6f3;
+        --ink:#131716;
+        --body:#2e3331;
+        --muted:#71787a;
+        --line:#e7e9e6;
+        --sun:#f2a63b;
+        --tosca:#0a9e7d;
+        --tosca-dark:#078a6c;
+        --price-red:#de5e57;
+        --price-green:#7d9b52;
+        --radius:24px;
+        --shadow-card:0 10px 30px rgba(19,40,30,.08);
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;
+        font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+        color:var(--body);
+        background:#fff;
+        -webkit-font-smoothing:antialiased;
+      }
+      img,svg{display:block}
+      a{color:inherit;text-decoration:none}
+      button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]),textarea{min-height:2.25rem}
+      .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+
+      /* ---------- Header ---------- */
+      header{
+        position:sticky;top:0;z-index:50;
+        background:rgba(255,255,255,.96);
+        border-bottom:1px solid var(--line);
+        backdrop-filter:blur(6px);
+      }
+      .nav{
+        max-width:1160px;margin:0 auto;padding:0 24px;
+        height:72px;display:flex;align-items:center;gap:32px;
+      }
+      .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;color:#111;letter-spacing:-.01em}
+      .brand svg{width:26px;height:26px;color:#5c5c5c}
+      .nav-links{display:flex;gap:38px;margin:0 auto}
+      .nav-links a{font-size:14.5px;font-weight:500;color:#565d5b;padding:10px 2px;position:relative}
+      .nav-links a:hover{color:var(--green)}
+      .nav-links a.active{color:#111;font-weight:600}
+      .burger{display:none;margin-left:auto;width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px}
+      .burger svg{width:24px;height:24px}
+      .mobile-menu{display:none;border-top:1px solid var(--line);padding:10px 24px 18px;background:#fff}
+      .mobile-menu a{display:block;padding:12px 4px;font-weight:600;font-size:15px;color:#333;border-bottom:1px solid #f0f1ef}
+      .mobile-menu a:last-child{border-bottom:0}
+      .mobile-menu.open{display:block}
+      .btn-masuk{
+        background:#eef1ee;color:#1c2422;font-weight:700;font-size:14.5px;
+        padding:11px 26px;border-radius:10px;min-height:44px;flex:0 0 auto;
+        transition:background .15s ease;
+      }
+      .btn-masuk:hover{background:#e0e6e0}
+      .user-chip{
+        display:none;align-items:center;gap:9px;flex:0 0 auto;
+        font-weight:700;font-size:14.5px;color:#1c2422;
+      }
+      .user-chip.show{display:flex}
+      .user-chip .avatar{
+        width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;
+        display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;
+      }
+      .btn-keluar{
+        background:#eef1ee;color:#1c2422;font-weight:600;font-size:13.5px;
+        padding:8px 16px;border-radius:9px;min-height:36px;
+      }
+      .btn-keluar:hover{background:#e0e6e0}
+
+      /* ---------- Hero ---------- */
+      .hero{padding:44px 0 74px}
+      .hero-art{
+        max-width:880px;margin:0 auto;border-radius:var(--radius);overflow:hidden;
+        box-shadow:0 18px 44px rgba(23,104,75,.14);
+      }
+      .hero-art svg{width:100%;height:auto}
+      .hero-text{margin-top:44px;max-width:760px}
+      .pill{
+        display:inline-block;background:var(--mint);color:#33604c;
+        font-size:12.5px;font-weight:600;padding:7px 16px;border-radius:999px;
+      }
+      h1{
+        margin:22px 0 6px;color:var(--ink);
+        font-size:clamp(28px,4.4vw,40px);line-height:1.22;font-weight:800;letter-spacing:-.015em;
+      }
+      .hero-by{margin:0;font-size:clamp(17px,2.4vw,21px);color:#222;font-weight:500}
+      .btn-order{
+        margin-top:28px;display:inline-flex;align-items:center;justify-content:center;
+        background:var(--green);color:#fff;font-weight:700;font-size:17px;
+        padding:16px 44px;border-radius:12px;min-height:56px;
+        box-shadow:0 10px 22px rgba(23,104,75,.28);
+        transition:background .15s ease,transform .15s ease;
+      }
+      .btn-order:hover{background:var(--green-dark)}
+      .hero-note{margin:20px 0 0;font-size:13.5px;color:var(--muted)}
+
+      /* ---------- Kategori ---------- */
+      .kategori{background:var(--section);padding:78px 0 84px;text-align:center}
+      .kategori h2{margin:0;color:var(--ink);font-size:clamp(24px,3.6vw,32px);font-weight:800;letter-spacing:-.01em}
+      .kategori p{margin:14px auto 0;max-width:640px;color:#5f6a66;font-size:16px;line-height:1.55}
+      .cat-row{
+        margin-top:52px;display:flex;justify-content:center;gap:clamp(18px,4.5vw,64px);flex-wrap:wrap;
+      }
+      .cat{display:flex;flex-direction:column;align-items:center;gap:16px;padding:6px;border-radius:20px}
+      .cat .circle{
+        width:118px;height:118px;border-radius:50%;background:#fff;
+        display:flex;align-items:center;justify-content:center;
+        box-shadow:0 8px 26px rgba(19,40,30,.09);
+        transition:transform .18s ease,box-shadow .18s ease;
+      }
+      .cat .circle svg{width:46px;height:46px;color:#6f6f6f}
+      .cat span{font-weight:700;font-size:17px;color:#111}
+      .cat:hover .circle{transform:translateY(-4px)}
+      .cat.selected .circle{box-shadow:0 0 0 3px var(--green),0 10px 26px rgba(23,104,75,.22)}
+      .cat.selected span{color:var(--green)}
+      .cat-note{min-height:24px;margin:26px 0 0;font-size:14px;color:var(--green);font-weight:600}
+
+      /* ---------- Rekomendasi ---------- */
+      .rekom{padding:76px 0 30px}
+      .rekom h2{margin:0 0 26px;color:var(--ink);font-size:clamp(23px,3.4vw,30px);font-weight:800;letter-spacing:-.01em}
+      .rekom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+      .card{min-width:0;text-align:left;padding:0}
+      .card .thumb{
+        aspect-ratio:447/196;border-radius:10px;background:var(--mint);
+        display:flex;align-items:center;justify-content:center;overflow:hidden;
+      }
+      .card .thumb svg{width:64px;height:64px;color:#a9cbb8}
+      .card h3{margin:22px 0 8px;color:#0c0e0d;font-size:19px;font-weight:800;line-height:1.3}
+      .card .meta{margin:0 0 6px;font-size:15.5px;color:#222;line-height:1.5}
+      .card .price{margin:10px 0 0;font-size:16.5px;font-weight:800}
+      .price.red{color:var(--price-red)}
+      .price.green{color:var(--price-green)}
+
+      /* ---------- Jelajahi Event (halaman kategori, ala explore) ---------- */
+      .explore{padding:28px 0 84px}
+      .explore-toolbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
+      .btn-filter{
+        justify-self:start;
+        display:inline-flex;align-items:center;gap:8px;background:#fff;
+        border:1.5px solid #dfe4df;border-radius:10px;padding:10px 18px;
+        font-weight:700;font-size:14.5px;color:#222;min-height:44px;
+      }
+      .btn-filter svg{width:17px;height:17px;color:#444}
+      .btn-filter:hover{border-color:#b9cdc2}
+      .btn-filter[aria-expanded="true"]{border-color:var(--green);color:var(--green-dark)}
+      .btn-filter[aria-expanded="true"] svg{color:var(--green-dark)}
+      .active-chip{
+        display:inline-flex;align-items:center;gap:7px;justify-self:center;
+        background:#e2f2e9;color:var(--green-dark);
+        font-weight:700;font-size:13.5px;padding:7px 8px 7px 14px;border-radius:999px;
+      }
+      .active-chip[hidden]{display:none}
+      .active-chip button{
+        width:22px;height:22px;min-height:22px;border-radius:50%;
+        display:flex;align-items:center;justify-content:center;color:inherit;padding:0;
+      }
+      .active-chip button:hover{background:rgba(15,81,56,.14)}
+      .active-chip button svg{width:12px;height:12px}
+      .sort-pill{
+        display:inline-flex;align-items:center;gap:9px;justify-self:end;
+        border:1.5px solid #dfe4df;border-radius:10px;background:#fff;
+        padding:0 14px;min-height:44px;position:relative;cursor:pointer;
+      }
+      .sort-pill .sort-label{font-size:14.5px;font-weight:700;color:#222;white-space:nowrap}
+      .sort-pill select{
+        border:0;background:transparent;font:inherit;font-size:14px;font-weight:600;color:#444;
+        appearance:none;-webkit-appearance:none;padding:0 20px 0 0;min-height:40px;cursor:pointer;
+      }
+      .sort-pill select:focus{outline:none}
+      .sort-pill:focus-within{border-color:var(--green)}
+      .sort-pill .sort-chev{width:15px;height:15px;color:#5f6a66;position:absolute;right:13px;pointer-events:none}
+      .filter-panel{margin-top:16px;background:var(--panel);border-radius:14px;padding:18px 20px}
+      .filter-panel[hidden]{display:none}
+      .filter-label{margin:0 0 12px;font-size:13px;font-weight:700;color:#5f6a66}
+      .fchip-row{display:flex;gap:9px;flex-wrap:wrap}
+      .fchip{
+        border:1.5px solid #d5dcd5;background:#fff;border-radius:999px;
+        padding:9px 18px;font-weight:600;font-size:14px;color:#333;min-height:40px;
+        transition:border-color .15s ease,background .15s ease;
+      }
+      .fchip:hover{border-color:#b9cdc2}
+      .fchip.on{background:var(--green);border-color:var(--green);color:#fff}
+      .explore-count{margin:24px 0 16px;font-size:14px;color:var(--muted)}
+      .explore-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+      .xcard{
+        background:#fff;border:1px solid #e8ecef;border-radius:14px;overflow:hidden;
+        text-align:left;padding:0;width:100%;display:flex;flex-direction:column;
+        box-shadow:0 4px 14px rgba(19,40,30,.05);
+        transition:box-shadow .15s ease;
+      }
+      .xcard:hover{box-shadow:0 12px 26px rgba(19,40,30,.13)}
+      .xcard:focus-visible{outline:3px solid rgba(23,104,75,.45);outline-offset:3px}
+      .xcard-banner{display:block;line-height:0}
+      .xcard-banner svg{width:100%;height:auto}
+      .xcard-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:7px;flex:1}
+      .xcard-title{display:block;font-size:15px;font-weight:800;color:#14181a;line-height:1.35}
+      .xcard-date{display:flex;align-items:center;gap:7px;font-size:13px;color:#64748b}
+      .xcard-date svg{width:15px;height:15px;flex:0 0 auto;color:#94a3b8}
+      .xcard-sesi{display:block;font-size:13px;font-weight:700;color:#14181a}
+      .xcard-price{display:block;font-size:15px;font-weight:800;color:#14181a}
+      .xcard-price.free{color:var(--price-green)}
+      .xcard-org{
+        margin-top:auto;border-top:1.5px dashed #e3e7e4;padding-top:11px;
+        display:flex;align-items:center;gap:9px;min-width:0;
+      }
+      .org-ava{
+        width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;
+        font-size:10.5px;font-weight:800;letter-spacing:.02em;
+        display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+      }
+      .org-name{font-size:12.5px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .org-city{margin-left:auto;font-size:12.5px;color:#9aa3a0;flex:0 0 auto}
+      .explore-empty{margin:8px 0 0;font-size:15px;color:var(--muted)}
+      @media (max-width:1100px){
+        .explore-grid{grid-template-columns:repeat(3,1fr)}
+      }
+      @media (max-width:900px){
+        .explore-grid{grid-template-columns:repeat(2,1fr)}
+      }
+      @media (max-width:560px){
+        .explore-grid{grid-template-columns:1fr}
+        .explore-toolbar{display:flex;flex-wrap:wrap}
+        .sort-pill{margin-left:auto}
+      }
+
+      /* ---------- Bantuan ---------- */
+      .bantuan{padding:44px 0 92px}
+      .help-box{
+        background:var(--mint);border-radius:26px;
+        padding:52px 58px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;
+      }
+      .help-box h2{margin:0;color:#10160f;font-size:clamp(24px,3.4vw,31px);font-weight:800}
+      .help-box p{margin:10px 0 0;color:#5c6a64;font-size:16.5px}
+      .btn-help{
+        background:var(--green);color:#fff;font-weight:600;font-size:15.5px;
+        padding:14px 34px;border-radius:12px;min-height:50px;
+        transition:background .15s ease;
+      }
+      .btn-help:hover{background:var(--green-dark)}
+
+      /* ---------- Hubungi Kami ---------- */
+      .contact{padding:28px 0 84px}
+      .contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:start}
+      .contact-title{margin:0 0 16px;color:#0b0f0e;font-size:clamp(30px,4.4vw,42px);line-height:1.15;font-weight:800;letter-spacing:-.02em}
+      .contact-intro{margin:0 0 12px;font-size:15.5px;line-height:1.7;color:#2f3634;max-width:460px}
+      .contact-hours{margin:0;font-size:14px;line-height:1.6;color:var(--muted)}
+      .hub-info{margin-top:32px;display:flex;flex-direction:column;gap:20px}
+      .hub-row{display:flex;gap:13px;align-items:flex-start}
+      .hub-ic{
+        width:36px;height:36px;border-radius:10px;background:var(--mint);color:var(--green-dark);
+        display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+      }
+      .hub-ic svg{width:18px;height:18px}
+      .hub-row .hub-label{margin:0 0 2px;font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+      .hub-row .hub-value{margin:0;font-size:15px;font-weight:600;color:#141817;line-height:1.55}
+      .hub-row a.hub-value:hover{color:var(--green)}
+      .hub-socials{display:flex;gap:10px;margin-top:36px;flex-wrap:wrap}
+      .hub-soc{
+        width:42px;height:42px;min-height:42px;border-radius:50%;background:#eef1ee;color:#2c3331;
+        display:flex;align-items:center;justify-content:center;
+        transition:background .15s ease,color .15s ease;
+      }
+      .hub-soc:hover{background:var(--green);color:#fff}
+      .hub-soc svg{width:19px;height:19px}
+      .hub-card{
+        background:#fff;border:1px solid var(--line);border-radius:18px;
+        box-shadow:var(--shadow-card);padding:30px 30px 28px;
+      }
+      .hub-card h3{margin:0 0 5px;font-size:21px;font-weight:800;color:var(--ink)}
+      .hub-card .hub-sub{margin:0 0 22px;font-size:14px;color:var(--muted);line-height:1.5}
+      .hub-card textarea.o-input{resize:vertical;min-height:110px}
+      .hub-err{
+        display:none;margin:0 0 16px;padding:11px 14px;
+        background:#fdf1f0;border:1px solid #f3cfcc;border-radius:10px;
+        font-size:13.5px;color:#b3352c;font-weight:600;line-height:1.45;
+      }
+      .btn-kirim{
+        width:100%;background:var(--green);color:#fff;font-weight:700;font-size:15.5px;
+        padding:14px;border-radius:10px;min-height:50px;transition:background .15s ease;
+      }
+      .btn-kirim:hover{background:var(--green-dark)}
+      .hub-success{text-align:center;padding:10px 0 2px}
+      .hub-success h4{margin:16px 0 8px;font-size:20px;font-weight:800;color:#0b0f0e}
+      .hub-success p{margin:0 auto 22px;font-size:14.5px;line-height:1.65;color:#5f6a66;max-width:380px}
+      .hub-success p strong{color:#141817}
+      .btn-again{
+        background:#eef1ee;color:#1c2422;font-weight:700;font-size:14.5px;
+        padding:12px 26px;border-radius:10px;min-height:46px;
+      }
+      .btn-again:hover{background:#e0e6e0}
+      @media (max-width:900px){
+        .contact-grid{grid-template-columns:1fr;gap:36px}
+        .hub-card{padding:26px 22px 24px}
+      }
+
+      /* ---------- Footer ---------- */
+      footer{border-top:1px solid var(--line)}
+      .foot{
+        max-width:1160px;margin:0 auto;padding:26px 24px;
+        display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+      }
+      .foot .brand{font-size:17px}
+      .foot small{color:#5f6a66;font-size:13.5px}
+
+      /* ---------- Dialog ---------- */
+      dialog{
+        border:0;border-radius:18px;padding:0;max-width:440px;width:calc(100% - 40px);
+        background:#fff;color:var(--body);
+        box-shadow:0 30px 70px rgba(10,30,20,.3);
+      }
+      dialog::backdrop{background:rgba(15,25,20,.5)}
+      .dlg{padding:30px 30px 26px;background:#fff;border-radius:18px}
+      .dlg h3{margin:0 0 6px;font-size:21px;color:var(--ink);font-weight:800}
+      .dlg p.sub{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.5}
+      .dlg .row .btn-solid{flex:1}
+      .dlg .row .btn-ghost{flex:0 0 auto}
+      .dlg label{display:block;font-size:13.5px;font-weight:600;color:#333;margin:0 0 6px}
+      .dlg input,.dlg textarea{
+        width:100%;border:1.5px solid #d9ddd9;border-radius:10px;padding:11px 13px;
+        font:inherit;font-size:14.5px;margin-bottom:15px;background:#fff;color:#111;
+      }
+      .dlg input:focus,.dlg textarea:focus{outline:2px solid var(--green);outline-offset:1px;border-color:transparent}
+      .dlg textarea{resize:vertical;min-height:96px}
+      .dlg .row{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+      .btn-ghost{padding:11px 20px;border-radius:10px;font-weight:600;font-size:14.5px;color:#444;min-height:44px}
+      .btn-ghost:hover{background:#f0f2f0}
+      .btn-solid{background:var(--green);color:#fff;padding:11px 24px;border-radius:10px;font-weight:700;font-size:14.5px;min-height:44px}
+      .btn-solid:hover{background:var(--green-dark)}
+      .dlg .ok-msg{display:none;margin:12px 0 0;font-size:13.5px;color:var(--green);font-weight:600}
+      .dlg .err-msg{display:none;margin:0 0 14px;font-size:13.5px;color:#c0392b;font-weight:600;line-height:1.45}
+      /* ---------- Login / Signup (kartu potret profesional) ---------- */
+      #authDlg{
+        max-width:400px;width:calc(100% - 32px);
+        background:transparent;border-radius:20px;box-shadow:none;
+        max-height:calc(100vh - 32px);overflow:auto;
+      }
+      #authDlg::backdrop{background:rgba(13,22,18,.55)}
+      .auth-close{
+        position:absolute;top:14px;right:14px;width:38px;height:38px;z-index:2;
+        display:flex;align-items:center;justify-content:center;border-radius:50%;
+        color:#6b7370;
+      }
+      .auth-close:hover{background:#eef1ee;color:#222}
+      .auth-close svg{width:20px;height:20px}
+      .auth-wrap{padding:0}
+      .auth-card{
+        background:#fff;border-radius:20px;
+        padding:38px 34px 30px;box-shadow:0 24px 60px rgba(8,30,20,.28);
+        display:flex;flex-direction:column;min-height:520px;
+      }
+      .auth-card.off{display:none}
+      .auth-brand{display:flex;align-items:center;gap:10px}
+      .auth-logo{
+        width:42px;height:42px;border-radius:12px;background:var(--mint);
+        display:flex;align-items:center;justify-content:center;color:var(--green-dark);
+      }
+      .auth-logo svg{width:23px;height:23px}
+      .auth-brand-name{font-size:18px;font-weight:800;color:#111;letter-spacing:-.01em}
+      .auth-card h3{margin:26px 0 6px;font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+      .auth-sub{margin:0 0 26px;font-size:14px;color:var(--muted);line-height:1.55}
+      .auth-card label{display:block;font-size:13.5px;font-weight:700;color:#2c3331;margin:0 0 7px}
+      .field{position:relative;margin-bottom:18px}
+      .field input{
+        width:100%;border:1.5px solid #dde1dd;border-radius:10px;
+        padding:13px 44px 13px 15px;font:inherit;font-size:15px;
+        background:#fff;color:#111;min-height:50px;margin:0;
+      }
+      .field input.no-toggle{padding-right:15px}
+      .field input::placeholder{color:#a3a8a5}
+      .field input:focus{outline:none;border-color:var(--tosca);box-shadow:0 0 0 3px rgba(10,158,125,.16)}
+      .eye{
+        position:absolute;top:50%;right:6px;transform:translateY(-50%);
+        width:38px;height:38px;min-height:38px;border-radius:8px;
+        display:flex;align-items:center;justify-content:center;color:#8a918d;
+      }
+      .eye:hover{background:#f0f2f0;color:#333}
+      .eye svg{width:20px;height:20px}
+      .eye .icon-off{display:none}
+      .eye.showing .icon-on{display:none}
+      .eye.showing .icon-off{display:block}
+      .field-hint{margin:-10px 0 18px;font-size:12.5px;color:var(--muted)}
+      .auth-btn{
+        width:100%;background:var(--tosca);color:#fff;font-weight:700;font-size:16px;
+        padding:15px;border-radius:10px;min-height:52px;margin-top:4px;
+        transition:background .15s ease;
+      }
+      .auth-btn:hover{background:var(--tosca-dark)}
+      .auth-link{color:var(--tosca);font-weight:600;font-size:14.5px;padding:2px;min-height:0}
+      .auth-link:hover{text-decoration:underline}
+      .auth-alt{
+        margin:auto 0 0;padding-top:22px;text-align:center;font-size:14.5px;color:#444;
+        border-top:1px solid #eef0ee;
+      }
+      .auth-err{
+        display:none;margin:0 0 18px;padding:11px 14px;
+        background:#fdf1f0;border:1px solid #f3cfcc;border-radius:10px;
+        font-size:13.5px;color:#b3352c;font-weight:600;line-height:1.45;
+      }
+      .auth-ok{
+        display:none;margin:0 0 18px;padding:11px 14px;
+        background:#e9f7f1;border:1px solid #bfe6d6;border-radius:10px;
+        font-size:13.5px;color:var(--tosca-dark);font-weight:600;line-height:1.45;
+      }
+
+      /* ---------- Detail Event (mockup ala halaman detail) ---------- */
+      .card{cursor:pointer}
+      .card:focus-visible{outline:3px solid rgba(23,104,75,.45);outline-offset:4px;border-radius:12px}
+      .card .thumb{transition:transform .18s ease, box-shadow .18s ease}
+      .card:hover .thumb{box-shadow:0 12px 28px rgba(19,40,30,.14)}
+      .card .lihat{margin:12px 0 0;font-size:13.5px;font-weight:700;color:var(--green);display:inline-flex;align-items:center;gap:6px}
+      .card .lihat svg{width:16px;height:16px}
+      .detail{padding:28px 0 84px}
+      .btn-back{
+        display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;color:#222;
+        padding:10px 16px 10px 12px;border-radius:10px;background:#f1f4f1;min-height:42px;margin-bottom:22px;
+      }
+      .btn-back:hover{background:#e4eae4}
+      .btn-back svg{width:18px;height:18px}
+      .detail-cat{
+        display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;
+        background:var(--mint);color:var(--green-dark);
+        font-size:12.5px;font-weight:700;padding:6px 13px 6px 10px;border-radius:999px;
+      }
+      .detail-cat svg{width:14px;height:14px;flex:0 0 auto}
+      .detail-title{margin:0;color:#0b0f0e;font-size:clamp(26px,4vw,38px);line-height:1.15;font-weight:800;letter-spacing:-.02em;max-width:720px}
+      .detail-grid{margin-top:28px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.95fr);gap:52px;align-items:start}
+      .detail-label{margin:0 0 12px;font-size:14.5px;color:#7a8280;font-weight:500}
+      .organizer{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+      .organizer-logo{
+        width:48px;height:48px;border-radius:50%;background:var(--green-dark);color:#fff;
+        display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;letter-spacing:.02em;flex:0 0 auto;
+      }
+      .organizer-name{font-weight:700;color:#111;font-size:16px}
+      .social-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+      .social-pill{
+        display:inline-flex;align-items:center;gap:8px;background:#eef4ff;color:#2456c8;
+        font-weight:600;font-size:14.5px;padding:9px 16px 9px 10px;border-radius:999px;min-height:40px;
+      }
+      .social-pill .s-ic{width:28px;height:28px;border-radius:50%;background:#2f6bff;color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+      .social-pill .s-ic svg{width:15px;height:15px}
+      .social-pill.tiktok{color:#111;background:#f1f1f1}
+      .social-pill.tiktok .s-ic{background:#111}
+      .detail-tabs{display:flex;gap:28px;border-bottom:1px solid var(--line);margin-bottom:28px}
+      .detail-tab{padding:12px 2px;font-size:15.5px;font-weight:600;color:#7a8280;border-bottom:2.5px solid transparent;margin-bottom:-1px;min-height:44px}
+      .detail-tab.active{color:#111;border-bottom-color:#2f6bff}
+      .detail-panel h3{margin:0 0 16px;font-size:22px;font-weight:800;color:#0b0f0e}
+      .detail-panel p{margin:0 0 14px;font-size:15.5px;line-height:1.75;color:#2f3634}
+      .detail-panel ol{margin:0;padding-left:20px}
+      .detail-panel ol li{font-size:15.5px;line-height:1.7;color:#2f3634;margin-bottom:12px;padding-left:4px}
+      .detail-panel ol li strong{color:#111}
+      .detail-banner{border-radius:14px;overflow:hidden;box-shadow:0 14px 34px rgba(19,40,30,.16)}
+      .detail-banner svg{width:100%;height:auto}
+      .detail-side h3{margin:28px 0 18px;font-size:19px;font-weight:800;color:#0b0f0e}
+      .detail-info{display:flex;flex-direction:column;gap:16px}
+      .info-row{display:flex;align-items:flex-start;gap:12px;font-size:15.5px;color:#141817;line-height:1.5}
+      .info-row .i-ic{width:28px;height:28px;border-radius:8px;background:#e8eefc;color:#2f6bff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px}
+      .info-row .i-ic svg{width:16px;height:16px}
+      .price-box{
+        margin-top:28px;background:#f7f8fc;border-radius:14px;padding:20px 22px;
+        display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+      }
+      .price-box .plabel{margin:0;font-size:14px;color:#7a8280}
+      .price-box .pvalue{margin:4px 0 0;font-size:20px;font-weight:800;color:#0b0f0e}
+      .price-box .pvalue.free{color:var(--price-green)}
+      .btn-pesan{
+        background:#2f6bff;color:#fff;font-weight:700;font-size:15.5px;
+        padding:13px 26px;border-radius:10px;min-height:50px;white-space:nowrap;
+        transition:background .15s ease;
+      }
+      .btn-pesan:hover{background:#2456c8}
+      @media (max-width:900px){
+        .detail-grid{grid-template-columns:1fr;gap:34px}
+        .detail-side{order:-1}
+        .price-box{flex-direction:column;align-items:stretch;text-align:left}
+        .btn-pesan{width:100%}
+      }
+
+      /* ---------- Pilih Tiket (mockup ala halaman tiket) ---------- */
+      .ticket{padding:0 0 84px}
+      .steps-bar{background:var(--green-dark);padding:14px 24px}
+      .steps{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+      .step{display:inline-flex;align-items:center;gap:9px;color:#cfe3d8;font-size:14.5px;font-weight:600;white-space:nowrap}
+      .step .step-num{width:26px;height:26px;border-radius:50%;border:1.5px solid #9dbfab;color:#cfe3d8;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;flex:0 0 auto}
+      .step.active{color:#fff;font-weight:700}
+      .step.active .step-num{background:#fff;border-color:#fff;color:var(--green-dark)}
+      .step-sep{width:16px;height:16px;color:#7fa892;flex:0 0 auto}
+      .ticket .btn-back{margin-top:24px;margin-bottom:18px}
+      .ticket-grid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:28px;align-items:start}
+      .cat-label{display:inline-flex;align-items:center;gap:8px;margin-top:26px;background:var(--green);color:#fff;font-weight:700;font-size:14px;padding:9px 18px 9px 14px;border-radius:999px}
+      .cat-label svg{width:17px;height:17px}
+      .ticket-panel{margin-top:18px;background:#eef4f0;border-radius:16px;padding:18px}
+      .ticket-card{background:#fff;border-radius:12px;padding:20px 22px;border:2px solid transparent;transition:border-color .15s ease}
+      .ticket-card.selected{border-color:var(--green)}
+      .badge-sale{display:inline-block;background:#e2f2e9;color:var(--green-dark);font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px}
+      .ticket-name{margin:14px 0 0;font-size:17px;font-weight:700;color:#111}
+      .ticket-foot{margin-top:16px;padding-top:16px;border-top:1.5px dashed #dfe4df;display:flex;align-items:center;justify-content:space-between;gap:16px}
+      .ticket-price{font-size:17px;font-weight:800;color:#0b0f0e}
+      .ticket-price.free{color:var(--price-green)}
+      .btn-pilih{background:var(--green);color:#fff;font-weight:700;font-size:14.5px;padding:10px 26px;border-radius:9px;min-height:42px;transition:background .15s ease}
+      .btn-pilih:hover{background:var(--green-dark)}
+      .ticket-card.selected .btn-pilih{background:var(--green-dark)}
+      .summary-card{background:#f4f7f5;border-radius:16px;padding:22px}
+      .summary-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
+      .summary-row .s-label{font-size:14.5px;color:#5f6a66}
+      .summary-row .s-price{font-size:17px;font-weight:800;color:#0b0f0e}
+      .summary-row .s-price.free{color:var(--price-green)}
+      .summary-cat{margin:12px 0 0;font-size:13.5px;color:var(--green-dark);font-weight:600;display:none}
+      .summary-cat.show{display:block}
+      .btn-beli{width:100%;margin-top:18px;background:var(--green);color:#fff;font-weight:700;font-size:15.5px;padding:14px;border-radius:10px;min-height:50px;transition:background .15s ease}
+      .btn-beli:hover:not(:disabled){background:var(--green-dark)}
+      .btn-beli:disabled{background:#b9cdc2;cursor:not-allowed}
+      .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+      @media (max-width:900px){
+        .ticket-grid{grid-template-columns:1fr}
+        .steps{gap:8px}
+        .step{font-size:12.5px;gap:6px}
+        .step .step-num{width:22px;height:22px;font-size:12px}
+        .step-sep{width:12px;height:12px}
+      }
+
+      /* ---------- Detail Pesanan (langkah 2) ---------- */
+      .order{padding:0 0 84px}
+      .order .btn-back{margin-top:24px;margin-bottom:18px}
+      .order-head{margin-bottom:24px}
+      .order-title{margin:0;color:#0b0f0e;font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.015em;line-height:1.2}
+      .order-meta{margin:9px 0 0;font-size:14.5px;color:#5f6a66;line-height:1.65}
+      .order-grid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:28px;align-items:start}
+      .order-card{background:#eef4f0;border-radius:16px;padding:22px;margin-bottom:22px}
+      .order-card-head{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+      .order-card-head svg{width:20px;height:20px;color:var(--green-dark);flex:0 0 auto}
+      .order-card-head h3{margin:0;font-size:16.5px;font-weight:800;color:#0b0f0e}
+      .sync-wrap{margin-left:auto;display:flex;align-items:center;gap:10px}
+      .sync-wrap span{font-size:13px;color:#5f6a66;font-weight:600;text-align:right;line-height:1.35}
+      .switch{width:46px;height:26px;min-height:26px;border-radius:999px;background:#c3d2c8;position:relative;flex:0 0 auto;transition:background .15s ease;padding:0}
+      .switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s ease}
+      .switch[aria-checked="true"]{background:var(--green)}
+      .switch[aria-checked="true"]::after{left:23px}
+      .o-field{margin-bottom:16px}
+      .o-field:last-child{margin-bottom:0}
+      .o-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+      .o-label{display:block;font-size:13.5px;font-weight:700;color:#2c3331;margin:0 0 7px}
+      .o-label .req{color:#d64541}
+      .o-input,.o-select{
+        width:100%;border:1.5px solid #dde1dd;border-radius:9px;padding:12px 14px;
+        font:inherit;font-size:14.5px;background:#fff;color:#111;min-height:48px;margin:0;
+      }
+      .o-input::placeholder{color:#a3a8a5}
+      .o-input:focus,.o-select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(23,104,75,.15)}
+      .o-input.invalid,.o-select.invalid{border-color:#d64541;box-shadow:0 0 0 3px rgba(214,69,65,.13)}
+      .o-input:disabled,.o-select:disabled{background:#e9ede9;color:#7d8580;cursor:not-allowed}
+      .phone-group{display:flex}
+      .phone-prefix{
+        display:flex;align-items:center;gap:7px;padding:0 12px;flex:0 0 auto;
+        border:1.5px solid #dde1dd;border-right:0;border-radius:9px 0 0 9px;
+        background:#f4f7f5;font-weight:700;font-size:14px;color:#333;
+      }
+      .phone-prefix svg{width:19px;height:13px;border-radius:2px;flex:0 0 auto}
+      .phone-group .o-input{border-radius:0 9px 9px 0}
+      .att-band{background:#e2f2e9;border-radius:9px;text-align:center;font-weight:700;color:var(--green-dark);padding:11px 12px;font-size:14.5px;margin-bottom:20px}
+      .gender-row{display:flex;gap:10px;flex-wrap:wrap}
+      .gender-chip{
+        display:inline-flex;align-items:center;gap:8px;border:1.5px solid #dde1dd;background:#fff;
+        border-radius:9px;padding:10px 18px;font-weight:600;font-size:14px;color:#444;min-height:44px;
+        transition:border-color .15s ease,background .15s ease;
+      }
+      .gender-chip svg{width:16px;height:16px}
+      .gender-chip.on{border-color:var(--green);color:var(--green-dark);background:#e2f2e9}
+      .gender-row.invalid .gender-chip{border-color:#d64541}
+      .timer-badge{
+        display:flex;align-items:center;justify-content:center;gap:10px;
+        background:var(--sun);color:#2a1c04;border-radius:10px;padding:13px 16px;margin-bottom:18px;
+        font-weight:800;font-size:16px;
+      }
+      .timer-badge .t-sep{opacity:.45;font-weight:600}
+      .timer-badge .t-label{font-size:13.5px;font-weight:700}
+      .rincian-card{background:#f4f7f5;border-radius:16px;padding:22px}
+      .rincian-card h3{margin:0 0 18px;font-size:16px;font-weight:800;color:#0b0f0e;display:flex;align-items:center;gap:9px}
+      .rincian-card h3 svg{width:19px;height:19px;color:var(--green-dark)}
+      .r-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:14px;border-bottom:1.5px dashed #dfe4df}
+      .r-name{margin:0;font-size:14.5px;font-weight:700;color:#141817}
+      .r-qtytext{margin:3px 0 0;font-size:13px;color:#7a8280}
+      .r-price{font-size:14.5px;font-weight:700;color:#141817;white-space:nowrap}
+      .r-price.free{color:var(--price-green)}
+      .qty-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1.5px dashed #dfe4df}
+      .qty-row .q-label{font-size:14px;color:#5f6a66;font-weight:600}
+      .qty-ctrl{display:inline-flex;align-items:center;gap:4px}
+      .qty-btn{
+        width:34px;height:34px;min-height:34px;border-radius:8px;background:#fff;border:1.5px solid #d5dcd5;
+        display:flex;align-items:center;justify-content:center;color:var(--green-dark);
+      }
+      .qty-btn svg{width:15px;height:15px}
+      .qty-btn:disabled{opacity:.35;cursor:not-allowed}
+      .qty-val{min-width:30px;text-align:center;font-weight:800;font-size:15px;color:#0b0f0e}
+      .r-line{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:14px;font-size:14.5px;color:#5f6a66}
+      .r-line span:last-child{color:#141817;font-weight:600}
+      .r-total{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:10px;font-size:15.5px;font-weight:800;color:#0b0f0e}
+      .r-total .free{color:var(--price-green)}
+      .r-actions{display:flex;gap:10px;margin-top:20px}
+      .btn-circle{
+        width:50px;height:50px;min-height:50px;border-radius:50%;border:1.5px solid var(--green);color:var(--green);
+        display:flex;align-items:center;justify-content:center;flex:0 0 auto;transition:background .15s ease;
+      }
+      .btn-circle:hover{background:#e2f2e9}
+      .btn-circle svg{width:20px;height:20px}
+      .btn-lanjut{flex:1;background:var(--green);color:#fff;font-weight:700;font-size:15.5px;padding:14px;border-radius:10px;min-height:50px;transition:background .15s ease}
+      .btn-lanjut:hover{background:var(--green-dark)}
+
+      /* ---------- Metode Pembayaran (langkah 3) ---------- */
+      .pay{padding:0 0 84px}
+      .pay .btn-back{margin-top:24px;margin-bottom:18px}
+      .method-group{background:#eef4f0;border-radius:16px;margin-bottom:18px}
+      .method-head{
+        width:100%;display:flex;align-items:center;gap:10px;padding:18px 22px;min-height:58px;
+        font-size:15.5px;font-weight:800;color:#0b0f0e;text-align:left;
+      }
+      .method-head .m-ic{width:20px;height:20px;color:var(--green-dark);flex:0 0 auto}
+      .method-head .chev{margin-left:auto;width:18px;height:18px;color:#5f6a66;transition:transform .2s ease;flex:0 0 auto}
+      .method-group.closed .method-head .chev{transform:rotate(180deg)}
+      .method-body{padding:2px 22px 22px}
+      .method-group.closed .method-body{display:none}
+      .method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+      .method-tile{
+        background:#fff;border:2px solid #e3e8e3;border-radius:12px;min-height:74px;
+        display:flex;align-items:center;justify-content:center;padding:12px;
+        transition:border-color .15s ease,box-shadow .15s ease;
+      }
+      .method-tile:hover{border-color:#b9cdc2}
+      .method-tile.selected{border-color:var(--green);box-shadow:0 0 0 3px rgba(23,104,75,.14)}
+      .wm{font-weight:800;line-height:1.1;text-align:center}
+      .wm-qris{font-size:21px;color:#141414;letter-spacing:.05em;font-style:italic}
+      .wm-ovo{font-size:23px;color:#4c3494;letter-spacing:.16em}
+      .wm-dana{font-size:20px;color:#108ee9;letter-spacing:.05em}
+      .wm-linkaja{font-size:19px;color:#e1251b;font-style:italic}
+      .wm-shopee{font-size:19px;color:#ee4d2d}
+      .bank-row{display:flex;flex-wrap:wrap;gap:9px}
+      .bank-chip{
+        background:#fff;border:1.5px solid #e3e8e3;border-radius:9px;padding:9px 16px;min-height:40px;
+        font-weight:800;font-size:13.5px;color:#33507c;transition:border-color .15s ease,box-shadow .15s ease;
+      }
+      .bank-chip:hover{border-color:#b9cdc2}
+      .bank-chip.selected{border-color:var(--green);color:var(--green-dark);box-shadow:0 0 0 3px rgba(23,104,75,.14)}
+      .promo-box{
+        display:flex;align-items:center;justify-content:center;gap:8px;
+        background:#e2f2e9;color:var(--green-dark);border-radius:9px;
+        padding:11px 12px;font-size:13.5px;font-weight:700;margin:18px 0 16px;text-align:center;
+      }
+      .promo-box svg{width:16px;height:16px;flex:0 0 auto}
+      .agree-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;cursor:pointer}
+      .agree-row input{width:17px;height:17px;min-height:17px;margin:2px 0 0;accent-color:var(--green);flex:0 0 auto;cursor:pointer}
+      .agree-row span{font-size:13px;line-height:1.55;color:#3c4341}
+      .agree-row a{color:var(--green);font-weight:600;text-decoration:underline}
+      .btn-bayar{flex:1;background:var(--green);color:#fff;font-weight:700;font-size:15.5px;padding:14px;border-radius:10px;min-height:50px;transition:background .15s ease}
+      .btn-bayar:hover:not(:disabled){background:var(--green-dark)}
+      .btn-bayar:disabled{background:#b9cdc2;cursor:not-allowed}
+      @media (max-width:560px){
+        .method-grid{grid-template-columns:repeat(2,1fr)}
+      }
+
+      /* ---------- Pembayaran & Hasil (langkah 4 — simulasi) ---------- */
+      .result{padding:0 0 84px}
+      .demo-badge{
+        display:inline-flex;align-items:center;gap:7px;
+        background:#fdf3e0;color:#8a5a12;border:1.5px solid #f2d492;
+        font-size:12.5px;font-weight:800;letter-spacing:.04em;
+        padding:6px 14px;border-radius:999px;text-transform:uppercase;
+      }
+      .demo-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--sun);flex:0 0 auto}
+      .proc-box{max-width:520px;margin:56px auto 0;text-align:center;padding:0 8px}
+      .spinner{
+        width:64px;height:64px;margin:0 auto 26px;border-radius:50%;
+        border:6px solid #dcefe3;border-top-color:var(--green);
+        animation:tl-spin .9s linear infinite;
+      }
+      @keyframes tl-spin{to{transform:rotate(360deg)}}
+      .proc-box h2{margin:18px 0 8px;font-size:24px;font-weight:800;color:#0b0f0e}
+      .proc-box p{margin:0;font-size:15px;line-height:1.65;color:#5f6a66}
+      .proc-box p strong{color:#141817}
+      .proc-note{margin-top:16px !important;font-size:13.5px !important}
+      .success-head{text-align:center;max-width:640px;margin:40px auto 0}
+      .success-ic{
+        width:76px;height:76px;margin:0 auto 20px;border-radius:50%;
+        background:#e2f2e9;color:var(--green-dark);
+        display:flex;align-items:center;justify-content:center;
+      }
+      .success-ic svg{width:38px;height:38px}
+      .success-head h2{margin:14px 0 8px;font-size:clamp(24px,3.6vw,30px);font-weight:800;color:#0b0f0e}
+      .success-head p{margin:0;font-size:15px;line-height:1.65;color:#5f6a66}
+      .success-head p strong{color:#141817}
+      .result-grid{margin-top:34px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px;align-items:start}
+      .invoice-card{background:#f4f7f5;border-radius:16px;padding:24px}
+      .invoice-card h3{margin:0 0 14px;font-size:16px;font-weight:800;color:#0b0f0e;display:flex;align-items:center;gap:9px}
+      .invoice-card h3 svg{width:19px;height:19px;color:var(--green-dark)}
+      .inv-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:7px 0;font-size:14.5px}
+      .inv-row .k{color:#5f6a66;flex:0 0 auto}
+      .inv-row .v{font-weight:700;color:#141817;text-align:right;word-break:break-word}
+      .inv-row .v.free{color:var(--price-green)}
+      .inv-sep{border-top:1.5px dashed #dfe4df;margin:10px 0}
+      .inv-total{font-size:16px}
+      .inv-total .k{color:#0b0f0e;font-weight:800}
+      .inv-total .v{font-weight:800}
+      .status-lunas{display:inline-block;background:#e2f2e9;color:var(--green-dark);font-weight:800;font-size:12.5px;padding:5px 12px;border-radius:999px;letter-spacing:.03em}
+      .inv-note{margin:14px 0 0;font-size:12.5px;line-height:1.55;color:var(--muted)}
+      .eticket{background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow-card)}
+      .eticket:last-child{margin-bottom:0}
+      .eticket-top{background:var(--green-dark);color:#fff;padding:16px 20px}
+      .et-event{margin:0;font-weight:800;font-size:16px;line-height:1.35}
+      .et-cat{margin:3px 0 0;font-size:13px;color:#cfe3d8}
+      .eticket-body{padding:18px 20px 4px;display:flex;gap:18px}
+      .eticket-info{flex:1;min-width:0}
+      .et-row{margin-bottom:12px}
+      .et-k{margin:0 0 2px;font-size:12.5px;font-weight:600;color:var(--muted)}
+      .et-v{margin:0;font-size:14.5px;font-weight:700;color:#141817;line-height:1.45}
+      .et-code{margin:0;font-size:19px;font-weight:800;letter-spacing:.08em;color:var(--green-dark)}
+      .qr-box{flex:0 0 auto;width:118px;text-align:center}
+      .qr-render{
+        width:118px;height:118px;border:1.5px solid var(--line);border-radius:10px;background:#fff;
+        display:flex;align-items:center;justify-content:center;overflow:hidden;padding:6px;
+      }
+      .qr-render svg{width:100%;height:100%}
+      .qr-fallback{font-weight:800;font-size:13px;letter-spacing:.05em;color:var(--green-dark);word-break:break-all;line-height:1.4}
+      .qr-cap{margin:8px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
+      .eticket-note{margin:0;padding:6px 20px 18px;font-size:13px;color:var(--muted);line-height:1.55}
+      .result-actions{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+      @media (max-width:900px){
+        .result-grid{grid-template-columns:1fr}
+      }
+      @media (max-width:480px){
+        .eticket-body{flex-direction:column}
+        .qr-box{margin:0 auto}
+      }
+      @media (prefers-reduced-motion:reduce){
+        .spinner{animation:none}
+      }
+
+      /* ---------- Konfirmasi Pesanan (pop-up setelah Lanjutkan) ---------- */
+      #confirmDlg{max-width:400px}
+      #confirmDlg::backdrop{background:rgba(13,22,18,.62)}
+      .confirm-box{padding:28px 28px 24px;position:relative}
+      .confirm-close{
+        position:absolute;top:12px;right:12px;width:36px;height:36px;min-height:36px;border-radius:50%;
+        display:flex;align-items:center;justify-content:center;color:#6b7370;
+      }
+      .confirm-close:hover{background:#eef1ee;color:#222}
+      .confirm-close svg{width:18px;height:18px}
+      .confirm-box h3{margin:0 44px 4px 0;font-size:18px;font-weight:800;color:var(--ink)}
+      .confirm-box .c-sub{margin:0 0 18px;font-size:13.5px;color:var(--muted)}
+      .c-contact{display:flex;flex-direction:column;gap:11px;margin-bottom:20px}
+      .c-row{display:flex;align-items:center;gap:11px;font-size:14.5px;color:#141817;font-weight:600;word-break:break-word}
+      .c-row .c-ic{
+        width:30px;height:30px;border-radius:8px;background:#e2f2e9;color:var(--green-dark);
+        display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+      }
+      .c-row .c-ic svg{width:16px;height:16px}
+      .c-info-title{margin:0 0 8px;font-size:14px;font-weight:700;color:#141817}
+      .c-info{margin:0;padding-left:19px}
+      .c-info li{font-size:13.5px;line-height:1.6;color:#2f3634;margin-bottom:9px;padding-left:2px}
+      .c-info li:last-child{margin-bottom:0}
+      .c-info .c-hl{display:block;color:var(--green);font-weight:700;word-break:break-all}
+      .c-info ul{margin:4px 0 0;padding-left:2px;list-style:none}
+      .c-info ul li{margin-bottom:2px}
+      .c-info ul li::before{content:"– "}
+      .c-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+      .btn-edit{
+        padding:11px 20px;border-radius:9px;font-weight:600;font-size:14.5px;color:#333;min-height:44px;
+        border:1.5px solid #d9ddd9;background:#fff;
+      }
+      .btn-edit:hover{background:#f0f2f0}
+      .btn-mengerti{background:var(--green);color:#fff;padding:11px 22px;border-radius:9px;font-weight:700;font-size:14.5px;min-height:44px}
+      .btn-mengerti:hover{background:var(--green-dark)}
+      @media (max-width:900px){
+        .order-grid{grid-template-columns:1fr}
+        .order-side{order:-1}
+      }
+      @media (max-width:560px){
+        .o-row{grid-template-columns:1fr}
+        .sync-wrap span{display:none}
+      }
+
+      .toast{
+        position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);
+        background:#123b2a;color:#fff;font-size:14.5px;font-weight:600;
+        padding:13px 22px;border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.25);
+        transition:transform .3s ease;z-index:99;max-width:calc(100% - 32px);text-align:center;
+      }
+      .toast.show{transform:translate(-50%,0)}
+
+      @media (max-width:900px){
+        .nav-links{display:none}
+        .burger{display:flex;margin-left:0}
+        .btn-masuk{margin-left:auto;padding:10px 18px}
+        .user-chip{margin-left:auto}
+        .user-chip #userName{display:none}
+        .nav{gap:14px}
+        .rekom-grid{grid-template-columns:1fr;gap:34px}
+        .help-box{padding:38px 28px}
+        .cat .circle{width:96px;height:96px}
+        .cat .circle svg{width:38px;height:38px}
+        .hero{padding-top:28px}
+        .auth-card{padding:32px 24px 26px;min-height:0}
+      }
+      @media (prefers-reduced-motion:reduce){
+        html{scroll-behavior:auto}
+        .toast,.cat .circle{transition:none}
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+      <div class="nav">
+        <a class="brand" href="#" aria-label="Ticket Land">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+          Ticket Land
+        </a>
+        <nav class="nav-links" aria-label="Navigasi utama">
+          <a href="#" class="active">Beranda</a>
+          <a href="#kategori">Kategori</a>
+          <a href="#rekomendasi">Tentang</a>
+          <a href="#" class="nav-contact">Hubungi Kami</a>
+        </nav>
+        <button class="btn-masuk" id="btnMasuk" type="button">Masuk</button>
+        <div class="user-chip" id="userChip">
+          <span class="avatar" id="userAvatar">A</span>
+          <span id="userName">Pengguna</span>
+          <button class="btn-keluar" id="btnKeluar" type="button">Keluar</button>
+        </div>
+        <button class="burger" id="burger" type="button" aria-label="Buka menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="#">Beranda</a>
+        <a href="#kategori">Kategori</a>
+        <a href="#rekomendasi">Tentang</a>
+        <a href="#" class="nav-contact">Hubungi Kami</a>
+        <a href="#" id="mobileMasuk">Masuk</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- ================= HERO ================= -->
+      <section class="hero">
+        <div class="wrap">
+          <div class="hero-art" role="img" aria-label="Ilustrasi pegunungan hijau dengan matahari terbit">
+            <svg viewBox="0 0 880 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#c2ded2"/>
+                  <stop offset=".62" stop-color="#dfe5cd"/>
+                  <stop offset="1" stop-color="#eef0da"/>
+                </linearGradient>
+              </defs>
+              <rect width="880" height="400" fill="url(#sky)"/>
+              <ellipse cx="648" cy="96" rx="82" ry="48" fill="#f2a63b"/>
+              <polygon points="0,252 190,152 348,228 512,118 690,232 880,172 880,400 0,400" fill="#6fae97"/>
+              <polygon points="0,330 168,248 338,322 522,228 700,330 880,282 880,400 0,400" fill="#136848"/>
+            </svg>
+          </div>
+
+          <div class="hero-text">
+            <span class="pill">Recently add event</span>
+            <h1>Konser Menembus Awan - &quot;Seperti Matahari&quot;</h1>
+            <p class="hero-by">Oleh Tiga Rambu</p>
+            <a class="btn-order" href="#rekomendasi">Pesan Sekarang</a>
+            <p class="hero-note">Slot tiket terbatas untuk 100 orang tercepat</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= KATEGORI ================= -->
+      <section class="kategori" id="kategori">
+        <div class="wrap">
+          <h2>Pilih Kategori Favoritmu!</h2>
+          <p>Jelajahi petualangan sensasi menonton dengan banyaknya event setiap harinya</p>
+
+          <div class="cat-row" role="group" aria-label="Kategori event">
+            <button class="cat" type="button" data-cat="Musik">
+              <span class="circle">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 18.5a3 3 0 1 1-2-2.83V5.2c0-.4.27-.76.66-.87l8-2.2A1 1 0 0 1 17.5 3.1v11.4a3 3 0 1 1-2-2.83V6.03L9 7.8v10.7Z"/></svg>
+              </span>
+              <span>Musik</span>
+            </button>
+            <button class="cat" type="button" data-cat="Pameran">
+              <span class="circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 3.5h16V11a8 8 0 0 1-16 0V3.5Z"/><path d="M8.2 9.2c.5-.7 1.6-.7 2.1 0M13.7 9.2c.5-.7 1.6-.7 2.1 0" stroke-linecap="round"/><path d="M8.8 14.2c.9 1.1 2 1.6 3.2 1.6s2.3-.5 3.2-1.6" stroke-linecap="round"/></svg>
+              </span>
+              <span>Pameran</span>
+            </button>
+            <button class="cat" type="button" data-cat="Komedi">
+              <span class="circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.7-.6 1.7-1.4 0-.9-.7-1.3-.7-2.1 0-.9.7-1.5 1.7-1.5H17a4 4 0 0 0 4-4c0-4.3-4-7.5-9-7.5Z"/><circle cx="7.6" cy="10" r="1.15" fill="currentColor" stroke="none"/><circle cx="11" cy="6.8" r="1.15" fill="currentColor" stroke="none"/><circle cx="15.4" cy="8.6" r="1.15" fill="currentColor" stroke="none"/><circle cx="7.9" cy="14.6" r="1.15" fill="currentColor" stroke="none"/></svg>
+              </span>
+              <span>Komedi</span>
+            </button>
+            <button class="cat" type="button" data-cat="Trip">
+              <span class="circle">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.6a1.6 1.6 0 0 0-2.1-.5L11 8.6 4.9 5.7a.8.8 0 0 0-.9.2l-.7.8a.8.8 0 0 0 .1 1.1L8.6 12l-3.4.4-2-1.6a.8.8 0 0 0-1.2.3l-.9 1.9a.8.8 0 0 0 .3 1L6 17.6l1.3 3.1a.8.8 0 0 0 1.1.4l1.8-1a.8.8 0 0 0 .3-1.1l-1.5-2 1-3.3 4.5 5.2c.3.3.8.4 1.1.1l.8-.7a.8.8 0 0 0 .1-.9l-2.8-6.1 4.5-4.6a1.6 1.6 0 0 0 .2-2.1Z" transform="rotate(8 12 12)"/></svg>
+              </span>
+              <span>Trip</span>
+            </button>
+            <button class="cat" type="button" data-cat="Bisnis">
+              <span class="circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="7.5" width="18" height="12" rx="2"/><path d="M9 7.5V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v1.5M3 12.5h18"/></svg>
+              </span>
+              <span>Bisnis</span>
+            </button>
+          </div>
+          <p class="cat-note" id="catNote" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- ================= REKOMENDASI ================= -->
+      <section class="rekom" id="rekomendasi">
+        <div class="wrap">
+          <h2>Rekomendasi Event Akhir Pekan</h2>
+          <div class="rekom-grid">
+                <article class="card" data-event="0">
+                  <div class="thumb" role="img" aria-label="Gambar event ABC &amp; Mom Expo Indonesia 2026">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
+                  </div>
+                  <h3>ABC &amp; Mom Expo Indonesia 2026</h3>
+                  <p class="meta">25-28 Nov 2026 at Jakarta Pusat</p>
+                  <p class="meta">Oleh Meorient Exhibition International</p>
+                  <p class="price red">Mulai dari Rp 20.000</p>
+                  <span class="lihat">Lihat Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </article>
+                <article class="card" data-event="1">
+                  <div class="thumb" role="img" aria-label="Gambar event ABC &amp; Mom Expo Indonesia 2026">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
+                  </div>
+                  <h3>ABC &amp; Mom Expo Indonesia 2026</h3>
+                  <p class="meta">25-28 Nov 2026 at Jakarta Pusat</p>
+                  <p class="meta">Oleh Meorient Exhibition International</p>
+                  <p class="price green">GRATIS</p>
+                  <span class="lihat">Lihat Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </article>
+                <article class="card" data-event="2">
+                  <div class="thumb" role="img" aria-label="Gambar event ABC &amp; Mom Expo Indonesia 2026">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
+                  </div>
+                  <h3>ABC &amp; Mom Expo Indonesia 2026</h3>
+                  <p class="meta">25-28 Nov 2026 at Jakarta Pusat</p>
+                  <p class="meta">Oleh Meorient Exhibition International</p>
+                  <p class="price red">Rp 20.000</p>
+                  <span class="lihat">Lihat Detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= JELAJAHI EVENT (KATEGORI) ================= -->
+      <section class="explore" id="explorePage" hidden aria-label="Jelajahi event berdasarkan kategori">
+        <div class="wrap">
+          <button class="btn-back" id="btnBackExplore" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Kembali
+          </button>
+
+          <div class="explore-toolbar">
+            <button class="btn-filter" id="btnFilter" type="button" aria-expanded="false" aria-controls="filterPanel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v5.3L10 21v-8L3 5Z"/></svg>
+              Filter
+            </button>
+            <span class="active-chip" id="activeChip" hidden>
+              <span id="activeChipName">Musik</span>
+              <button id="chipClear" type="button" aria-label="Hapus filter kategori">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+              </button>
+            </span>
+            <label class="sort-pill">
+              <span class="sort-label">Urutkan</span>
+              <select id="sortSelect" aria-label="Urutkan event">
+                <option value="relevan" selected>Paling Relevan</option>
+                <option value="tanggal">Tanggal Terdekat</option>
+                <option value="murah">Harga Terendah</option>
+                <option value="mahal">Harga Tertinggi</option>
+              </select>
+              <svg class="sort-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"/></svg>
+            </label>
+          </div>
+
+          <div class="filter-panel" id="filterPanel" hidden>
+            <p class="filter-label">Pilih Kategori</p>
+            <div class="fchip-row">
+              <button class="fchip" type="button" data-fcat="Semua">Semua</button>
+              <button class="fchip" type="button" data-fcat="Musik">Musik</button>
+              <button class="fchip" type="button" data-fcat="Pameran">Pameran</button>
+              <button class="fchip" type="button" data-fcat="Komedi">Komedi</button>
+              <button class="fchip" type="button" data-fcat="Trip">Trip</button>
+              <button class="fchip" type="button" data-fcat="Bisnis">Bisnis</button>
+            </div>
+          </div>
+
+          <p class="explore-count" id="exploreCount" aria-live="polite"></p>
+          <div class="explore-grid" id="exploreGrid"></div>
+          <p class="explore-empty" id="exploreEmpty" hidden>Belum ada event di kategori ini. Coba kategori lain ya.</p>
+        </div>
+      </section>
+
+      <!-- ================= DETAIL EVENT ================= -->
+      <section class="detail" id="eventDetail" hidden aria-labelledby="detailTitle">
+        <div class="wrap">
+          <button class="btn-back" id="btnBack" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Kembali
+          </button>
+          <span class="detail-cat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.1" fill="currentColor" stroke="none"/></svg>
+            <span id="detailCatName">Pameran</span>
+          </span>
+          <h2 class="detail-title" id="detailTitle">ABC &amp; Mom Expo Indonesia 2026</h2>
+
+          <div class="detail-grid">
+            <div class="detail-main">
+              <p class="detail-label">Penyelenggara</p>
+              <div class="organizer">
+                <span class="organizer-logo" id="detailOrgLogo">ME</span>
+                <span class="organizer-name" id="detailOrg">Meorient Exhibition International</span>
+              </div>
+
+              <p class="detail-label">Media Sosial</p>
+              <div class="social-row">
+                <a class="social-pill" href="#" onclick="return false" aria-label="Instagram penyelenggara">
+                  <span class="s-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg></span>
+                  Instagram
+                </a>
+                <a class="social-pill tiktok" href="#" onclick="return false" aria-label="TikTok penyelenggara">
+                  <span class="s-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.4 2.2 1.8 3.6 4.1 3.8v3c-1.6 0-3-.5-4.1-1.3v6.3a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 1.9 2.7V3h3Z"/></svg></span>
+                  TikTok
+                </a>
+              </div>
+
+              <div class="detail-tabs" role="tablist" aria-label="Detail event">
+                <button class="detail-tab active" type="button" role="tab" aria-selected="true" data-tab="deskripsi">Deskripsi</button>
+                <button class="detail-tab" type="button" role="tab" aria-selected="false" data-tab="syarat">Syarat &amp; Ketentuan</button>
+              </div>
+
+              <div class="detail-panel" id="panelDeskripsi">
+                <h3>Deskripsi</h3>
+                <div id="detailDesc">
+                  <p>ABC &amp; Mom Expo Indonesia 2026 adalah pameran produk ibu dan anak terbesar yang menghadirkan ratusan brand perlengkapan bayi, mainan edukatif, nutrisi, dan kebutuhan keluarga dalam satu tempat.</p>
+                  <p>Selama empat hari, pengunjung bisa mencoba langsung produk terbaru, mengikuti talkshow bersama dokter anak dan parenting expert, serta menikmati promo khusus yang hanya tersedia selama pameran berlangsung.</p>
+                  <p>Ajak keluarga dan si kecil — tersedia area bermain anak, ruang menyusui, dan berbagai aktivitas seru setiap harinya.</p>
+                  <p>Sampai jumpa di Jakarta!</p>
+                </div>
+              </div>
+
+              <div class="detail-panel" id="panelSyarat" style="margin-top:36px">
+                <h3>Syarat &amp; Ketentuan</h3>
+                <ol>
+                  <li>Tiket resmi hanya dijual melalui situs <strong>ABC &amp; Mom Expo Indonesia 2026</strong> di Ticket Land atau official ticketing partner yang ditunjuk oleh promotor. Promotor tidak bertanggung jawab atas segala bentuk penipuan tiket yang dibeli dari pihak lain.</li>
+                  <li>Satu Entry Pass berlaku untuk satu orang.</li>
+                  <li>Maksimal pembelian 5 tiket dalam 1 kali transaksi.</li>
+                  <li>Pengunjung di bawah usia 12 (dua belas) tahun wajib didampingi orang dewasa selama berada di area pameran.</li>
+                  <li>E-tiket wajib ditunjukkan di pintu masuk dan akan divalidasi oleh staff melalui scan QR.</li>
+                </ol>
+              </div>
+            </div>
+
+            <aside class="detail-side">
+              <div class="detail-banner" role="img" aria-label="Banner ABC &amp; Mom Expo Indonesia 2026">
+                <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                  <rect width="640" height="360" fill="#0f5138"/>
+                  <ellipse cx="540" cy="52" rx="130" ry="90" fill="#f2a63b" opacity=".9"/>
+                  <polygon points="0,250 150,170 290,230 430,150 640,240 640,360 0,360" fill="#17684b"/>
+                  <polygon points="0,310 170,240 340,300 500,225 640,285 640,360 0,360" fill="#dcefe3" opacity=".28"/>
+                  <text x="36" y="118" font-family="Plus Jakarta Sans, sans-serif" font-size="17" font-weight="600" fill="#dcefe3" letter-spacing="2">MEORIENT PRESENTS</text>
+                  <text x="34" y="178" font-family="Plus Jakarta Sans, sans-serif" font-size="52" font-weight="800" fill="#ffffff">ABC &amp; MOM EXPO</text>
+                  <text x="36" y="218" font-family="Plus Jakarta Sans, sans-serif" font-size="24" font-weight="700" fill="#f2a63b">INDONESIA 2026</text>
+                  <text x="36" y="262" font-family="Plus Jakarta Sans, sans-serif" font-size="16" fill="#e6f2ea">25–28 November 2026 • Jakarta Pusat</text>
+                </svg>
+              </div>
+
+              <h3>Detail Acara</h3>
+              <div class="detail-info">
+                <div class="info-row">
+                  <span class="i-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke-linecap="round"/></svg></span>
+                  <span id="detailDate">25–28 November 2026</span>
+                </div>
+                <div class="info-row">
+                  <span class="i-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span id="detailTime">09:00 – 21:00</span>
+                </div>
+                <div class="info-row">
+                  <span class="i-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 21s7-5.8 7-11a7 7 0 1 0-14 0c0 5.2 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+                  <span id="detailLoc">Jakarta Convention Center, Jakarta Pusat, DKI Jakarta</span>
+                </div>
+              </div>
+
+              <div class="price-box">
+                <div>
+                  <p class="plabel">Harga mulai dari</p>
+                  <p class="pvalue" id="detailPrice">Rp 20.000</p>
+                </div>
+                <button class="btn-pesan" id="btnPesanDetail" type="button">Pesan Sekarang</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PILIH TIKET ================= -->
+      <section class="ticket" id="ticketPage" hidden aria-labelledby="ticketPageTitle">
+        <div class="steps-bar">
+          <div class="steps" aria-label="Langkah pemesanan">
+            <span class="step active"><span class="step-num">1</span> Pilih Kategori</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">2</span> Detail Pesanan</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">3</span> Metode Pembayaran</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">4</span> Pembayaran</span>
+          </div>
+        </div>
+        <div class="wrap">
+          <button class="btn-back" id="btnBackTicket" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Kembali ke Detail Event
+          </button>
+          <h2 class="sr-only" id="ticketPageTitle">Pilih Kategori Tiket ABC &amp; Mom Expo Indonesia 2026</h2>
+
+          <div class="ticket-grid">
+            <div class="ticket-main">
+              <div class="detail-banner" role="img" aria-label="Banner ABC &amp; Mom Expo Indonesia 2026">
+                <svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                  <rect width="640" height="360" fill="#0f5138"/>
+                  <ellipse cx="540" cy="52" rx="130" ry="90" fill="#f2a63b" opacity=".9"/>
+                  <polygon points="0,250 150,170 290,230 430,150 640,240 640,360 0,360" fill="#17684b"/>
+                  <polygon points="0,310 170,240 340,300 500,225 640,285 640,360 0,360" fill="#dcefe3" opacity=".28"/>
+                  <text x="36" y="118" font-family="Plus Jakarta Sans, sans-serif" font-size="17" font-weight="600" fill="#dcefe3" letter-spacing="2">MEORIENT PRESENTS</text>
+                  <text x="34" y="178" font-family="Plus Jakarta Sans, sans-serif" font-size="52" font-weight="800" fill="#ffffff">ABC &amp; MOM EXPO</text>
+                  <text x="36" y="218" font-family="Plus Jakarta Sans, sans-serif" font-size="24" font-weight="700" fill="#f2a63b">INDONESIA 2026</text>
+                  <text x="36" y="262" font-family="Plus Jakarta Sans, sans-serif" font-size="16" fill="#e6f2ea">25–28 November 2026 • Jakarta Pusat</text>
+                </svg>
+              </div>
+
+              <span class="cat-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+                Kategori Tiket
+              </span>
+
+              <div class="ticket-panel">
+                <div class="ticket-card" id="ticketCard">
+                  <span class="badge-sale">On Sale</span>
+                  <p class="ticket-name">Tiket Masuk Reguler</p>
+                  <div class="ticket-foot">
+                    <span class="ticket-price" id="ticketCatPrice">Rp 20.000</span>
+                    <button class="btn-pilih" id="btnPilih" type="button" aria-pressed="false">Pilih</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="ticket-side">
+              <div class="summary-card">
+                <div class="summary-row">
+                  <span class="s-label">Harga mulai dari</span>
+                  <span class="s-price" id="summaryPrice">Rp 20.000</span>
+                </div>
+                <p class="summary-cat" id="summaryCat"></p>
+                <button class="btn-beli" id="btnBeli" type="button" disabled>Beli Sekarang</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= DETAIL PESANAN ================= -->
+      <section class="order" id="orderPage" hidden aria-labelledby="orderPageTitle">
+        <div class="steps-bar">
+          <div class="steps" aria-label="Langkah pemesanan">
+            <span class="step"><span class="step-num">1</span> Pilih Kategori</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step active"><span class="step-num">2</span> Detail Pesanan</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">3</span> Metode Pembayaran</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">4</span> Pembayaran</span>
+          </div>
+        </div>
+        <div class="wrap">
+          <button class="btn-back" id="btnBackOrder" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Kembali ke Pilih Kategori
+          </button>
+
+          <div class="order-head">
+            <h2 class="order-title" id="orderPageTitle">ABC &amp; Mom Expo Indonesia 2026</h2>
+            <p class="order-meta">25–28 November 2026 &bull; 09:00 – 21:00<br />Jakarta Convention Center, Jakarta Pusat, DKI Jakarta</p>
+          </div>
+
+          <div class="order-grid">
+            <div class="order-main">
+              <div class="order-card">
+                <div class="order-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.4 4-5 7.5-5s6.3 1.6 7.5 5" stroke-linecap="round"/></svg>
+                  <h3>Data Pemesan</h3>
+                </div>
+                <div class="o-field">
+                  <label class="o-label" for="buyerName">Nama Lengkap <span class="req">*</span></label>
+                  <input class="o-input" id="buyerName" type="text" placeholder="Masukkan nama lengkap Anda" autocomplete="name" />
+                </div>
+                <div class="o-row">
+                  <div class="o-field">
+                    <label class="o-label" for="buyerIdType">Tipe Identitas <span class="req">*</span></label>
+                    <select class="o-select" id="buyerIdType">
+                      <option value="" selected>Pilih tipe identitas Anda</option>
+                      <option value="KTP">KTP</option>
+                      <option value="Paspor">Paspor</option>
+                      <option value="SIM">SIM</option>
+                    </select>
+                  </div>
+                  <div class="o-field">
+                    <label class="o-label" for="buyerIdNum">Nomor Identitas <span class="req">*</span></label>
+                    <input class="o-input" id="buyerIdNum" type="text" placeholder="Masukkan nomor identitas Anda" />
+                  </div>
+                </div>
+                <div class="o-field">
+                  <label class="o-label" for="buyerEmail">Email <span class="req">*</span></label>
+                  <input class="o-input" id="buyerEmail" type="email" placeholder="Masukkan email Anda" autocomplete="email" />
+                </div>
+                <div class="o-field">
+                  <label class="o-label" for="buyerWa">No. WhatsApp <span class="req">*</span></label>
+                  <div class="phone-group">
+                    <span class="phone-prefix">
+                      <svg viewBox="0 0 19 13" aria-hidden="true"><rect width="19" height="6.5" fill="#e70011"/><rect y="6.5" width="19" height="6.5" fill="#f4f4f4"/></svg>
+                      +62
+                    </span>
+                    <input class="o-input" id="buyerWa" type="tel" inputmode="tel" placeholder="81234567890" autocomplete="tel" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="order-card">
+                <div class="order-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+                  <h3>Detail Pesanan - 1</h3>
+                  <div class="sync-wrap">
+                    <span>Samakan dengan<br />detail pemesan</span>
+                    <button class="switch" id="syncSwitch" type="button" role="switch" aria-checked="false" aria-label="Samakan dengan detail pemesan"></button>
+                  </div>
+                </div>
+                <p class="att-band">Tiket Masuk Reguler</p>
+                <div class="o-field">
+                  <label class="o-label" for="attName">Nama Lengkap <span class="req">*</span></label>
+                  <input class="o-input" id="attName" type="text" placeholder="Masukkan nama lengkap Anda" />
+                </div>
+                <div class="o-row">
+                  <div class="o-field">
+                    <label class="o-label" for="attIdType">Tipe Identitas <span class="req">*</span></label>
+                    <select class="o-select" id="attIdType">
+                      <option value="" selected>Pilih tipe identitas Anda</option>
+                      <option value="KTP">KTP</option>
+                      <option value="Paspor">Paspor</option>
+                      <option value="SIM">SIM</option>
+                    </select>
+                  </div>
+                  <div class="o-field">
+                    <label class="o-label" for="attIdNum">Nomor Identitas <span class="req">*</span></label>
+                    <input class="o-input" id="attIdNum" type="text" placeholder="Masukkan nomor identitas Anda" />
+                  </div>
+                </div>
+                <div class="o-field">
+                  <label class="o-label" for="attEmail">Email <span class="req">*</span></label>
+                  <input class="o-input" id="attEmail" type="email" placeholder="Masukkan email Anda" />
+                </div>
+                <div class="o-field">
+                  <span class="o-label" id="genderLabel">Jenis Kelamin <span class="req">*</span></span>
+                  <div class="gender-row" id="genderRow" role="group" aria-labelledby="genderLabel">
+                    <button class="gender-chip" type="button" data-gender="Laki-laki" aria-pressed="false">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="14" r="5"/><path d="M14 10 20 4M15 4h5v5"/></svg>
+                      Laki-laki
+                    </button>
+                    <button class="gender-chip" type="button" data-gender="Perempuan" aria-pressed="false">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M12 14v7M8.5 17.5h7"/></svg>
+                      Perempuan
+                    </button>
+                  </div>
+                </div>
+                <div class="o-field">
+                  <label class="o-label" for="attWa">No. WhatsApp <span class="req">*</span></label>
+                  <div class="phone-group">
+                    <span class="phone-prefix">
+                      <svg viewBox="0 0 19 13" aria-hidden="true"><rect width="19" height="6.5" fill="#e70011"/><rect y="6.5" width="19" height="6.5" fill="#f4f4f4"/></svg>
+                      +62
+                    </span>
+                    <input class="o-input" id="attWa" type="tel" inputmode="tel" placeholder="81234567890" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="order-side">
+              <div class="timer-badge" role="timer" aria-label="Batas waktu pemesanan tersisa">
+                <span id="timerText">10:00</span>
+                <span class="t-sep">|</span>
+                <span class="t-label">Batas Waktu Tersisa</span>
+              </div>
+              <div class="rincian-card">
+                <h3>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z"/><path d="M8.5 10V6.5a3.5 3.5 0 0 1 7 0V10" stroke-linecap="round"/></svg>
+                  Rincian Pesanan
+                </h3>
+                <div class="r-item">
+                  <div>
+                    <p class="r-name">Tiket Masuk Reguler</p>
+                    <p class="r-qtytext" id="rincianQty">x1</p>
+                  </div>
+                  <span class="r-price" id="rincianLine">Rp 20.000</span>
+                </div>
+                <div class="qty-row">
+                  <span class="q-label">Jumlah Tiket</span>
+                  <span class="qty-ctrl">
+                    <button class="qty-btn" id="qtyMinus" type="button" aria-label="Kurangi jumlah tiket">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                    </button>
+                    <span class="qty-val" id="qtyVal">1</span>
+                    <button class="qty-btn" id="qtyPlus" type="button" aria-label="Tambah jumlah tiket">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                  </span>
+                </div>
+                <div class="r-line"><span>Subtotal</span><span id="rincianSubtotal">Rp 20.000</span></div>
+                <div class="r-total"><span>Total Bayar</span><span id="rincianTotal">Rp 20.000</span></div>
+                <div class="r-actions">
+                  <button class="btn-circle" id="btnRincianBack" type="button" aria-label="Kembali ke pilih kategori">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+                  </button>
+                  <button class="btn-lanjut" id="btnLanjut" type="button">Lanjutkan</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= METODE PEMBAYARAN ================= -->
+      <section class="pay" id="payPage" hidden aria-labelledby="payPageTitle">
+        <div class="steps-bar">
+          <div class="steps" aria-label="Langkah pemesanan">
+            <span class="step"><span class="step-num">1</span> Pilih Kategori</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">2</span> Detail Pesanan</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step active"><span class="step-num">3</span> Metode Pembayaran</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">4</span> Pembayaran</span>
+          </div>
+        </div>
+        <div class="wrap">
+          <button class="btn-back" id="btnBackPay" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Kembali ke Detail Pesanan
+          </button>
+
+          <div class="order-head">
+            <h2 class="order-title" id="payPageTitle">ABC &amp; Mom Expo Indonesia 2026</h2>
+            <p class="order-meta">25–28 November 2026 &bull; 09:00 – 21:00<br />Jakarta Convention Center, Jakarta Pusat, DKI Jakarta</p>
+          </div>
+
+          <div class="order-grid">
+            <div class="order-main">
+              <div class="method-group">
+                <button class="method-head" type="button" aria-expanded="true">
+                  <svg class="m-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4" stroke-linecap="round"/></svg>
+                  E-Wallet/QRIS
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14.5 6-6 6 6"/></svg>
+                </button>
+                <div class="method-body">
+                  <div class="method-grid">
+                    <button class="method-tile" type="button" data-method="QRIS" aria-pressed="false"><span class="wm wm-qris">QRIS</span></button>
+                    <button class="method-tile" type="button" data-method="OVO" aria-pressed="false"><span class="wm wm-ovo">OVO</span></button>
+                    <button class="method-tile" type="button" data-method="DANA" aria-pressed="false"><span class="wm wm-dana">DANA</span></button>
+                    <button class="method-tile" type="button" data-method="LinkAja" aria-pressed="false"><span class="wm wm-linkaja">LinkAja!</span></button>
+                    <button class="method-tile" type="button" data-method="ShopeePay" aria-pressed="false"><span class="wm wm-shopee">ShopeePay</span></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="method-group">
+                <button class="method-head" type="button" aria-expanded="true">
+                  <svg class="m-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 12 4l9 5.5M4.5 9.5V20M9.5 9.5V20M14.5 9.5V20M19.5 9.5V20M3 20h18"/></svg>
+                  Transfer Bank
+                  <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14.5 6-6 6 6"/></svg>
+                </button>
+                <div class="method-body">
+                  <div class="bank-row">
+                    <button class="bank-chip" type="button" data-method="Transfer BCA" aria-pressed="false">BCA</button>
+                    <button class="bank-chip" type="button" data-method="Transfer BNI" aria-pressed="false">BNI</button>
+                    <button class="bank-chip" type="button" data-method="Transfer BRI" aria-pressed="false">BRI</button>
+                    <button class="bank-chip" type="button" data-method="Transfer Mandiri" aria-pressed="false">Mandiri</button>
+                    <button class="bank-chip" type="button" data-method="Transfer CIMB Niaga" aria-pressed="false">CIMB Niaga</button>
+                    <button class="bank-chip" type="button" data-method="Transfer BTN" aria-pressed="false">BTN</button>
+                    <button class="bank-chip" type="button" data-method="Transfer Permata" aria-pressed="false">Permata</button>
+                    <button class="bank-chip" type="button" data-method="Transfer BSI" aria-pressed="false">BSI</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="order-side">
+              <div class="timer-badge" role="timer" aria-label="Batas waktu pemesanan tersisa">
+                <span id="payTimerText">10:00</span>
+                <span class="t-sep">|</span>
+                <span class="t-label">Batas Waktu Tersisa</span>
+              </div>
+              <div class="rincian-card">
+                <h3>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z"/><path d="M8.5 10V6.5a3.5 3.5 0 0 1 7 0V10" stroke-linecap="round"/></svg>
+                  Rincian Pesanan
+                </h3>
+                <div class="r-item">
+                  <div>
+                    <p class="r-name">Tiket Masuk Reguler</p>
+                    <p class="r-qtytext" id="payQty">x1</p>
+                  </div>
+                  <span class="r-price" id="payLine">Rp 20.000</span>
+                </div>
+                <div class="r-line"><span>Subtotal</span><span id="paySubtotal">Rp 20.000</span></div>
+                <div class="r-line"><span>Biaya Layanan</span><span id="payFee">Rp 600</span></div>
+                <div class="r-total"><span>Total Bayar</span><span id="payTotal">Rp 20.600</span></div>
+                <div class="promo-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+                  Lebih hemat pakai promo
+                </div>
+                <label class="agree-row">
+                  <input type="checkbox" id="agreeTnc" />
+                  <span>Saya menyetujui <a href="#" onclick="return false">Syarat &amp; Ketentuan</a> yang berlaku di Ticket Land</span>
+                </label>
+                <label class="agree-row">
+                  <input type="checkbox" id="agreePrivacy" />
+                  <span>Saya menyetujui <a href="#" onclick="return false">Kebijakan Privasi &amp; Pemrosesan Data</a> yang berlaku di Ticket Land</span>
+                </label>
+                <div class="r-actions">
+                  <button class="btn-circle" id="btnPayBack" type="button" aria-label="Kembali ke detail pesanan">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+                  </button>
+                  <button class="btn-bayar" id="btnBayar" type="button" disabled>Bayar Sekarang</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PEMBAYARAN (LANGKAH 4 — SIMULASI) ================= -->
+      <section class="result" id="resultPage" hidden aria-label="Pembayaran">
+        <div class="steps-bar">
+          <div class="steps" aria-label="Langkah pemesanan">
+            <span class="step"><span class="step-num">1</span> Pilih Kategori</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">2</span> Detail Pesanan</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step"><span class="step-num">3</span> Metode Pembayaran</span>
+            <svg class="step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 6.5 7-6.5 7"/></svg>
+            <span class="step active"><span class="step-num">4</span> Pembayaran</span>
+          </div>
+        </div>
+        <div class="wrap">
+          <div class="proc-box" id="payProcessing">
+            <div class="spinner" aria-hidden="true"></div>
+            <span class="demo-badge"><span class="dot"></span> Mode Demo — Simulasi</span>
+            <h2>Memproses Pembayaran</h2>
+            <p>Sedang memproses pembayaran via <strong id="procMethod">QRIS</strong> sebesar <strong id="procTotal">Rp 0</strong>. Jangan tutup halaman ini.</p>
+            <p class="proc-note">Ini simulasi untuk keperluan demo — tidak ada pembayaran sungguhan dan tidak ada dana yang dipotong.</p>
+          </div>
+
+          <div id="paySuccess" hidden>
+            <div class="success-head">
+              <div class="success-ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11"/></svg>
+              </div>
+              <span class="demo-badge"><span class="dot"></span> Mode Demo — Simulasi</span>
+              <h2>Pembayaran Berhasil</h2>
+              <p id="successMsg">Invoice dan e-tiket sudah diterbitkan.</p>
+            </div>
+
+            <div class="result-grid">
+              <div class="invoice-card">
+                <h3>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M6 3.5h12V20l-2-1.4L14 20l-2-1.4L10 20l-2-1.4L6 20V3.5Z" stroke-linejoin="round"/><path d="M9.5 8h5M9.5 11.5h5" stroke-linecap="round"/></svg>
+                  Invoice
+                </h3>
+                <div class="inv-row"><span class="k">Nomor Invoice</span><span class="v" id="invNo">-</span></div>
+                <div class="inv-row"><span class="k">Tanggal Transaksi</span><span class="v" id="invDate">-</span></div>
+                <div class="inv-row"><span class="k">Nama Pemesan</span><span class="v" id="invName">-</span></div>
+                <div class="inv-row"><span class="k">Email</span><span class="v" id="invEmail">-</span></div>
+                <div class="inv-row"><span class="k">Metode Pembayaran</span><span class="v" id="invMethod">-</span></div>
+                <div class="inv-row"><span class="k">Status</span><span class="v"><span class="status-lunas">LUNAS</span></span></div>
+                <div class="inv-sep"></div>
+                <div class="inv-row"><span class="k">Event</span><span class="v">ABC &amp; Mom Expo Indonesia 2026</span></div>
+                <div class="inv-row"><span class="k">Kategori</span><span class="v">Tiket Masuk Reguler</span></div>
+                <div class="inv-row"><span class="k">Jumlah Tiket</span><span class="v" id="invQty">x1</span></div>
+                <div class="inv-sep"></div>
+                <div class="inv-row"><span class="k">Subtotal</span><span class="v" id="invSubtotal">-</span></div>
+                <div class="inv-row"><span class="k">Biaya Layanan</span><span class="v" id="invFee">-</span></div>
+                <div class="inv-row inv-total"><span class="k">Total Bayar</span><span class="v" id="invTotal">-</span></div>
+                <p class="inv-note">Invoice ini diterbitkan oleh simulasi pembayaran Ticket Land untuk keperluan demo — bukan bukti pembayaran sungguhan.</p>
+              </div>
+
+              <div id="eticketList" aria-label="E-tiket"></div>
+            </div>
+
+            <div class="result-actions">
+              <button class="btn-solid" id="btnDownloadInvoice" type="button">Unduh Invoice</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= HUBUNGI KAMI ================= -->
+      <section class="contact" id="contactPage" hidden aria-labelledby="contactTitle">
+        <div class="wrap">
+          <button class="btn-back" id="btnBackContact" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            Kembali ke Beranda
+          </button>
+
+          <div class="contact-grid">
+            <div class="contact-main">
+              <h2 class="contact-title" id="contactTitle">Hubungi Kami</h2>
+              <p class="contact-intro">Ada pertanyaan seputar event, mengalami kendala terkait tiket atau pembayaran, atau ingin bekerja sama mengadakan event? Sampaikan melalui kontak yang tersedia atau isi formulir di samping.</p>
+              <p class="contact-intro">Tim kami siap membantu kamu sebaik mungkin.</p>
+              <p class="contact-hours">Jam operasional: Senin–Jumat, 09.00–17.00 WIB</p>
+
+              <div class="hub-info">
+                <div class="hub-row">
+                  <span class="hub-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 21s7-5.8 7-11a7 7 0 1 0-14 0c0 5.2 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+                  <div>
+                    <p class="hub-label">Alamat</p>
+                    <p class="hub-value">Kantor Ticket Land, Jl. Jend. Sudirman No. 88,<br />Jakarta Selatan, DKI Jakarta 12190</p>
+                  </div>
+                </div>
+                <div class="hub-row">
+                  <span class="hub-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg></span>
+                  <div>
+                    <p class="hub-label">Telepon / WhatsApp</p>
+                    <a class="hub-value" href="tel:+622155501234">(021) 5550-1234</a>
+                  </div>
+                </div>
+                <div class="hub-row">
+                  <span class="hub-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m4 7 8 6 8-6" stroke-linejoin="round"/></svg></span>
+                  <div>
+                    <p class="hub-label">Email</p>
+                    <a class="hub-value" href="mailto:cs@ticketland.id">cs@ticketland.id</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="hub-socials" aria-label="Media sosial Ticket Land">
+                <a class="hub-soc" href="#" onclick="return false" aria-label="Instagram Ticket Land">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>
+                </a>
+                <a class="hub-soc" href="#" onclick="return false" aria-label="TikTok Ticket Land">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.2 1.8 3.6 4.1 3.8v3c-1.6 0-3-.5-4.1-1.3v6.3a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 1.9 2.7V3h3Z"/></svg>
+                </a>
+                <a class="hub-soc" href="#" onclick="return false" aria-label="X Ticket Land">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.9 3H21l-6.8 7.8L22.2 21h-6.3l-4.9-6.4L5.4 21H2.2l7.3-8.3L1.8 3h6.4l4.4 5.9L17.9 3Zm-1.1 16.1h1.7L7.4 4.8H5.6l11.2 14.3Z"/></svg>
+                </a>
+                <a class="hub-soc" href="#" onclick="return false" aria-label="YouTube Ticket Land">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><rect x="2.8" y="5.5" width="18.4" height="13" rx="3.5"/><path d="M10.2 9.3v5.4l4.8-2.7-4.8-2.7Z" fill="currentColor" stroke="none"/></svg>
+                </a>
+                <a class="hub-soc" href="#" onclick="return false" aria-label="Facebook Ticket Land">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.6 21v-6.8h2.3l.4-2.7h-2.7V9.8c0-.8.3-1.3 1.4-1.3h1.3V6.1c-.3 0-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.5v2H8.5v2.7h2.4V21h2.7Z"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <div class="hub-card">
+              <div id="hubFormWrap">
+                <h3>Terhubung dengan kami</h3>
+                <p class="hub-sub">Isi formulir di bawah ini, tim kami akan membalas secepatnya.</p>
+                <p class="hub-err" id="hubErr" role="alert"></p>
+                <form id="hubForm" novalidate>
+                  <div class="o-field">
+                    <label class="o-label" for="hubName">Nama Lengkap <span class="req">*</span></label>
+                    <input class="o-input" id="hubName" type="text" placeholder="Masukkan nama lengkap Anda" autocomplete="name" />
+                  </div>
+                  <div class="o-field">
+                    <label class="o-label" for="hubEmail">Email <span class="req">*</span></label>
+                    <input class="o-input" id="hubEmail" type="email" placeholder="Masukkan email Anda" autocomplete="email" />
+                  </div>
+                  <div class="o-field">
+                    <label class="o-label" for="hubSubject">Subject <span class="req">*</span></label>
+                    <select class="o-select" id="hubSubject">
+                      <option value="" selected>Pilih subject</option>
+                      <option value="Pertanyaan Umum">Pertanyaan Umum</option>
+                      <option value="Kendala Tiket / Pembayaran">Kendala Tiket / Pembayaran</option>
+                      <option value="Kerja Sama Event">Kerja Sama Event</option>
+                      <option value="Lainnya">Lainnya</option>
+                    </select>
+                  </div>
+                  <div class="o-field">
+                    <label class="o-label" for="hubMsg">Pesan</label>
+                    <textarea class="o-input" id="hubMsg" placeholder="Tulis pesan Anda di sini"></textarea>
+                  </div>
+                  <button class="btn-kirim" type="submit">Kirim Pesan</button>
+                </form>
+              </div>
+              <div class="hub-success" id="hubSuccess" hidden>
+                <div class="success-ic">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 12.5 5 5 10-11"/></svg>
+                </div>
+                <h4>Pesan Terkirim</h4>
+                <p id="hubSuccessMsg">Terima kasih! Pesanmu sudah kami terima.</p>
+                <button class="btn-again" id="btnHubAgain" type="button">Kirim Pesan Lainnya</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BANTUAN ================= -->
+      <section class="bantuan" id="bantuan">
+        <div class="wrap">
+          <div class="help-box">
+            <div>
+              <h2>Need Help?</h2>
+              <p>Send your problem now!</p>
+            </div>
+            <button class="btn-help" id="btnHelp" type="button">Click Me!</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+      <div class="foot">
+        <a class="brand" href="#" aria-label="Ticket Land">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+          Ticket Land
+        </a>
+        <small>&copy; 2026 Ticket Land&nbsp; - Your Best Event Partner</small>
+      </div>
+    </footer>
+
+    <!-- ================= DIALOG LOGIN / SIGNUP ================= -->
+    <dialog id="authDlg" aria-label="Login dan Signup Ticket Land">
+      <button class="auth-close" id="authClose" type="button" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+      <div class="auth-wrap">
+        <section class="auth-card" id="loginCard" aria-labelledby="loginTitle">
+          <div class="auth-brand">
+            <span class="auth-logo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+            </span>
+            <span class="auth-brand-name">Ticket Land</span>
+          </div>
+          <h3 id="loginTitle">Selamat datang kembali</h3>
+          <p class="auth-sub">Masuk dengan email dan kata sandi akun Ticket Land kamu.</p>
+          <p class="auth-err" id="loginErr" role="alert"></p>
+          <p class="auth-ok" id="loginOk" role="status"></p>
+          <form id="loginForm" method="dialog" novalidate>
+            <label for="loginEmail">Email</label>
+            <div class="field">
+              <input id="loginEmail" class="no-toggle" type="email" placeholder="nama@email.com" autocomplete="email" required />
+            </div>
+            <label for="loginPass">Kata Sandi</label>
+            <div class="field">
+              <input id="loginPass" type="password" placeholder="Masukkan kata sandi" autocomplete="current-password" required />
+              <button class="eye" type="button" data-eye="loginPass" aria-label="Tampilkan kata sandi">
+                <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l16 16"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c6 0 9.5 6 9.5 6a17.6 17.6 0 0 1-3.3 3.5M6.6 8A16.9 16.9 0 0 0 2.5 12S6 18 12 18c1.2 0 2.3-.2 3.3-.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+              </button>
+            </div>
+            <button class="auth-btn" type="submit">Login</button>
+          </form>
+          <p class="auth-alt">Belum punya akun? <button class="auth-link" type="button" id="toSignup">Daftar</button></p>
+        </section>
+
+        <section class="auth-card off" id="signupCard" aria-labelledby="signupTitle">
+          <div class="auth-brand">
+            <span class="auth-logo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+            </span>
+            <span class="auth-brand-name">Ticket Land</span>
+          </div>
+          <h3 id="signupTitle">Buat akun baru</h3>
+          <p class="auth-sub">Daftar dulu biar bisa pesan tiket event favoritmu.</p>
+          <p class="auth-err" id="signupErr" role="alert"></p>
+          <form id="registerForm" method="dialog" novalidate>
+            <label for="regEmail">Email</label>
+            <div class="field">
+              <input id="regEmail" class="no-toggle" type="email" placeholder="nama@email.com" autocomplete="email" required />
+            </div>
+            <label for="regPass">Kata Sandi</label>
+            <div class="field">
+              <input id="regPass" type="password" placeholder="Buat kata sandi" autocomplete="new-password" required />
+              <button class="eye" type="button" data-eye="regPass" aria-label="Tampilkan kata sandi">
+                <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l16 16"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c6 0 9.5 6 9.5 6a17.6 17.6 0 0 1-3.3 3.5M6.6 8A16.9 16.9 0 0 0 2.5 12S6 18 12 18c1.2 0 2.3-.2 3.3-.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+              </button>
+            </div>
+            <p class="field-hint">Minimal 6 karakter.</p>
+            <label for="regPass2">Konfirmasi Kata Sandi</label>
+            <div class="field">
+              <input id="regPass2" type="password" placeholder="Ulangi kata sandi" autocomplete="new-password" required />
+              <button class="eye" type="button" data-eye="regPass2" aria-label="Tampilkan kata sandi">
+                <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l16 16"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 6c6 0 9.5 6 9.5 6a17.6 17.6 0 0 1-3.3 3.5M6.6 8A16.9 16.9 0 0 0 2.5 12S6 18 12 18c1.2 0 2.3-.2 3.3-.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+              </button>
+            </div>
+            <button class="auth-btn" type="submit">Signup</button>
+          </form>
+          <p class="auth-alt">Sudah punya akun? <button class="auth-link" type="button" id="toLogin">Masuk</button></p>
+        </section>
+      </div>
+    </dialog>
+
+    <!-- ================= DIALOG KONFIRMASI PESANAN ================= -->
+    <dialog id="confirmDlg" aria-labelledby="confirmTitle">
+      <div class="confirm-box">
+        <button class="confirm-close" id="confirmClose" type="button" aria-label="Tutup konfirmasi">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </button>
+        <h3 id="confirmTitle">Konfirmasi Pesanan</h3>
+        <p class="c-sub">Pastikan data sebelum melanjutkan</p>
+        <div class="c-contact">
+          <div class="c-row">
+            <span class="c-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-3.4 4-5 7.5-5s6.3 1.6 7.5 5" stroke-linecap="round"/></svg></span>
+            <span id="cfName">-</span>
+          </div>
+          <div class="c-row">
+            <span class="c-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m4 7 8 6 8-6" stroke-linejoin="round"/></svg></span>
+            <span id="cfEmail">-</span>
+          </div>
+          <div class="c-row">
+            <span class="c-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg></span>
+            <span id="cfWa">-</span>
+          </div>
+        </div>
+        <p class="c-info-title">Informasi Penting :</p>
+        <ol class="c-info">
+          <li>Invoice dan E-Tiket akan dikirim ke email berikut
+            <span class="c-hl" id="cfEmail2">-</span>
+          </li>
+          <li>E-Tiket juga akan dikirim melalui WhatsApp ke nomor berikut
+            <span class="c-hl" id="cfWa2">-</span>
+          </li>
+          <li>Jika belum menerima notifikasi email setelah pembayaran:
+            <ul>
+              <li>Cari &quot;Ticket Land&quot; pada kolom pencarian email</li>
+              <li>Periksa folder spam/promosi pada email</li>
+            </ul>
+          </li>
+        </ol>
+        <div class="c-actions">
+          <button class="btn-edit" id="btnEditData" type="button">Edit Data</button>
+          <button class="btn-mengerti" id="btnMengerti" type="button">Saya Mengerti</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- ================= DIALOG BANTUAN ================= -->
+    <dialog id="helpDlg" aria-labelledby="helpTitle">
+      <form class="dlg" id="helpForm" method="dialog">
+        <h3 id="helpTitle">Need Help?</h3>
+        <p class="sub">Tulis kendalamu di bawah ini, lalu salin pesannya untuk dikirim ke tim Ticket Land.</p>
+        <label for="helpName">Nama</label>
+        <input id="helpName" type="text" placeholder="Nama kamu" autocomplete="name" />
+        <label for="helpMsg">Ceritakan kendalamu</label>
+        <textarea id="helpMsg" placeholder="Contoh: Saya sudah pesan tiket tapi e-tiket belum masuk ke email..." required></textarea>
+        <p class="ok-msg" id="helpOk">Pesan tersalin — tinggal tempel dan kirim ke tim Ticket Land.</p>
+        <div class="row">
+          <button class="btn-ghost" type="button" id="helpCancel">Tutup</button>
+          <button class="btn-solid" type="submit">Salin Pesan</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      /* Generator QR mandiri (tanpa library/CDN, tanpa jaringan): mode byte,
+         level koreksi M, versi 1–6. Menggambar pola QR asli sebagai SVG
+         supaya selalu tampil, termasuk saat offline. */
+      var QrGen = (function () {
+        var EXP = new Array(512), LOG = new Array(256);
+        (function () {
+          var x = 1;
+          for (var i = 0; i < 255; i++) {
+            EXP[i] = x; LOG[x] = i;
+            x <<= 1;
+            if (x & 0x100) x ^= 0x11d;
+          }
+          for (var i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+        })();
+        function gfMul(a, b) { return (a && b) ? EXP[LOG[a] + LOG[b]] : 0; }
+        function rsGen(n) {
+          var poly = [1];
+          for (var i = 0; i < n; i++) {
+            var a = EXP[i], next = [], j;
+            for (j = 0; j <= poly.length; j++) next.push(0);
+            for (j = 0; j <= poly.length; j++) {
+              next[j] ^= (j < poly.length ? poly[j] : 0) ^ (j > 0 ? gfMul(poly[j - 1], a) : 0);
+            }
+            poly = next;
+          }
+          return poly;
+        }
+        function rsEncode(data, n) {
+          var gen = rsGen(n);
+          var msg = data.concat(new Array(n).fill(0));
+          for (var i = 0; i < data.length; i++) {
+            var coef = msg[i];
+            if (coef !== 0) {
+              for (var j = 0; j < gen.length; j++) msg[i + j] ^= gfMul(gen[j], coef);
+            }
+          }
+          return msg.slice(data.length);
+        }
+        var EC_TABLE = { 1: [10, 1, 16], 2: [16, 1, 28], 3: [26, 1, 44], 4: [18, 2, 32], 5: [24, 2, 43], 6: [16, 4, 27] };
+        var ALIGN = { 1: [], 2: [6, 18], 3: [6, 22], 4: [6, 26], 5: [6, 30], 6: [6, 34] };
+        var REMAINDER_BITS = { 1: 0, 2: 7, 3: 7, 4: 7, 5: 7, 6: 7 };
+        function totalDataCw(v) { var t = EC_TABLE[v]; return t[1] * t[2]; }
+        function byteCapacity(v) { return totalDataCw(v) - 2; }
+        function buildDataCodewords(bytes, v) {
+          var total = totalDataCw(v);
+          var bits = [];
+          function push(val, len) { for (var i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); }
+          push(0x4, 4);
+          push(bytes.length, 8);
+          for (var i = 0; i < bytes.length; i++) push(bytes[i], 8);
+          var cap = total * 8;
+          var term = Math.min(4, cap - bits.length);
+          for (var t = 0; t < term; t++) bits.push(0);
+          while (bits.length % 8 !== 0) bits.push(0);
+          var out = [];
+          for (var b = 0; b < bits.length; b += 8) {
+            var byte = 0;
+            for (var k = 0; k < 8; k++) byte = (byte << 1) | bits[b + k];
+            out.push(byte);
+          }
+          var pads = [0xec, 0x11], p = 0;
+          while (out.length < total) { out.push(pads[p % 2]); p++; }
+          return out;
+        }
+        function interleave(bytes, v) {
+          var t = EC_TABLE[v], ecLen = t[0], nBlocks = t[1], perBlock = t[2];
+          var blocks = [], ecBlocks = [], i, j;
+          for (i = 0; i < nBlocks; i++) {
+            var block = bytes.slice(i * perBlock, (i + 1) * perBlock);
+            blocks.push(block);
+            ecBlocks.push(rsEncode(block, ecLen));
+          }
+          var out = [];
+          for (j = 0; j < perBlock; j++) for (i = 0; i < nBlocks; i++) out.push(blocks[i][j]);
+          for (j = 0; j < ecLen; j++) for (i = 0; i < nBlocks; i++) out.push(ecBlocks[i][j]);
+          return out;
+        }
+        function formatBits(mask) {
+          var data = mask;
+          var rem = data;
+          for (var i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+          return ((data << 10) | rem) ^ 0x5412;
+        }
+        function buildMatrix(codewords, v, mask) {
+          var size = 17 + 4 * v;
+          var mod = [], fn = [], r, c;
+          for (r = 0; r < size; r++) {
+            mod.push(new Array(size).fill(false));
+            fn.push(new Array(size).fill(false));
+          }
+          function setF(x, y, val) { if (x >= 0 && x < size && y >= 0 && y < size) { mod[y][x] = val; fn[y][x] = true; } }
+          for (var i = 0; i < size; i++) {
+            setF(6, i, i % 2 === 0);
+            setF(i, 6, i % 2 === 0);
+          }
+          function finder(cx, cy) {
+            for (var dy = -4; dy <= 4; dy++) {
+              for (var dx = -4; dx <= 4; dx++) {
+                var dist = Math.max(Math.abs(dx), Math.abs(dy));
+                setF(cx + dx, cy + dy, dist !== 2 && dist !== 4);
+              }
+            }
+          }
+          finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+          var pos = ALIGN[v];
+          for (var a = 0; a < pos.length; a++) {
+            for (var b = 0; b < pos.length; b++) {
+              var x = pos[a], y = pos[b];
+              if ((x === 6 && y === 6) || (x === 6 && y === size - 7) || (x === size - 7 && y === 6)) continue;
+              for (var dy = -2; dy <= 2; dy++) {
+                for (var dx = -2; dx <= 2; dx++) {
+                  setF(x + dx, y + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+                }
+              }
+            }
+          }
+          function drawFormat(m) {
+            var bits = formatBits(m), i;
+            function bit(i) { return ((bits >>> i) & 1) !== 0; }
+            for (i = 0; i <= 5; i++) setF(8, i, bit(i));
+            setF(8, 7, bit(6));
+            setF(8, 8, bit(7));
+            setF(7, 8, bit(8));
+            for (i = 9; i < 15; i++) setF(14 - i, 8, bit(i));
+            for (i = 0; i < 8; i++) setF(size - 1 - i, 8, bit(i));
+            for (i = 8; i < 15; i++) setF(8, size - 15 + i, bit(i));
+            setF(8, size - 8, true);
+          }
+          drawFormat(0);
+          var bits = [];
+          for (var w = 0; w < codewords.length; w++) {
+            for (var kb = 7; kb >= 0; kb--) bits.push((codewords[w] >>> kb) & 1);
+          }
+          for (var rb = 0; rb < REMAINDER_BITS[v]; rb++) bits.push(0);
+          var idx = 0;
+          for (var right = size - 1; right >= 1; right -= 2) {
+            if (right === 6) right = 5;
+            for (var vert = 0; vert < size; vert++) {
+              for (var j = 0; j < 2; j++) {
+                var x = right - j;
+                var upward = ((right + 1) & 2) === 0;
+                var y = upward ? size - 1 - vert : vert;
+                if (!fn[y][x]) {
+                  mod[y][x] = idx < bits.length ? bits[idx] === 1 : false;
+                  idx++;
+                }
+              }
+            }
+          }
+          function maskBit(m, rr, cc) {
+            switch (m) {
+              case 0: return (rr + cc) % 2 === 0;
+              case 1: return rr % 2 === 0;
+              case 2: return cc % 3 === 0;
+              case 3: return (rr + cc) % 3 === 0;
+              case 4: return (Math.floor(rr / 2) + Math.floor(cc / 3)) % 2 === 0;
+              case 5: return (rr * cc) % 2 + (rr * cc) % 3 === 0;
+              case 6: return ((rr * cc) % 2 + (rr * cc) % 3) % 2 === 0;
+              case 7: return ((rr + cc) % 2 + (rr * cc) % 3) % 2 === 0;
+            }
+            return false;
+          }
+          for (r = 0; r < size; r++) {
+            for (c = 0; c < size; c++) {
+              if (!fn[r][c] && maskBit(mask, r, c)) mod[r][c] = !mod[r][c];
+            }
+          }
+          drawFormat(mask);
+          return mod;
+        }
+        function penalty(mod) {
+          var size = mod.length, score = 0, r, c;
+          function runScore(line) {
+            var s = 0, run = 1;
+            for (var i = 1; i <= line.length; i++) {
+              if (i < line.length && line[i] === line[i - 1]) run++;
+              else { if (run >= 5) s += 3 + (run - 5); run = 1; }
+            }
+            return s;
+          }
+          for (r = 0; r < size; r++) {
+            score += runScore(mod[r]);
+            var col = [];
+            for (c = 0; c < size; c++) col.push(mod[c][r]);
+            score += runScore(col);
+          }
+          for (r = 0; r < size - 1; r++) {
+            for (c = 0; c < size - 1; c++) {
+              if (mod[r][c] === mod[r][c + 1] && mod[r][c] === mod[r + 1][c] && mod[r][c] === mod[r + 1][c + 1]) score += 3;
+            }
+          }
+          var pat1 = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0], pat2 = [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1];
+          function patScore(line) {
+            var s = 0;
+            for (var i = 0; i + 11 <= line.length; i++) {
+              var m1 = true, m2 = true;
+              for (var k = 0; k < 11; k++) {
+                var v = line[i + k] ? 1 : 0;
+                if (v !== pat1[k]) m1 = false;
+                if (v !== pat2[k]) m2 = false;
+              }
+              if (m1 || m2) s += 40;
+            }
+            return s;
+          }
+          for (r = 0; r < size; r++) {
+            score += patScore(mod[r]);
+            var col2 = [];
+            for (c = 0; c < size; c++) col2.push(mod[c][r]);
+            score += patScore(col2);
+          }
+          var dark = 0;
+          for (r = 0; r < size; r++) for (c = 0; c < size; c++) if (mod[r][c]) dark++;
+          var total = size * size;
+          var k = Math.ceil(Math.abs(dark * 20 - total * 10) / total) - 1;
+          if (k > 0) score += k * 10;
+          return score;
+        }
+        function encode(text) {
+          var bytes = [];
+          for (var i = 0; i < text.length; i++) {
+            var code = text.charCodeAt(i);
+            if (code > 0x7f) throw new Error('Non-ASCII input');
+            bytes.push(code);
+          }
+          var v = 0;
+          for (var cand = 1; cand <= 6; cand++) {
+            if (bytes.length <= byteCapacity(cand)) { v = cand; break; }
+          }
+          if (!v) throw new Error('Input too long');
+          var dataCw = buildDataCodewords(bytes, v);
+          var finalCw = interleave(dataCw, v);
+          var best = null, bestScore = Infinity;
+          for (var m = 0; m < 8; m++) {
+            var matrix = buildMatrix(finalCw, v, m);
+            var s = penalty(matrix);
+            if (s < bestScore) { bestScore = s; best = matrix; }
+          }
+          return { size: 17 + 4 * v, modules: best };
+        }
+        function svg(text, cellSize, margin) {
+          var res = encode(text);
+          var n = res.size, m = (margin == null ? 4 : margin);
+          var dim = n + 2 * m;
+          var parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + dim + ' ' + dim + '" width="' + dim * cellSize + '" height="' + dim * cellSize + '" role="img" aria-label="Kode QR ' + text + '">'];
+          parts.push('<rect width="' + dim + '" height="' + dim + '" fill="#ffffff"/>');
+          for (var r = 0; r < n; r++) {
+            for (var c = 0; c < n; c++) {
+              if (res.modules[r][c]) parts.push('<rect x="' + (c + m) + '" y="' + (r + m) + '" width="1" height="1" fill="#000000"/>');
+            }
+          }
+          parts.push('</svg>');
+          return parts.join('');
+        }
+        return { encode: encode, svg: svg };
+      })();
+    </script>
+    <script>
+      (function(){
+        var toast = document.getElementById('toast');
+        var toastTimer = null;
+        function showToast(msg){
+          toast.textContent = msg;
+          toast.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2600);
+        }
+
+        /* Mobile menu */
+        var burger = document.getElementById('burger');
+        var mobileMenu = document.getElementById('mobileMenu');
+        burger.addEventListener('click', function(){
+          var open = mobileMenu.classList.toggle('open');
+          burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        mobileMenu.addEventListener('click', function(e){
+          if (e.target.tagName === 'A') mobileMenu.classList.remove('open');
+        });
+
+        /* Kategori — klik membuka halaman Jelajahi Event untuk kategori itu */
+        var cats = document.querySelectorAll('.cat');
+        cats.forEach(function(btn){
+          btn.addEventListener('click', function(){
+            openExplore(btn.getAttribute('data-cat'));
+          });
+        });
+
+        /* Jelajahi Event — halaman kategori ala explore: filter + urutkan + grid kartu */
+        var exploreSection = document.getElementById('explorePage');
+        var exploreGrid = document.getElementById('exploreGrid');
+        var exploreCount = document.getElementById('exploreCount');
+        var exploreEmpty = document.getElementById('exploreEmpty');
+        var activeChip = document.getElementById('activeChip');
+        var activeChipName = document.getElementById('activeChipName');
+        var filterPanel = document.getElementById('filterPanel');
+        var btnFilter = document.getElementById('btnFilter');
+        var sortSelect = document.getElementById('sortSelect');
+        var exploreState = { cat: 'Semua', sort: 'relevan' };
+        var CAT_COLORS = {
+          Musik: ['#0f766e', '#134e4a'],
+          Pameran: ['#17684b', '#0f5138'],
+          Komedi: ['#d97706', '#92400e'],
+          Trip: ['#0284c7', '#075985'],
+          Bisnis: ['#475569', '#1e293b']
+        };
+        var catalog = [
+          { t: 'Konser Menembus Awan — "Seperti Matahari"', cat: 'Musik', date: '12 Desember 2026', sd: '2026-12-12', price: 150000, org: 'Tiga Rambu', city: 'Jakarta', sesi: '2 Sesi' },
+          { t: 'Pesta Nada Senja 2026', cat: 'Musik', date: '28 November 2026', sd: '2026-11-28', price: 35000, org: 'Senja Production', city: 'Jakarta' },
+          { t: 'Gema Fest Vol. 4', cat: 'Musik', date: '28 November 2026', sd: '2026-11-28', price: 65000, org: 'Gema Kreatif', city: 'Bandung' },
+          { t: 'Melodi Kampus Vol. 3', cat: 'Musik', date: '29 November 2026', sd: '2026-11-29', price: 25000, org: 'BEM Fakultas Ilmu Budaya', city: 'Depok' },
+          { t: 'Dentum Live 2026', cat: 'Musik', date: '28 November 2026', sd: '2026-11-28', price: 100000, org: 'Dentum Organizer', city: 'Jakarta', sesi: '2 Sesi' },
+          { t: 'Archipelago Beat Fest', cat: 'Musik', date: '5 Desember 2026', sd: '2026-12-05', price: 75000, org: 'Nara Kreatif', city: 'Jakarta' },
+          { t: 'Akustik Senja di Taman Kota', cat: 'Musik', date: '6 Desember 2026', sd: '2026-12-06', price: 0, org: 'Komunitas Senja', city: 'Bogor' },
+          { t: 'Rocktober Fest Bandung', cat: 'Musik', date: '19 Desember 2026', sd: '2026-12-19', price: 80000, org: 'Rocktober ID', city: 'Bandung' },
+          { t: 'ABC & Mom Expo Indonesia 2026', cat: 'Pameran', date: '25–28 November 2026', sd: '2026-11-25', price: 20000, org: 'Meorient Exhibition International', city: 'Jakarta' },
+          { t: 'Indonesia Art & Craft Expo', cat: 'Pameran', date: '3–6 Desember 2026', sd: '2026-12-03', price: 30000, org: 'Kriya Nusantara', city: 'Jakarta' },
+          { t: 'Pameran Otomotif Nusantara 2026', cat: 'Pameran', date: '10–13 Desember 2026', sd: '2026-12-10', price: 50000, org: 'AutoExpo Media', city: 'Tangerang' },
+          { t: 'Book & Edu Fair 2026', cat: 'Pameran', date: '17 Desember 2026', sd: '2026-12-17', price: 0, org: 'Pustaka Raya', city: 'Jakarta' },
+          { t: 'Stand Up Night: Tawa Lepas', cat: 'Komedi', date: '29 November 2026', sd: '2026-11-29', price: 75000, org: 'Tawa Lepas ID', city: 'Jakarta' },
+          { t: 'Komedi Kampus Tour 2026', cat: 'Komedi', date: '6 Desember 2026', sd: '2026-12-06', price: 45000, org: 'StandUp Kampus', city: 'Bandung' },
+          { t: 'Open Mic Spesial Akhir Tahun', cat: 'Komedi', date: '20 Desember 2026', sd: '2026-12-20', price: 0, org: 'Ruang Tawa', city: 'Jakarta' },
+          { t: 'Open Trip Bromo Sunrise', cat: 'Trip', date: '13 Desember 2026', sd: '2026-12-13', price: 350000, org: 'Jelajah Trip', city: 'Malang' },
+          { t: 'Jelajah Kota Tua Jakarta', cat: 'Trip', date: '30 November 2026', sd: '2026-11-30', price: 85000, org: 'Jelajah Trip', city: 'Jakarta' },
+          { t: 'Camping Ceria Puncak 2D1N', cat: 'Trip', date: '20 Desember 2026', sd: '2026-12-20', price: 199000, org: 'Puncak Adventure', city: 'Bogor' },
+          { t: 'Startup & UMKM Summit 2026', cat: 'Bisnis', date: '4 Desember 2026', sd: '2026-12-04', price: 150000, org: 'BizConnect ID', city: 'Jakarta' },
+          { t: 'Workshop Digital Marketing', cat: 'Bisnis', date: '28 November 2026', sd: '2026-11-28', price: 99000, org: 'Digitalku Academy', city: 'Jakarta' },
+          { t: 'Seminar Investasi untuk Pemula', cat: 'Bisnis', date: '11 Desember 2026', sd: '2026-12-11', price: 0, org: 'Cerdas Finansial', city: 'Jakarta' }
+        ];
+        function initialsOf(name){
+          return name.split(/\s+/).filter(function(w){ return /^[A-Za-z]/.test(w); }).slice(0, 2).map(function(w){ return w.charAt(0); }).join('').toUpperCase();
+        }
+        function bannerSvg(ev, idx){
+          var c = CAT_COLORS[ev.cat] || CAT_COLORS.Musik;
+          var gid = 'xg' + idx;
+          return '<svg viewBox="0 0 320 164" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+            + '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1">'
+            + '<stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/>'
+            + '</linearGradient></defs>'
+            + '<rect width="320" height="164" fill="url(#' + gid + ')"/>'
+            + '<circle cx="276" cy="22" r="54" fill="#ffffff" opacity=".14"/>'
+            + '<circle cx="26" cy="152" r="42" fill="#ffffff" opacity=".10"/>'
+            + '<text x="22" y="90" font-family="Plus Jakarta Sans, sans-serif" font-size="46" font-weight="800" fill="#ffffff" opacity=".95">' + initialsOf(ev.t) + '</text>'
+            + '<text x="24" y="120" font-family="Plus Jakarta Sans, sans-serif" font-size="12" font-weight="700" fill="#ffffff" opacity=".85" letter-spacing="2.5">' + ev.cat.toUpperCase() + '</text>'
+            + '</svg>';
+        }
+        function visibleEvents(){
+          var list = catalog.filter(function(ev){
+            return exploreState.cat === 'Semua' || ev.cat === exploreState.cat;
+          });
+          if (exploreState.sort === 'tanggal') {
+            list.sort(function(a, b){ return a.sd < b.sd ? -1 : (a.sd > b.sd ? 1 : 0); });
+          } else if (exploreState.sort === 'murah') {
+            list.sort(function(a, b){ return a.price - b.price; });
+          } else if (exploreState.sort === 'mahal') {
+            list.sort(function(a, b){ return b.price - a.price; });
+          }
+          return list;
+        }
+        function renderExplore(){
+          var list = visibleEvents();
+          exploreGrid.innerHTML = '';
+          list.forEach(function(ev, idx){
+            var free = ev.price === 0;
+            var card = document.createElement('button');
+            card.type = 'button';
+            card.className = 'xcard';
+            card.setAttribute('aria-label', 'Lihat detail ' + ev.t);
+            var banner = document.createElement('span');
+            banner.className = 'xcard-banner';
+            banner.innerHTML = bannerSvg(ev, idx);
+            var body = document.createElement('span');
+            body.className = 'xcard-body';
+            var title = document.createElement('span');
+            title.className = 'xcard-title';
+            title.textContent = ev.t;
+            body.appendChild(title);
+            var date = document.createElement('span');
+            date.className = 'xcard-date';
+            date.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke-linecap="round"/></svg>';
+            date.appendChild(document.createTextNode(ev.date));
+            body.appendChild(date);
+            if (ev.sesi) {
+              var sesi = document.createElement('span');
+              sesi.className = 'xcard-sesi';
+              sesi.textContent = ev.sesi;
+              body.appendChild(sesi);
+            }
+            var price = document.createElement('span');
+            price.className = 'xcard-price' + (free ? ' free' : '');
+            price.textContent = free ? 'GRATIS' : fmtRupiah(ev.price);
+            body.appendChild(price);
+            var org = document.createElement('span');
+            org.className = 'xcard-org';
+            var ava = document.createElement('span');
+            ava.className = 'org-ava';
+            ava.textContent = initialsOf(ev.org);
+            var oname = document.createElement('span');
+            oname.className = 'org-name';
+            oname.textContent = ev.org;
+            var ocity = document.createElement('span');
+            ocity.className = 'org-city';
+            ocity.textContent = ev.city;
+            org.appendChild(ava);
+            org.appendChild(oname);
+            org.appendChild(ocity);
+            body.appendChild(org);
+            card.appendChild(banner);
+            card.appendChild(body);
+            card.addEventListener('click', function(){
+              detailReturn = 'explore';
+              applyDetail({ price: free ? 'GRATIS' : fmtRupiah(ev.price), free: free, amount: ev.price, cat: ev.cat });
+            });
+            exploreGrid.appendChild(card);
+          });
+          exploreEmpty.hidden = list.length !== 0;
+          exploreCount.textContent = 'Menampilkan ' + list.length + ' event' + (exploreState.cat !== 'Semua' ? ' kategori ' + exploreState.cat : '');
+          activeChip.hidden = exploreState.cat === 'Semua';
+          if (exploreState.cat !== 'Semua') activeChipName.textContent = exploreState.cat;
+          document.querySelectorAll('.fchip').forEach(function(chip){
+            chip.classList.toggle('on', chip.getAttribute('data-fcat') === exploreState.cat);
+          });
+        }
+        function openExplore(cat){
+          exploreState.cat = cat || 'Semua';
+          exploreState.sort = 'relevan';
+          sortSelect.value = 'relevan';
+          renderExplore();
+          landingSections.forEach(function(s){ s.style.display = 'none'; });
+          detailSection.hidden = true;
+          document.getElementById('contactPage').hidden = true;
+          exploreSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function closeExplore(){
+          exploreSection.hidden = true;
+          landingSections.forEach(function(s){ s.style.display = ''; });
+          document.getElementById('kategori').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        document.getElementById('btnBackExplore').addEventListener('click', closeExplore);
+        btnFilter.addEventListener('click', function(){
+          var open = filterPanel.hidden;
+          filterPanel.hidden = !open;
+          btnFilter.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.querySelectorAll('.fchip').forEach(function(chip){
+          chip.addEventListener('click', function(){
+            exploreState.cat = chip.getAttribute('data-fcat');
+            renderExplore();
+          });
+        });
+        document.getElementById('chipClear').addEventListener('click', function(){
+          exploreState.cat = 'Semua';
+          renderExplore();
+        });
+        sortSelect.addEventListener('change', function(){
+          exploreState.sort = sortSelect.value;
+          renderExplore();
+        });
+
+        /* Login / Signup */
+        var authDlg = document.getElementById('authDlg');
+        var btnMasuk = document.getElementById('btnMasuk');
+        var userChip = document.getElementById('userChip');
+        var loginForm = document.getElementById('loginForm');
+        var registerForm = document.getElementById('registerForm');
+        var loginErr = document.getElementById('loginErr');
+        var loginOk = document.getElementById('loginOk');
+        var signupErr = document.getElementById('signupErr');
+
+        function showAuth(mode){
+          var isLogin = mode === 'login';
+          document.getElementById('loginCard').classList.toggle('off', !isLogin);
+          document.getElementById('signupCard').classList.toggle('off', isLogin);
+          showMsg(loginErr, '');
+          showMsg(loginOk, '');
+          showMsg(signupErr, '');
+          var input = document.getElementById(isLogin ? 'loginEmail' : 'regEmail');
+          setTimeout(function(){ input.focus({preventScroll:true}); }, 60);
+        }
+        function openAuth(){
+          showAuth('login');
+          if (typeof authDlg.showModal === 'function' && !authDlg.open) authDlg.showModal();
+        }
+        function showMsg(el, msg){
+          el.textContent = msg;
+          el.style.display = msg ? 'block' : 'none';
+        }
+        function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+        function nameFromEmail(email){
+          var name = email.split('@')[0].replace(/[._-]+/g, ' ').trim();
+          return name ? name.charAt(0).toUpperCase() + name.slice(1) : 'Pengguna';
+        }
+        function setLoggedIn(name){
+          document.getElementById('userName').textContent = name;
+          document.getElementById('userAvatar').textContent = (name.trim().charAt(0) || 'P').toUpperCase();
+          btnMasuk.style.display = 'none';
+          userChip.classList.add('show');
+          authDlg.close();
+        }
+        btnMasuk.addEventListener('click', openAuth);
+        document.getElementById('mobileMasuk').addEventListener('click', function(e){
+          e.preventDefault();
+          mobileMenu.classList.remove('open');
+          burger.setAttribute('aria-expanded', 'false');
+          openAuth();
+        });
+        document.getElementById('authClose').addEventListener('click', function(){ authDlg.close(); });
+        document.getElementById('toSignup').addEventListener('click', function(){ showAuth('signup'); });
+        document.getElementById('toLogin').addEventListener('click', function(){ showAuth('login'); });
+        document.getElementById('btnKeluar').addEventListener('click', function(){
+          userChip.classList.remove('show');
+          btnMasuk.style.display = '';
+          showToast('Kamu sudah keluar. Sampai jumpa!');
+        });
+
+        /* Tampilkan / sembunyikan kata sandi */
+        document.querySelectorAll('[data-eye]').forEach(function(btn){
+          btn.addEventListener('click', function(){
+            var input = document.getElementById(btn.getAttribute('data-eye'));
+            if (!input) return;
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.classList.toggle('showing', show);
+            btn.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+            input.focus({preventScroll:true});
+          });
+        });
+
+        loginForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          var email = document.getElementById('loginEmail').value.trim();
+          var pass = document.getElementById('loginPass').value;
+          showMsg(loginOk, '');
+          if (!validEmail(email)) { showMsg(loginErr, 'Masukkan alamat email yang valid.'); return; }
+          if (!pass) { showMsg(loginErr, 'Kata sandi belum diisi.'); return; }
+          showMsg(loginErr, '');
+          var name = nameFromEmail(email);
+          setLoggedIn(name);
+          showToast('Selamat datang kembali, ' + name + '!');
+        });
+
+        registerForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          var email = document.getElementById('regEmail').value.trim();
+          var pass = document.getElementById('regPass').value;
+          var pass2 = document.getElementById('regPass2').value;
+          if (!validEmail(email)) { showMsg(signupErr, 'Masukkan alamat email yang valid.'); return; }
+          if (pass.length < 6) { showMsg(signupErr, 'Kata sandi minimal 6 karakter.'); return; }
+          if (pass !== pass2) { showMsg(signupErr, 'Konfirmasi kata sandi tidak sama.'); return; }
+          showMsg(signupErr, '');
+          var name = nameFromEmail(email);
+          setLoggedIn(name);
+          showToast('Akun berhasil dibuat. Selamat datang, ' + name + '!');
+        });
+
+        /* Detail Event — klik kartu di Rekomendasi */
+        var detailSection = document.getElementById('eventDetail');
+        var landingSections = document.querySelectorAll('.hero, .kategori, .rekom, .bantuan');
+        var eventData = [
+          { price: 'Rp 20.000', free: false, amount: 20000, cat: 'Pameran' },
+          { price: 'GRATIS', free: true, amount: 0, cat: 'Pameran' },
+          { price: 'Rp 20.000', free: false, amount: 20000, cat: 'Pameran' }
+        ];
+        var currentEvent = eventData[0];
+        var detailReturn = 'home';
+        function openDetail(idx){
+          detailReturn = 'home';
+          applyDetail(eventData[idx] || eventData[0]);
+        }
+        function applyDetail(data){
+          currentEvent = data;
+          document.getElementById('detailCatName').textContent = data.cat || 'Pameran';
+          var priceEl = document.getElementById('detailPrice');
+          priceEl.textContent = data.price;
+          priceEl.classList.toggle('free', !!data.free);
+          landingSections.forEach(function(s){ s.style.display = 'none'; });
+          exploreSection.hidden = true;
+          document.getElementById('contactPage').hidden = true;
+          detailSection.hidden = false;
+          switchTab('deskripsi');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function closeDetail(){
+          detailSection.hidden = true;
+          if (detailReturn === 'explore') {
+            exploreSection.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+          landingSections.forEach(function(s){ s.style.display = ''; });
+          document.getElementById('rekomendasi').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        document.querySelectorAll('.card[data-event]').forEach(function(card){
+          card.addEventListener('click', function(){ openDetail(parseInt(card.getAttribute('data-event'), 10) || 0); });
+        });
+        document.getElementById('btnBack').addEventListener('click', closeDetail);
+
+        var detailTabs = document.querySelectorAll('.detail-tab');
+        function switchTab(name, scroll){
+          detailTabs.forEach(function(t){
+            var on = t.getAttribute('data-tab') === name;
+            t.classList.toggle('active', on);
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+          });
+          if (scroll) {
+            var panel = document.getElementById(name === 'syarat' ? 'panelSyarat' : 'panelDeskripsi');
+            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+        detailTabs.forEach(function(t){
+          t.addEventListener('click', function(){ switchTab(t.getAttribute('data-tab'), true); });
+        });
+        /* Pilih Tiket — halaman baru dari tombol Pesan Sekarang */
+        var ticketSection = document.getElementById('ticketPage');
+        var ticketCard = document.getElementById('ticketCard');
+        var btnPilih = document.getElementById('btnPilih');
+        var btnBeli = document.getElementById('btnBeli');
+        var summaryCat = document.getElementById('summaryCat');
+        var ticketSelected = false;
+        function openTicket(){
+          var catPrice = document.getElementById('ticketCatPrice');
+          var sumPrice = document.getElementById('summaryPrice');
+          catPrice.textContent = currentEvent.price;
+          catPrice.classList.toggle('free', !!currentEvent.free);
+          sumPrice.textContent = currentEvent.price;
+          sumPrice.classList.toggle('free', !!currentEvent.free);
+          ticketSelected = false;
+          ticketCard.classList.remove('selected');
+          btnPilih.textContent = 'Pilih';
+          btnPilih.setAttribute('aria-pressed', 'false');
+          btnBeli.disabled = true;
+          summaryCat.textContent = '';
+          summaryCat.classList.remove('show');
+          detailSection.hidden = true;
+          ticketSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function closeTicket(){
+          ticketSection.hidden = true;
+          detailSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.getElementById('btnPesanDetail').addEventListener('click', openTicket);
+        document.getElementById('btnBackTicket').addEventListener('click', closeTicket);
+        btnPilih.addEventListener('click', function(){
+          ticketSelected = !ticketSelected;
+          ticketCard.classList.toggle('selected', ticketSelected);
+          btnPilih.textContent = ticketSelected ? 'Terpilih' : 'Pilih';
+          btnPilih.setAttribute('aria-pressed', ticketSelected ? 'true' : 'false');
+          btnBeli.disabled = !ticketSelected;
+          summaryCat.textContent = ticketSelected ? 'Kategori dipilih: Tiket Masuk Reguler' : '';
+          summaryCat.classList.toggle('show', ticketSelected);
+        });
+        btnBeli.addEventListener('click', function(){
+          if (!ticketSelected) return;
+          openOrder();
+        });
+
+        /* Detail Pesanan — langkah 2 dari tombol Beli Sekarang */
+        var orderSection = document.getElementById('orderPage');
+        var currentQty = 1;
+        var unitPrice = 0;
+        var orderTimer = null;
+        var orderSeconds = 0;
+        var timerText = document.getElementById('timerText');
+        var payTimerText = document.getElementById('payTimerText');
+        var rincianQty = document.getElementById('rincianQty');
+        var rincianLine = document.getElementById('rincianLine');
+        var rincianSubtotal = document.getElementById('rincianSubtotal');
+        var rincianTotal = document.getElementById('rincianTotal');
+        var qtyVal = document.getElementById('qtyVal');
+        var qtyMinus = document.getElementById('qtyMinus');
+        var qtyPlus = document.getElementById('qtyPlus');
+
+        function fmtRupiah(n){ return 'Rp ' + n.toLocaleString('id-ID'); }
+        function priceText(total){
+          return currentEvent.free ? 'GRATIS' : fmtRupiah(total);
+        }
+        function updateRincian(){
+          var total = unitPrice * currentQty;
+          rincianQty.textContent = 'x' + currentQty;
+          rincianLine.textContent = priceText(total);
+          rincianLine.classList.toggle('free', !!currentEvent.free);
+          rincianSubtotal.textContent = priceText(total);
+          rincianTotal.textContent = priceText(total);
+          rincianTotal.classList.toggle('free', !!currentEvent.free);
+          qtyVal.textContent = currentQty;
+          qtyMinus.disabled = currentQty <= 1;
+          qtyPlus.disabled = currentQty >= 5;
+        }
+        function setQty(n){
+          var next = Math.max(1, Math.min(5, n));
+          if (next === 5 && n > 5) showToast('Maksimal pembelian 5 tiket dalam 1 kali transaksi.');
+          currentQty = next;
+          updateRincian();
+        }
+        qtyMinus.addEventListener('click', function(){ setQty(currentQty - 1); });
+        qtyPlus.addEventListener('click', function(){ setQty(currentQty + 1); });
+
+        function renderTimer(){
+          var m = Math.floor(orderSeconds / 60);
+          var s = orderSeconds % 60;
+          var text = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+          timerText.textContent = text;
+          payTimerText.textContent = text;
+        }
+        function stopTimer(){
+          if (orderTimer) { clearInterval(orderTimer); orderTimer = null; }
+        }
+        function startTimer(){
+          stopTimer();
+          orderSeconds = 10 * 60;
+          renderTimer();
+          orderTimer = setInterval(function(){
+            orderSeconds--;
+            if (orderSeconds <= 0) {
+              orderSeconds = 0;
+              renderTimer();
+              stopTimer();
+              if (confirmDlg.open) confirmDlg.close();
+              showToast('Waktu pemesanan habis. Silakan ulangi pemesanan.');
+              closeOrder();
+              return;
+            }
+            renderTimer();
+          }, 1000);
+        }
+        function openOrder(){
+          unitPrice = currentEvent.amount || 0;
+          currentQty = 1;
+          updateRincian();
+          ticketSection.hidden = true;
+          orderSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          startTimer();
+        }
+        function closeOrder(){
+          stopTimer();
+          orderSection.hidden = true;
+          paySection.hidden = true;
+          resultSection.hidden = true;
+          ticketSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.getElementById('btnBackOrder').addEventListener('click', closeOrder);
+        document.getElementById('btnRincianBack').addEventListener('click', closeOrder);
+
+        /* Samakan dengan detail pemesan */
+        var syncSwitch = document.getElementById('syncSwitch');
+        var syncOn = false;
+        var syncPairs = [
+          ['buyerName', 'attName'],
+          ['buyerIdType', 'attIdType'],
+          ['buyerIdNum', 'attIdNum'],
+          ['buyerEmail', 'attEmail'],
+          ['buyerWa', 'attWa']
+        ];
+        function applySync(){
+          syncPairs.forEach(function(pair){
+            var buyer = document.getElementById(pair[0]);
+            var att = document.getElementById(pair[1]);
+            if (syncOn) {
+              att.value = buyer.value;
+              att.classList.remove('invalid');
+            }
+            att.disabled = syncOn;
+          });
+        }
+        syncSwitch.addEventListener('click', function(){
+          syncOn = !syncOn;
+          syncSwitch.setAttribute('aria-checked', syncOn ? 'true' : 'false');
+          applySync();
+        });
+        syncPairs.forEach(function(pair){
+          document.getElementById(pair[0]).addEventListener('input', function(){
+            if (syncOn) applySync();
+          });
+          document.getElementById(pair[0]).addEventListener('change', function(){
+            if (syncOn) applySync();
+          });
+        });
+
+        /* Jenis kelamin */
+        var attGender = '';
+        var genderRow = document.getElementById('genderRow');
+        var genderChips = genderRow.querySelectorAll('.gender-chip');
+        genderChips.forEach(function(chip){
+          chip.addEventListener('click', function(){
+            attGender = chip.getAttribute('data-gender');
+            genderChips.forEach(function(c){
+              var on = c === chip;
+              c.classList.toggle('on', on);
+              c.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            genderRow.classList.remove('invalid');
+          });
+        });
+
+        /* Validasi + Lanjutkan */
+        function checkField(id, ok){
+          var el = document.getElementById(id);
+          el.classList.toggle('invalid', !ok);
+          return { el: el, ok: ok };
+        }
+        orderSection.querySelectorAll('.o-input, .o-select').forEach(function(el){
+          el.addEventListener('input', function(){ el.classList.remove('invalid'); });
+          el.addEventListener('change', function(){ el.classList.remove('invalid'); });
+        });
+        document.getElementById('btnLanjut').addEventListener('click', function(){
+          var results = [];
+          function val(id){ return document.getElementById(id).value.trim(); }
+          results.push(checkField('buyerName', val('buyerName') !== ''));
+          results.push(checkField('buyerIdType', val('buyerIdType') !== ''));
+          results.push(checkField('buyerIdNum', val('buyerIdNum') !== ''));
+          results.push(checkField('buyerEmail', validEmail(val('buyerEmail'))));
+          results.push(checkField('buyerWa', val('buyerWa') !== ''));
+          results.push(checkField('attName', val('attName') !== ''));
+          results.push(checkField('attIdType', val('attIdType') !== ''));
+          results.push(checkField('attIdNum', val('attIdNum') !== ''));
+          results.push(checkField('attEmail', validEmail(val('attEmail'))));
+          results.push(checkField('attWa', val('attWa') !== ''));
+          var genderOk = attGender !== '';
+          genderRow.classList.toggle('invalid', !genderOk);
+          var firstBad = null;
+          results.forEach(function(r){ if (!r.ok && !firstBad) firstBad = r.el; });
+          if (!firstBad && !genderOk) firstBad = genderRow;
+          if (firstBad) {
+            showToast('Masih ada data yang belum lengkap atau belum valid — cek kolom yang ditandai merah.');
+            firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (firstBad.focus) firstBad.focus({ preventScroll: true });
+            return;
+          }
+          openConfirm();
+        });
+
+        /* Konfirmasi Pesanan — pop-up setelah Lanjutkan */
+        var confirmDlg = document.getElementById('confirmDlg');
+        function waDisplay(raw){
+          var digits = (raw || '').replace(/\D/g, '');
+          if (digits.charAt(0) === '0') digits = digits.slice(1);
+          if (digits.indexOf('62') === 0) digits = digits.slice(2);
+          return '+62' + digits;
+        }
+        function openConfirm(){
+          var name = document.getElementById('buyerName').value.trim();
+          var email = document.getElementById('buyerEmail').value.trim();
+          var wa = waDisplay(document.getElementById('buyerWa').value);
+          document.getElementById('cfName').textContent = name;
+          document.getElementById('cfEmail').textContent = email;
+          document.getElementById('cfWa').textContent = wa;
+          document.getElementById('cfEmail2').textContent = email;
+          document.getElementById('cfWa2').textContent = wa;
+          if (typeof confirmDlg.showModal === 'function' && !confirmDlg.open) confirmDlg.showModal();
+        }
+        document.getElementById('confirmClose').addEventListener('click', function(){ confirmDlg.close(); });
+        document.getElementById('btnEditData').addEventListener('click', function(){ confirmDlg.close(); });
+        document.getElementById('btnMengerti').addEventListener('click', function(){
+          confirmDlg.close();
+          openPay();
+        });
+
+        /* Metode Pembayaran — langkah 3 setelah Saya Mengerti */
+        var paySection = document.getElementById('payPage');
+        var selectedMethod = '';
+        var agreeTnc = document.getElementById('agreeTnc');
+        var agreePrivacy = document.getElementById('agreePrivacy');
+        var btnBayar = document.getElementById('btnBayar');
+        function totals(){
+          var subtotal = unitPrice * currentQty;
+          var fee = currentEvent.free ? 0 : Math.round(subtotal * 0.03);
+          return { subtotal: subtotal, fee: fee, total: subtotal + fee };
+        }
+        function updatePay(){
+          var t = totals();
+          document.getElementById('payQty').textContent = 'x' + currentQty;
+          var line = document.getElementById('payLine');
+          line.textContent = priceText(t.subtotal);
+          line.classList.toggle('free', !!currentEvent.free);
+          document.getElementById('paySubtotal').textContent = priceText(t.subtotal);
+          document.getElementById('payFee').textContent = fmtRupiah(t.fee);
+          var totalEl = document.getElementById('payTotal');
+          totalEl.textContent = priceText(t.total);
+          totalEl.classList.toggle('free', !!currentEvent.free);
+        }
+        function openPay(){
+          updatePay();
+          orderSection.hidden = true;
+          paySection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function closePay(){
+          paySection.hidden = true;
+          orderSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.getElementById('btnBackPay').addEventListener('click', closePay);
+        document.getElementById('btnPayBack').addEventListener('click', closePay);
+        function updateBayarBtn(){
+          btnBayar.disabled = !(selectedMethod !== '' && agreeTnc.checked && agreePrivacy.checked);
+        }
+        document.querySelectorAll('[data-method]').forEach(function(el){
+          el.addEventListener('click', function(){
+            selectedMethod = el.getAttribute('data-method');
+            document.querySelectorAll('[data-method]').forEach(function(o){
+              var on = o === el;
+              o.classList.toggle('selected', on);
+              o.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            updateBayarBtn();
+          });
+        });
+        agreeTnc.addEventListener('change', updateBayarBtn);
+        agreePrivacy.addEventListener('change', updateBayarBtn);
+        btnBayar.addEventListener('click', function(){
+          if (btnBayar.disabled) return;
+          startPayment();
+        });
+
+        /* Pembayaran (simulasi) — langkah 4: proses → berhasil → invoice + e-tiket */
+        var resultSection = document.getElementById('resultPage');
+        var payProcessing = document.getElementById('payProcessing');
+        var paySuccess = document.getElementById('paySuccess');
+        var invoiceNo = '';
+        var ticketCodes = [];
+        function makeTicketCode(){
+          var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          var code = '';
+          for (var i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+          return 'TKL-' + code;
+        }
+        function renderQr(el, text){
+          try {
+            el.innerHTML = QrGen.svg(text, 4, 4);
+            return;
+          } catch (err) { /* jatuh ke tampilan kode di bawah */ }
+          var span = document.createElement('span');
+          span.className = 'qr-fallback';
+          span.textContent = text;
+          el.appendChild(span);
+        }
+        function etRow(label, value, cls){
+          var wrap = document.createElement('div');
+          wrap.className = 'et-row';
+          var k = document.createElement('p');
+          k.className = 'et-k';
+          k.textContent = label;
+          var v = document.createElement('p');
+          v.className = cls || 'et-v';
+          v.textContent = value;
+          wrap.appendChild(k);
+          wrap.appendChild(v);
+          return wrap;
+        }
+        function buildEticket(code, idx){
+          var card = document.createElement('div');
+          card.className = 'eticket';
+          var top = document.createElement('div');
+          top.className = 'eticket-top';
+          var ev = document.createElement('p');
+          ev.className = 'et-event';
+          ev.textContent = 'ABC & Mom Expo Indonesia 2026';
+          var cat = document.createElement('p');
+          cat.className = 'et-cat';
+          cat.textContent = 'Tiket Masuk Reguler • Tiket ' + (idx + 1) + ' dari ' + currentQty;
+          top.appendChild(ev);
+          top.appendChild(cat);
+          var body = document.createElement('div');
+          body.className = 'eticket-body';
+          var info = document.createElement('div');
+          info.className = 'eticket-info';
+          info.appendChild(etRow('Nama Peserta', document.getElementById('attName').value.trim() || '-'));
+          info.appendChild(etRow('Tanggal & Jam', '25–28 November 2026 • 09:00 – 21:00'));
+          info.appendChild(etRow('Lokasi', 'Jakarta Convention Center, Jakarta Pusat'));
+          info.appendChild(etRow('Kode Tiket', code, 'et-code'));
+          var qrBox = document.createElement('div');
+          qrBox.className = 'qr-box';
+          var qrRender = document.createElement('div');
+          qrRender.className = 'qr-render';
+          renderQr(qrRender, code);
+          var cap = document.createElement('p');
+          cap.className = 'qr-cap';
+          cap.textContent = 'Scan QR ini saat check-in';
+          qrBox.appendChild(qrRender);
+          qrBox.appendChild(cap);
+          body.appendChild(info);
+          body.appendChild(qrBox);
+          var note = document.createElement('p');
+          note.className = 'eticket-note';
+          note.textContent = 'Tunjukkan e-tiket ini di pintu masuk — staff akan memindai QR atau memasukkan kode tiket untuk check-in. Satu tiket berlaku untuk satu orang.';
+          card.appendChild(top);
+          card.appendChild(body);
+          card.appendChild(note);
+          return card;
+        }
+        function showSuccess(){
+          var t = totals();
+          var now = new Date();
+          function pad(n){ return (n < 10 ? '0' : '') + n; }
+          invoiceNo = 'INV-' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '-' + Math.floor(100000 + Math.random() * 900000);
+          var buyerName = document.getElementById('buyerName').value.trim();
+          var buyerEmail = document.getElementById('buyerEmail').value.trim();
+          var buyerWa = waDisplay(document.getElementById('buyerWa').value);
+          document.getElementById('invNo').textContent = invoiceNo;
+          document.getElementById('invDate').textContent = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' • ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+          document.getElementById('invName').textContent = buyerName || '-';
+          document.getElementById('invEmail').textContent = buyerEmail || '-';
+          document.getElementById('invMethod').textContent = currentEvent.free ? 'Tanpa pembayaran (GRATIS)' : selectedMethod;
+          document.getElementById('invQty').textContent = 'x' + currentQty;
+          var sub = document.getElementById('invSubtotal');
+          sub.textContent = priceText(t.subtotal);
+          sub.classList.toggle('free', !!currentEvent.free);
+          document.getElementById('invFee').textContent = fmtRupiah(t.fee);
+          var tot = document.getElementById('invTotal');
+          tot.textContent = priceText(t.total);
+          tot.classList.toggle('free', !!currentEvent.free);
+          var msg = document.getElementById('successMsg');
+          msg.textContent = '';
+          msg.appendChild(document.createTextNode('Invoice dan e-tiket sudah diterbitkan untuk '));
+          var strong = document.createElement('strong');
+          strong.textContent = buyerName || 'pemesan';
+          msg.appendChild(strong);
+          msg.appendChild(document.createTextNode(' dan dikirim ke email ' + buyerEmail + ' serta WhatsApp ' + buyerWa + ' (simulasi).'));
+          ticketCodes = [];
+          var list = document.getElementById('eticketList');
+          list.innerHTML = '';
+          for (var i = 0; i < currentQty; i++) {
+            var code = makeTicketCode();
+            ticketCodes.push(code);
+            list.appendChild(buildEticket(code, i));
+          }
+          payProcessing.hidden = true;
+          paySuccess.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          showToast('Pembayaran berhasil (simulasi). E-tiket kamu sudah terbit.');
+        }
+        function startPayment(){
+          stopTimer();
+          var t = totals();
+          paySection.hidden = true;
+          resultSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (currentEvent.free || t.total === 0) {
+            showSuccess();
+            return;
+          }
+          paySuccess.hidden = true;
+          payProcessing.hidden = false;
+          document.getElementById('procMethod').textContent = selectedMethod;
+          document.getElementById('procTotal').textContent = fmtRupiah(t.total);
+          setTimeout(showSuccess, 2200);
+        }
+        document.getElementById('btnDownloadInvoice').addEventListener('click', function(){
+          var t = totals();
+          var lines = [
+            'TICKET LAND — INVOICE (SIMULASI / MODE DEMO)',
+            '==============================================',
+            'Nomor Invoice    : ' + invoiceNo,
+            'Tanggal          : ' + document.getElementById('invDate').textContent,
+            'Nama Pemesan     : ' + document.getElementById('buyerName').value.trim(),
+            'Email            : ' + document.getElementById('buyerEmail').value.trim(),
+            'Metode Pembayaran: ' + (currentEvent.free ? 'Tanpa pembayaran (GRATIS)' : selectedMethod),
+            'Status           : LUNAS',
+            '----------------------------------------------',
+            'Event            : ABC & Mom Expo Indonesia 2026',
+            'Kategori         : Tiket Masuk Reguler',
+            'Jumlah Tiket     : ' + currentQty,
+            'Subtotal         : ' + priceText(t.subtotal),
+            'Biaya Layanan    : ' + fmtRupiah(t.fee),
+            'Total Bayar      : ' + priceText(t.total),
+            '----------------------------------------------',
+            'Kode Tiket       : ' + ticketCodes.join(', '),
+            '',
+            'Invoice ini diterbitkan oleh simulasi pembayaran Ticket Land',
+            'untuk keperluan demo — bukan bukti pembayaran sungguhan.'
+          ];
+          var blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = (invoiceNo || 'invoice-ticket-land') + '.txt';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 500);
+        });
+        document.querySelectorAll('.method-head').forEach(function(head){
+          head.addEventListener('click', function(){
+            var group = head.parentElement;
+            var closed = group.classList.toggle('closed');
+            head.setAttribute('aria-expanded', closed ? 'false' : 'true');
+          });
+        });
+
+        /* Hubungi Kami — halaman kontak dari link navbar */
+        var contactSection = document.getElementById('contactPage');
+        function openContact(){
+          stopTimer();
+          landingSections.forEach(function(s){ s.style.display = 'none'; });
+          exploreSection.hidden = true;
+          detailSection.hidden = true;
+          ticketSection.hidden = true;
+          orderSection.hidden = true;
+          paySection.hidden = true;
+          resultSection.hidden = true;
+          contactSection.hidden = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function closeContact(){
+          contactSection.hidden = true;
+          landingSections.forEach(function(s){ s.style.display = ''; });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.querySelectorAll('.nav-contact').forEach(function(link){
+          link.addEventListener('click', function(e){
+            e.preventDefault();
+            mobileMenu.classList.remove('open');
+            burger.setAttribute('aria-expanded', 'false');
+            openContact();
+          });
+        });
+        document.getElementById('btnBackContact').addEventListener('click', closeContact);
+
+        /* Form Hubungi Kami — demo: validasi di halaman, lalu tampilkan pesan sukses */
+        var hubForm = document.getElementById('hubForm');
+        var hubErr = document.getElementById('hubErr');
+        var hubFormWrap = document.getElementById('hubFormWrap');
+        var hubSuccess = document.getElementById('hubSuccess');
+        ['hubName', 'hubEmail', 'hubSubject'].forEach(function(id){
+          var el = document.getElementById(id);
+          el.addEventListener('input', function(){ el.classList.remove('invalid'); });
+          el.addEventListener('change', function(){ el.classList.remove('invalid'); });
+        });
+        hubForm.addEventListener('submit', function(e){
+          e.preventDefault();
+          var nameEl = document.getElementById('hubName');
+          var emailEl = document.getElementById('hubEmail');
+          var subjectEl = document.getElementById('hubSubject');
+          var name = nameEl.value.trim();
+          var email = emailEl.value.trim();
+          var nameOk = name !== '';
+          var emailOk = validEmail(email);
+          var subjectOk = subjectEl.value !== '';
+          nameEl.classList.toggle('invalid', !nameOk);
+          emailEl.classList.toggle('invalid', !emailOk);
+          subjectEl.classList.toggle('invalid', !subjectOk);
+          if (!nameOk || !emailOk || !subjectOk) {
+            hubErr.textContent = !emailOk && email !== ''
+              ? 'Alamat email yang dimasukkan belum valid — periksa lagi ya.'
+              : 'Kolom bertanda * wajib diisi — cek kolom yang ditandai merah.';
+            hubErr.style.display = 'block';
+            var firstBad = !nameOk ? nameEl : (!emailOk ? emailEl : subjectEl);
+            firstBad.focus({ preventScroll: true });
+            return;
+          }
+          hubErr.style.display = 'none';
+          var msg = document.getElementById('hubSuccessMsg');
+          msg.textContent = '';
+          msg.appendChild(document.createTextNode('Terima kasih, '));
+          var strong = document.createElement('strong');
+          strong.textContent = name;
+          msg.appendChild(strong);
+          msg.appendChild(document.createTextNode('! Pesanmu sudah kami terima. Tim Ticket Land akan membalas ke email ' + email + ' secepatnya.'));
+          hubFormWrap.hidden = true;
+          hubSuccess.hidden = false;
+          showToast('Pesan berhasil dikirim. Terima kasih sudah menghubungi Ticket Land!');
+        });
+        document.getElementById('btnHubAgain').addEventListener('click', function(){
+          hubForm.reset();
+          hubSuccess.hidden = true;
+          hubFormWrap.hidden = false;
+          document.getElementById('hubName').focus({ preventScroll: true });
+        });
+
+        /* Tombol "Click Me!" (Need Help) — sambungkan ke halaman Hubungi Kami */
+        var helpDlg = document.getElementById('helpDlg');
+        document.getElementById('btnHelp').addEventListener('click', function(){
+          openContact();
+        });
+        document.getElementById('helpCancel').addEventListener('click', function(){ helpDlg.close(); });
+        document.getElementById('helpForm').addEventListener('submit', function(e){
+          e.preventDefault();
+          var name = document.getElementById('helpName').value.trim();
+          var msg = document.getElementById('helpMsg').value.trim();
+          if (!msg) return;
+          var text = 'Halo tim Ticket Land, saya ' + (name || '-') + '. ' + msg;
+          var ok = document.getElementById('helpOk');
+          function done(){
+            ok.style.display = 'block';
+            showToast('Pesan bantuan tersalin.');
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(done, done);
+          } else { done(); }
+        });
+
+      })();
+    </script>
+  </body>
+</html>

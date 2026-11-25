@@ -93,16 +93,27 @@
                 <p id="qrStatus" class="small text-success fw-semibold mt-3 mb-0 d-none">
                   <i class="bi bi-camera-video me-1"></i>Kamera aktif - arahkan ke QR e-tiket pemesan.
                 </p>
-                <div class="mt-3">
-                  <button type="button" class="btn btn-primary px-4" id="btnKamera">
+                <div id="httpSecurityNotice" class="alert alert-info py-2 px-3 small text-start mt-3 mb-0 d-none" style="font-size: 0.82rem">
+                  <i class="bi bi-info-circle-fill me-1 text-primary"></i>
+                  <strong>Akses HP di Jaringan Lokal (HTTP):</strong> Jika streaming kamera tidak muncul karena kebijakan izin browser HP, gunakan tombol <strong>Foto QR (Kamera HP)</strong> di bawah untuk membuka kamera ponsel secara langsung.
+                </div>
+                <div class="mt-3 d-flex flex-wrap justify-content-center gap-2">
+                  <button type="button" class="btn btn-primary px-3" id="btnKamera">
                     <i class="bi bi-camera-video me-1"></i>Aktifkan Kamera
                   </button>
-                  <button type="button" class="btn btn-outline-danger d-none px-4" id="btnStopKamera">
+                  <button type="button" class="btn btn-outline-danger d-none px-3" id="btnStopKamera">
                     <i class="bi bi-camera-video-off me-1"></i>Matikan Kamera
                   </button>
+                  <button type="button" class="btn btn-outline-success px-3" id="btnFotoQr">
+                    <i class="bi bi-camera me-1"></i>Foto QR (Kamera HP)
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary d-none px-2" id="btnGantiKamera" title="Ganti Kamera">
+                    <i class="bi bi-arrow-repeat me-1"></i>Ganti Kamera
+                  </button>
+                  <input type="file" id="qrFileInput" accept="image/*" capture="environment" class="d-none" />
                 </div>
                 <p class="small text-muted mt-3 mb-0" style="font-size: 0.8rem">
-                  Kamera memakai kamera belakang HP (environment) dan butuh izin browser. Halaman harus dibuka lewat HTTPS atau localhost.
+                  Mendukung kamera belakang HP (live stream) serta pemindaian instan via foto / tangkapan layar e-tiket pemesan.
                 </p>
               </div>
 
@@ -348,7 +359,12 @@
       };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="/assets/js/html5-qrcode.min.js"></script>
+    <script>
+      if (typeof Html5Qrcode === 'undefined') {
+        document.write('<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"><\/script>');
+      }
+    </script>
     <script src="/assets/js/qrgen.js"></script>
     <script src="/assets/js/staff.js"></script>
   </body>

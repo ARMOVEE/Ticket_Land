@@ -327,19 +327,123 @@
     }
   }
 
-  /* html5-qrcode Camera Handling */
+  /* html5-qrcode Camera Handling & Mobile Fallbacks */
   var html5QrCode = null;
   var isScanning = false;
+  var availableCameras = [];
+  var currentCameraIndex = 0;
 
   var btnKamera = document.getElementById('btnKamera');
   var btnStopKamera = document.getElementById('btnStopKamera');
+  var btnFotoQr = document.getElementById('btnFotoQr');
+  var btnGantiKamera = document.getElementById('btnGantiKamera');
+  var qrFileInput = document.getElementById('qrFileInput');
   var qrFrame = document.getElementById('qrFrame');
   var qrPlaceholder = document.getElementById('qrPlaceholder');
   var qrStatus = document.getElementById('qrStatus');
+  var httpNotice = document.getElementById('httpSecurityNotice');
 
+  // Deteksi lingkungan aman (HTTPS atau localhost)
+  var isSecure = Boolean(window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+  if (!isSecure && httpNotice) {
+    httpNotice.classList.remove('d-none');
+  }
+
+  function pauseScannerIfNeeded() {
+    if (html5QrCode && isScanning) {
+      try {
+        html5QrCode.pause();
+      } catch (e) {
+        // Abaikan jika tidak mendukung pause
+      }
+    }
+  }
+
+  function resumeScannerIfNeeded() {
+    if (html5QrCode && isScanning) {
+      try {
+        html5QrCode.resume();
+      } catch (e) {
+        // Abaikan jika tidak mendukung resume
+      }
+    }
+  }
+
+  if (modalCheckinEl) {
+    modalCheckinEl.addEventListener('hidden.bs.modal', function () {
+      resumeScannerIfNeeded();
+    });
+  }
+  if (modalNotFoundEl) {
+    modalNotFoundEl.addEventListener('hidden.bs.modal', function () {
+      resumeScannerIfNeeded();
+    });
+  }
+
+  /* 1. Ambil Foto QR / Unggah Gambar (Bekerja 100% di HP baik HTTP maupun HTTPS) */
+  if (btnFotoQr && qrFileInput) {
+    btnFotoQr.addEventListener('click', function () {
+      qrFileInput.click();
+    });
+
+    qrFileInput.addEventListener('change', function (e) {
+      var files = e.target.files;
+      if (!files || files.length === 0) return;
+      var file = files[0];
+
+      showFlashStaff('<i class="bi bi-hourglass-split me-1"></i>Menganalisis foto QR tiket...', 'info');
+
+      if (!html5QrCode) {
+        try {
+          html5QrCode = new Html5Qrcode('reader');
+        } catch (err) {
+          // Abaikan jika sudah diinisialisasi
+        }
+      }
+
+      if (!html5QrCode) {
+        showFlashStaff('<i class="bi bi-exclamation-triangle me-1"></i>Pemindai belum siap. Muat ulang halaman.', 'warning');
+        return;
+      }
+
+      html5QrCode.scanFile(file, false)
+        .then(function (decodedText) {
+          var raw = String(decodedText || '').trim();
+          var m = raw.match(/TKL-[A-Z0-9]+/i);
+          var kode = m ? m[0].toUpperCase() : raw.toUpperCase();
+          if (inputKode) inputKode.value = kode;
+          showFlashStaff('<i class="bi bi-check-circle me-1"></i>QR terbaca: <strong>' + esc(kode) + '</strong>', 'success');
+          periksaKodeTiket(kode);
+        })
+        .catch(function () {
+          showFlashStaff('<i class="bi bi-exclamation-triangle-fill me-1"></i>Kode QR tidak terdeteksi pada foto. Pastikan foto QR tegak, fokus, dan tidak buram, lalu coba lagi.', 'warning');
+        })
+        .finally(function () {
+          qrFileInput.value = '';
+        });
+    });
+  }
+
+  /* 2. Streaming Kamera Langsung dengan Penanganan Khusus Mobile */
   function startKamera() {
     if (!window.Html5Qrcode) {
       showFlashStaff('<i class="bi bi-x-octagon me-1"></i>Library pemindai QR belum termuat. Periksa koneksi internet.', 'warning');
+      return;
+    }
+
+    var hasMediaDevices = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+
+    // Kasus HP mengakses via HTTP IP (bukan HTTPS / localhost)
+    if (!hasMediaDevices || !isSecure) {
+      showFlashStaff(
+        '<i class="bi bi-shield-exclamation me-1"></i><strong>Live Streaming Dibatasi Browser HP:</strong> Browser ponsel membatasi live streaming kamera pada koneksi HTTP (bukan HTTPS). Beralih otomatis ke mode <strong>Foto QR HP</strong>...',
+        'info'
+      );
+      if (qrFileInput) {
+        setTimeout(function () {
+          qrFileInput.click();
+        }, 350);
+      }
       return;
     }
 
@@ -349,48 +453,105 @@
     if (btnKamera) btnKamera.classList.add('d-none');
     if (btnStopKamera) btnStopKamera.classList.remove('d-none');
 
-    try {
-      html5QrCode = new Html5Qrcode('reader');
-      var config = {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1.0
-      };
+    if (!html5QrCode) {
+      try {
+        html5QrCode = new Html5Qrcode('reader');
+      } catch (e) {
+        // Abaikan
+      }
+    }
 
-      html5QrCode.start(
+    var qrBoxFn = function (viewfinderWidth, viewfinderHeight) {
+      var edge = Math.min(viewfinderWidth, viewfinderHeight);
+      var size = Math.max(160, Math.floor(edge * 0.72));
+      return { width: size, height: size };
+    };
+
+    var config = {
+      fps: 10,
+      qrbox: qrBoxFn,
+      experimentalFeatures: {
+        useBarCodeDetectorIfSupported: true
+      }
+    };
+
+    var onScanSuccess = function (decodedText) {
+      if (decodedText) {
+        var raw = String(decodedText).trim();
+        var m = raw.match(/TKL-[A-Z0-9]+/i);
+        var kode = m ? m[0].toUpperCase() : raw.toUpperCase();
+        if (inputKode) inputKode.value = kode;
+        pauseScannerIfNeeded();
+        periksaKodeTiket(kode);
+      }
+    };
+
+    var onScanError = function () {
+      // Abaikan frame yang belum menemukan QR
+    };
+
+    // Alur fallback kamera: Deteksi ID Kamera -> Environment (Belakang) -> User (Depan) -> General
+    Html5Qrcode.getCameras().then(function (cameras) {
+      if (cameras && cameras.length > 0) {
+        availableCameras = cameras;
+        var rearIdx = 0;
+        for (var i = 0; i < cameras.length; i++) {
+          var lbl = (cameras[i].label || '').toLowerCase();
+          if (lbl.indexOf('back') !== -1 || lbl.indexOf('rear') !== -1 || lbl.indexOf('environment') !== -1) {
+            rearIdx = i;
+            break;
+          }
+        }
+        currentCameraIndex = rearIdx;
+        if (availableCameras.length > 1 && btnGantiKamera) {
+          btnGantiKamera.classList.remove('d-none');
+        }
+
+        return html5QrCode.start(
+          availableCameras[currentCameraIndex].id,
+          config,
+          onScanSuccess,
+          onScanError
+        );
+      }
+
+      return html5QrCode.start(
         { facingMode: 'environment' },
         config,
-        function (decodedText) {
-          // On successful scan
-          if (decodedText) {
-            var raw = String(decodedText).trim();
-            // Handle if QR code contains full URL like http://localhost:8000/?ticket=TKL-XXXXXX
-            var m = raw.match(/TKL-[A-Z0-9]+/i);
-            var kode = m ? m[0].toUpperCase() : raw.toUpperCase();
-            if (inputKode) inputKode.value = kode;
-            periksaKodeTiket(kode);
-          }
-        },
-        function (errorMessage) {
-          // Ignore frequent scan frame misses
-        }
-      ).then(function () {
-        isScanning = true;
-      }).catch(function (err) {
-        showFlashStaff('<i class="bi bi-camera-video-off me-1"></i>Kamera tidak dapat diakses: ' + esc(err && err.message ? err.message : err), 'warning');
-        stopKamera();
-      });
-    } catch (e) {
-      showFlashStaff('<i class="bi bi-camera-video-off me-1"></i>Inisialisasi kamera gagal: ' + esc(e.message), 'warning');
+        onScanSuccess,
+        onScanError
+      );
+    }).then(function () {
+      isScanning = true;
+    }).catch(function (err) {
+      console.warn('Percobaan kamera utama gagal, mencoba fallback facingMode:', err);
+      if (html5QrCode) {
+        return html5QrCode.start(
+          { facingMode: 'user' },
+          config,
+          onScanSuccess,
+          onScanError
+        ).then(function () {
+          isScanning = true;
+        });
+      }
+      throw err;
+    }).catch(function (finalErr) {
+      var errMsg = (finalErr && finalErr.message) ? finalErr.message : String(finalErr || '');
+      showFlashStaff(
+        '<i class="bi bi-camera-video-off me-1"></i>Streaming kamera tidak dapat dimulai (' + esc(errMsg)
+        + '). Silakan gunakan tombol <strong>Foto QR (Kamera HP)</strong> di samping.',
+        'warning'
+      );
       stopKamera();
-    }
+    });
   }
 
   function stopKamera() {
     if (html5QrCode && isScanning) {
       html5QrCode.stop().then(function () {
-        html5QrCode.clear();
         isScanning = false;
+        try { html5QrCode.clear(); } catch (e) {}
       }).catch(function () {
         isScanning = false;
       });
@@ -401,6 +562,43 @@
     if (qrStatus) qrStatus.classList.add('d-none');
     if (btnKamera) btnKamera.classList.remove('d-none');
     if (btnStopKamera) btnStopKamera.classList.add('d-none');
+    if (btnGantiKamera) btnGantiKamera.classList.add('d-none');
+  }
+
+  // Tombol Ganti Kamera Depan/Belakang
+  if (btnGantiKamera) {
+    btnGantiKamera.addEventListener('click', function () {
+      if (!html5QrCode || !isScanning || availableCameras.length < 2) return;
+      currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+      var nextCam = availableCameras[currentCameraIndex];
+
+      html5QrCode.stop().then(function () {
+        isScanning = false;
+        return html5QrCode.start(
+          nextCam.id,
+          {
+            fps: 10,
+            qrbox: function (w, h) {
+              var m = Math.min(w, h);
+              return { width: Math.floor(m * 0.72), height: Math.floor(m * 0.72) };
+            }
+          },
+          function (decodedText) {
+            var m = String(decodedText).trim().match(/TKL-[A-Z0-9]+/i);
+            var kode = m ? m[0].toUpperCase() : String(decodedText).trim().toUpperCase();
+            if (inputKode) inputKode.value = kode;
+            pauseScannerIfNeeded();
+            periksaKodeTiket(kode);
+          },
+          function () {}
+        );
+      }).then(function () {
+        isScanning = true;
+        showFlashStaff('<i class="bi bi-arrow-repeat me-1"></i>Beralih ke: ' + esc(nextCam.label || 'Kamera ' + (currentCameraIndex + 1)), 'info');
+      }).catch(function (err) {
+        console.warn('Gagal beralih kamera:', err);
+      });
+    });
   }
 
   if (btnKamera) btnKamera.addEventListener('click', startKamera);

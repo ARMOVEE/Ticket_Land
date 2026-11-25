@@ -68,10 +68,25 @@ class HomeController extends Controller
         $categoryModel = new Category();
         $eventModel = new Event();
 
+        $events = $eventModel->getAllActive();
+        $categoryId = isset($_GET['category_id']) && is_numeric($_GET['category_id']) ? (int) $_GET['category_id'] : null;
+        $q = isset($_GET['q']) ? trim(strtolower((string) $_GET['q'])) : '';
+
+        if ($categoryId !== null) {
+            $events = array_values(array_filter($events, static fn(array $e): bool => (int) $e['category_id'] === $categoryId));
+        }
+
+        if ($q !== '') {
+            $events = array_values(array_filter($events, static function (array $e) use ($q): bool {
+                $hay = strtolower(($e['nama'] ?? '') . ' ' . ($e['penyelenggara'] ?? '') . ' ' . ($e['kota'] ?? '') . ' ' . ($e['venue'] ?? '') . ' ' . ($e['kode'] ?? ''));
+                return str_contains($hay, $q);
+            }));
+        }
+
         $this->json([
             'ok'         => true,
             'categories' => $categoryModel->getAll(),
-            'events'     => $eventModel->getAllActive(),
+            'events'     => $events,
         ]);
     }
 

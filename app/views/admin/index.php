@@ -844,7 +844,7 @@
           'csrfToken'   => $csrfToken,
           'admin'       => $admin,
           'initialPage' => $initialPage,
-          'state'       => $state,
+          'state'       => $admin ? $state : null,
       ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
     </script>
     <script src="/assets/js/bootstrap.bundle.min.js" defer></script>

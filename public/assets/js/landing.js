@@ -50,9 +50,15 @@
       },
       body: JSON.stringify(payload)
     }).then(function (res) {
+      var ct = res.headers.get('content-type') || '';
+      if (ct.indexOf('application/json') === -1) {
+        return { status: res.status, body: { ok: false, message: 'Server merespons dengan format yang tidak dikenal (HTTP ' + res.status + ').' } };
+      }
       return res.json().then(function (json) {
         return { status: res.status, body: json };
       });
+    }).catch(function () {
+      return { status: 0, body: { ok: false, message: 'Tidak bisa terhubung ke server. Pastikan Apache & MySQL jalan, lalu coba lagi.' } };
     });
   }
 

@@ -107,6 +107,7 @@ class CustomerAuthController extends Controller
             $role = strtolower((string) $user['peran']);
 
             if (in_array($role, ['admin', 'manager'], true)) {
+                session_regenerate_id(true);
                 $_SESSION['admin_user'] = [
                     'id'       => (int) $user['id'],
                     'username' => (string) $user['username'],
@@ -124,6 +125,7 @@ class CustomerAuthController extends Controller
             }
 
             if ($role === 'staff') {
+                session_regenerate_id(true);
                 $_SESSION['staff_user'] = [
                     'id'       => (int) $user['id'],
                     'username' => (string) $user['username'],
@@ -146,6 +148,7 @@ class CustomerAuthController extends Controller
         $customer = $customerModel->findByEmail($identifier);
 
         if ($customer !== null && password_verify($pass, (string) $customer['password_hash'])) {
+            session_regenerate_id(true);
             $_SESSION['customer'] = [
                 'id'    => (int) $customer['id'],
                 'email' => (string) $customer['email'],

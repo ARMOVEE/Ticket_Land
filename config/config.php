@@ -13,7 +13,7 @@ date_default_timezone_set('Asia/Jakarta');
 return [
     'app_name' => Env::get('APP_NAME', 'Ticket Land'),
     'app_env'  => Env::get('APP_ENV', 'local'),
-    'app_url'  => Env::get('APP_URL', 'https://localhost:8000'),
+    'app_url'  => Env::get('APP_URL', 'https://localhost'),
     'db' => [
         'host'    => Env::get('DB_HOST', 'localhost'),
         'port'    => Env::get('DB_PORT', '3306'),

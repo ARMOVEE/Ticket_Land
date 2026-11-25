@@ -92,12 +92,26 @@ class HomeController extends Controller
 
     public function health(): void
     {
-        $pdo = Database::getInstance();
-        $dbName = (string) $pdo->query('SELECT DATABASE()')->fetchColumn();
-        $this->json([
-            'status'   => 'ok',
-            'app'      => 'Ticket Land',
-            'database' => $dbName,
-        ]);
+        try {
+            $pdo = Database::getInstance();
+            $dbName = (string) $pdo->query('SELECT DATABASE()')->fetchColumn();
+            $this->json([
+                'status'   => 'ok',
+                'app'      => 'Ticket Land',
+                'database' => [
+                    'status' => 'up',
+                    'name'   => $dbName,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            $this->json([
+                'status'   => 'error',
+                'app'      => 'Ticket Land',
+                'database' => [
+                    'status'  => 'down',
+                    'message' => 'Database unreachable',
+                ],
+            ], 503);
+        }
     }
 }

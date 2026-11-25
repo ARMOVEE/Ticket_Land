@@ -77,20 +77,6 @@ class AdminController extends Controller
 
     public function index(string $section = 'dashboard'): void
     {
-        // Support demo/headless session parameter for direct menu testing & screenshots
-        if (!isset($_SESSION['admin_user']) && isset($_GET['demo']) && $_GET['demo'] === '1') {
-            $userModel = new User();
-            $demoAdmin = $userModel->findByIdentifier('demo@ticketland.id');
-            if ($demoAdmin) {
-                $_SESSION['admin_user'] = [
-                    'id'       => (int) $demoAdmin['id'],
-                    'username' => $demoAdmin['username'],
-                    'nama'     => $demoAdmin['nama'],
-                    'peran'    => $demoAdmin['peran'],
-                ];
-            }
-        }
-
         $admin = $this->currentAdmin();
 
         // Enforce server-side RBAC when a Staff user tries to access /admin directly (FR-A-23, AC-18)
@@ -124,7 +110,7 @@ class AdminController extends Controller
             $initialPage = 'dashboard';
         }
 
-        $state = $this->buildFullState();
+        $state = $admin !== null ? $this->buildFullState() : null;
 
         $this->view('admin/index', [
             'admin'       => $admin,
@@ -166,6 +152,7 @@ class AdminController extends Controller
             return;
         }
 
+        session_regenerate_id(true);
         $_SESSION['admin_user'] = [
             'id'       => (int) $user['id'],
             'username' => (string) $user['username'],
@@ -547,25 +534,23 @@ class AdminController extends Controller
     public function exportCsv(): void
     {
         $admin = $this->currentAdmin();
-        if ($admin === null && !empty($_SESSION['staff_user'])) {
-            http_response_code(403);
-            echo '403 Akses Ditolak';
+        if ($admin === null) {
+            http_response_code(401);
+            echo '401 Unauthorized - Silakan login sebagai Admin terlebih dahulu.';
             return;
         }
 
         $statsModel = new AdminStats();
         $report = $statsModel->getSalesReport();
 
-        if ($admin !== null) {
-            $log = new ActivityLog();
-            $log->record(
-                (int) $admin['id'],
-                (string) $admin['username'],
-                'export',
-                'reports',
-                'Mengekspor Laporan Pemesanan & Pembatalan ke berkas CSV.'
-            );
-        }
+        $log = new ActivityLog();
+        $log->record(
+            (int) $admin['id'],
+            (string) $admin['username'],
+            'export',
+            'reports',
+            'Mengekspor Laporan Pemesanan & Pembatalan ke berkas CSV.'
+        );
 
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="laporan-penjualan-tiket.csv"');

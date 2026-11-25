@@ -71,6 +71,7 @@ class StaffController extends Controller
         }
 
         // Staff, Manager, and Admin can all operate the check-in scanner
+        session_regenerate_id(true);
         $_SESSION['staff_user'] = [
             'id'       => (int) $user['id'],
             'username' => $user['username'],
@@ -126,20 +127,6 @@ class StaffController extends Controller
 
     public function index(): void
     {
-        // Support demo/testing auto-login parameter
-        if (!isset($_SESSION['staff_user']) && isset($_GET['demo']) && $_GET['demo'] === '1') {
-            $userModel = new User();
-            $demoStaff = $userModel->findByIdentifier('staff@ticketland.id');
-            if ($demoStaff) {
-                $_SESSION['staff_user'] = [
-                    'id'       => (int) $demoStaff['id'],
-                    'username' => $demoStaff['username'],
-                    'nama'     => $demoStaff['nama'],
-                    'peran'    => $demoStaff['peran'],
-                ];
-            }
-        }
-
         $staff = $this->currentStaff();
         if ($staff === null) {
             header('Location: /staff/login');

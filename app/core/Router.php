@@ -69,6 +69,15 @@ class Router
         }
 
         http_response_code(404);
+        if (str_starts_with($normalized, '/api/')) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'ok'      => false,
+                'message' => 'Endpoint tidak ditemukan',
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
         echo '404 - Halaman tidak ditemukan';
     }
 }

@@ -38,10 +38,6 @@ $catIcons = [
           <a href="#rekomendasi" class="nav-home">Tentang</a>
           <a href="#" class="nav-contact">Hubungi Kami</a>
         </nav>
-        <label class="nav-search" aria-label="Cari event">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input type="search" id="navSearchInput" placeholder="Cari event, artis, kota..." autocomplete="off" />
-        </label>
         <button class="btn-masuk" id="btnMasuk" type="button">Masuk</button>
         <div class="user-chip" id="userChip">
           <span class="avatar" id="userAvatar">A</span>
@@ -160,26 +156,43 @@ $catIcons = [
           </div>
 
           <div class="explore-toolbar">
-            <button class="btn-filter" id="btnFilter" type="button" aria-expanded="false" aria-controls="filterPanel">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v5.3L10 21v-8L3 5Z"/></svg>
-              Filter
-            </button>
-            <span class="active-chip" id="activeChip" hidden>
-              <span id="activeChipName">Musik</span>
-              <button id="chipClear" type="button" aria-label="Hapus filter kategori">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+            <div class="explore-toolbar-left">
+              <button class="btn-filter" id="btnFilter" type="button" aria-expanded="false" aria-controls="filterPanel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v5.3L10 21v-8L3 5Z"/></svg>
+                Filter
               </button>
-            </span>
-            <label class="sort-pill">
-              <span class="sort-label">Urutkan</span>
-              <select id="sortSelect" aria-label="Urutkan event">
-                <option value="relevan" selected>Paling Relevan</option>
-                <option value="tanggal">Tanggal Terdekat</option>
-                <option value="murah">Harga Terendah</option>
-                <option value="mahal">Harga Tertinggi</option>
-              </select>
-              <svg class="sort-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"/></svg>
-            </label>
+              <span class="active-chip" id="activeChip" hidden>
+                <span id="activeChipName">Musik</span>
+                <button id="chipClear" type="button" aria-label="Hapus filter kategori">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+                </button>
+              </span>
+            </div>
+
+            <div class="dropdown-sort" id="dropdownSort">
+              <button type="button" class="btn-sort" id="btnSort" aria-expanded="false" aria-haspopup="listbox" aria-label="Urutkan event">
+                <span>Urutkan</span>
+                <svg class="sort-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"/></svg>
+              </button>
+              <ul class="sort-menu" id="sortMenu" role="listbox" aria-label="Pilihan urutan" hidden>
+                <li role="option" class="sort-item active" data-sort="relevan" aria-selected="true">
+                  <span>Paling Relevan</span>
+                  <svg class="sort-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </li>
+                <li role="option" class="sort-item" data-sort="tanggal" aria-selected="false">
+                  <span>Tanggal Terdekat</span>
+                  <svg class="sort-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </li>
+                <li role="option" class="sort-item" data-sort="murah" aria-selected="false">
+                  <span>Harga Terendah</span>
+                  <svg class="sort-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </li>
+                <li role="option" class="sort-item" data-sort="mahal" aria-selected="false">
+                  <span>Harga Tertinggi</span>
+                  <svg class="sort-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div class="filter-panel" id="filterPanel" hidden>

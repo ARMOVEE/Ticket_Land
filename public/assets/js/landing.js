@@ -420,6 +420,9 @@
     if (typeof authDlg.showModal === 'function' && !authDlg.open) authDlg.showModal();
   }
 
+  var mobileMasuk = document.getElementById('mobileMasuk');
+  var mobileKeluar = document.getElementById('mobileKeluar');
+
   function applyCustomerSession(cust) {
     currentCustomer = cust;
     if (cust && cust.nama) {
@@ -427,22 +430,40 @@
       document.getElementById('userAvatar').textContent = (cust.nama.trim().charAt(0) || 'P').toUpperCase();
       btnMasuk.style.display = 'none';
       userChip.classList.add('show');
+      if (mobileMasuk) mobileMasuk.style.display = 'none';
+      if (mobileKeluar) {
+        mobileKeluar.style.display = 'block';
+        var mobName = document.getElementById('mobileUserName');
+        if (mobName) mobName.textContent = cust.nama;
+      }
     } else {
       userChip.classList.remove('show');
       btnMasuk.style.display = '';
+      if (mobileMasuk) mobileMasuk.style.display = '';
+      if (mobileKeluar) mobileKeluar.style.display = 'none';
     }
   }
 
   applyCustomerSession(currentCustomer);
 
   btnMasuk.addEventListener('click', openAuth);
-  var mobileMasuk = document.getElementById('mobileMasuk');
   if (mobileMasuk) {
     mobileMasuk.addEventListener('click', function (e) {
       e.preventDefault();
       if (mobileMenu) mobileMenu.classList.remove('open');
       if (burger) burger.setAttribute('aria-expanded', 'false');
       openAuth();
+    });
+  }
+  if (mobileKeluar) {
+    mobileKeluar.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (mobileMenu) mobileMenu.classList.remove('open');
+      if (burger) burger.setAttribute('aria-expanded', 'false');
+      apiPost('/api/customer/logout', {}).then(function () {
+        applyCustomerSession(null);
+        showToast('Kamu sudah keluar. Sampai jumpa!');
+      });
     });
   }
   document.getElementById('authClose').addEventListener('click', function () { authDlg.close(); });
@@ -473,7 +494,7 @@
     var email = document.getElementById('loginEmail').value.trim();
     var pass = document.getElementById('loginPass').value;
     showMsg(loginOk, '');
-    if (!validEmail(email)) { showMsg(loginErr, 'Masukkan alamat email yang valid.'); return; }
+    if (!email) { showMsg(loginErr, 'Email atau username belum diisi.'); return; }
     if (!pass) { showMsg(loginErr, 'Kata sandi belum diisi.'); return; }
     showMsg(loginErr, '');
 
@@ -482,9 +503,19 @@
         showMsg(loginErr, (res.body && res.body.message) || 'Gagal masuk. Periksa email dan kata sandi.');
         return;
       }
+
+      // Redirect Admin & Staff according to role
+      if (res.body.redirect) {
+        authDlg.close();
+        showToast(res.body.message || 'Login berhasil.');
+        window.location.href = res.body.redirect;
+        return;
+      }
+
+      // Customer session on landing page
       applyCustomerSession(res.body.customer);
       authDlg.close();
-      showToast('Selamat datang kembali, ' + res.body.customer.nama + '!');
+      showToast('Selamat datang kembali, ' + (res.body.customer ? res.body.customer.nama : 'Pengguna') + '!');
     });
   });
 
@@ -1657,5 +1688,8 @@
     openContact();
   } else if (initView === 'login') {
     openAuth();
+  } else if (initView === 'burger') {
+    if (mobileMenu) mobileMenu.classList.add('open');
+    if (burger) burger.setAttribute('aria-expanded', 'true');
   }
 })();

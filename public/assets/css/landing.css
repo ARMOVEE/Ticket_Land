@@ -843,6 +843,12 @@ dialog::backdrop{background:rgba(15,25,20,.5)}
   .hero{padding-top:28px}
   .auth-card{padding:32px 24px 26px;min-height:0}
 }
+
+/* Sembunyikan tombol Masuk di navbar mobile (< 768px) karena sudah ada di dalam hamburger */
+@media (max-width:768px){
+  .btn-masuk{display:none !important}
+  .burger{display:flex;margin-left:auto}
+}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .toast,.cat .circle,.spinner{transition:none;animation:none}

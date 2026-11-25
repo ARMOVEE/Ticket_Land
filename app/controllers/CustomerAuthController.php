@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Models\ActivityLog;
 use App\Models\Customer;
+use App\Models\User;
 
 class CustomerAuthController extends Controller
 {
@@ -84,11 +85,11 @@ class CustomerAuthController extends Controller
             return;
         }
 
-        $email = strtolower(trim((string) ($input['email'] ?? '')));
+        $identifier = trim((string) ($input['email'] ?? ($input['username'] ?? '')));
         $pass = (string) ($input['password'] ?? '');
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->json(['ok' => false, 'message' => 'Masukkan alamat email yang valid.'], 422);
+        if ($identifier === '') {
+            $this->json(['ok' => false, 'message' => 'Email atau username belum diisi.'], 422);
             return;
         }
         if ($pass === '') {
@@ -96,26 +97,75 @@ class CustomerAuthController extends Controller
             return;
         }
 
+        $log = new ActivityLog();
+
+        // 1. Cek data tabel `users` terlebih dahulu (admin / manager / staff)
+        $userModel = new User();
+        $user = $userModel->findByIdentifier($identifier);
+
+        if ($user !== null && password_verify($pass, (string) $user['password_hash'])) {
+            $role = strtolower((string) $user['peran']);
+
+            if (in_array($role, ['admin', 'manager'], true)) {
+                $_SESSION['admin_user'] = [
+                    'id'       => (int) $user['id'],
+                    'username' => (string) $user['username'],
+                    'nama'     => (string) $user['nama'],
+                    'peran'    => $role,
+                ];
+                $log->record((int) $user['id'], (string) $user['username'], 'LOGIN', 'users', "Login {$role} berhasil dari landing page.");
+                $this->json([
+                    'ok'       => true,
+                    'role'     => $role,
+                    'redirect' => '/admin',
+                    'message'  => 'Login berhasil. Mengalihkan ke Dashboard Admin...',
+                ]);
+                return;
+            }
+
+            if ($role === 'staff') {
+                $_SESSION['staff_user'] = [
+                    'id'       => (int) $user['id'],
+                    'username' => (string) $user['username'],
+                    'nama'     => (string) $user['nama'],
+                    'peran'    => 'staff',
+                ];
+                $log->record((int) $user['id'], (string) $user['username'], 'LOGIN', 'users', 'Login staff berhasil dari landing page.');
+                $this->json([
+                    'ok'       => true,
+                    'role'     => 'staff',
+                    'redirect' => '/staff',
+                    'message'  => 'Login berhasil. Mengalihkan ke Halaman Scan QR Staff...',
+                ]);
+                return;
+            }
+        }
+
+        // 2. Cek data tabel `akun_user` untuk Customer
         $customerModel = new Customer();
-        $user = $customerModel->findByEmail($email);
-        if ($user === null || !password_verify($pass, (string) $user['password_hash'])) {
-            $this->json(['ok' => false, 'message' => 'Email atau kata sandi tidak sesuai.'], 401);
+        $customer = $customerModel->findByEmail($identifier);
+
+        if ($customer !== null && password_verify($pass, (string) $customer['password_hash'])) {
+            $_SESSION['customer'] = [
+                'id'    => (int) $customer['id'],
+                'email' => (string) $customer['email'],
+                'nama'  => (string) $customer['nama'],
+            ];
+
+            $log->record(null, (string) $customer['email'], 'LOGIN', 'akun_user', "Customer {$customer['email']} berhasil login.");
+
+            $this->json([
+                'ok'       => true,
+                'role'     => 'customer',
+                'redirect' => null,
+                'customer' => $_SESSION['customer'],
+                'message'  => 'Login berhasil.',
+            ]);
             return;
         }
 
-        $_SESSION['customer'] = [
-            'id'    => (int) $user['id'],
-            'email' => (string) $user['email'],
-            'nama'  => (string) $user['nama'],
-        ];
-
-        $log = new ActivityLog();
-        $log->record(null, (string) $user['email'], 'login', 'akun_user', "Customer {$user['email']} berhasil login.");
-
-        $this->json([
-            'ok'       => true,
-            'customer' => $_SESSION['customer'],
-        ]);
+        // 3. Jika akun tidak cocok di kedua tabel
+        $this->json(['ok' => false, 'message' => 'Email/username atau kata sandi tidak sesuai.'], 401);
     }
 
     public function logout(): void

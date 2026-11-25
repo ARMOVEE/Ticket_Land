@@ -58,6 +58,7 @@ $catIcons = [
         <a href="#rekomendasi" class="nav-home">Tentang</a>
         <a href="#" class="nav-contact">Hubungi Kami</a>
         <a href="#" id="mobileMasuk">Masuk</a>
+        <a href="#" id="mobileKeluar" style="display:none;color:#b91c1c">Keluar (<span id="mobileUserName">Pengguna</span>)</a>
       </div>
     </header>
 
@@ -751,7 +752,7 @@ $catIcons = [
           <form id="loginForm" method="dialog" novalidate>
             <label for="loginEmail">Email</label>
             <div class="field">
-              <input id="loginEmail" class="no-toggle" type="email" placeholder="nama@email.com" autocomplete="email" required />
+              <input id="loginEmail" class="no-toggle" type="text" inputmode="email" placeholder="nama@email.com" autocomplete="username email" required />
             </div>
             <label for="loginPass">Kata Sandi</label>
             <div class="field">

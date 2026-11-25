@@ -32,6 +32,7 @@ use App\Controllers\CustomerAuthController;
 use App\Controllers\CheckoutController;
 use App\Controllers\ContactController;
 use App\Controllers\AdminController;
+use App\Controllers\StaffController;
 
 $router = new Router();
 
@@ -69,5 +70,17 @@ $router->post('/api/admin/categories/save', [AdminController::class, 'saveCatego
 $router->post('/api/admin/categories/delete', [AdminController::class, 'deleteCategory']);
 $router->post('/api/admin/transactions/create', [AdminController::class, 'createTransaction']);
 $router->post('/api/admin/users/create', [AdminController::class, 'createUser']);
+
+// Staff Routes (Langkah 3)
+$router->get('/staff', [StaffController::class, 'index']);
+$router->get('/staff/scan', [StaffController::class, 'index']);
+$router->get('/staff/login', [StaffController::class, 'loginPage']);
+$router->get('/staff/logout', [StaffController::class, 'logout']);
+
+$router->post('/api/staff/login', [StaffController::class, 'login']);
+$router->post('/api/staff/logout', [StaffController::class, 'logout']);
+$router->post('/api/staff/check-ticket', [StaffController::class, 'checkTicket']);
+$router->post('/api/staff/confirm-checkin', [StaffController::class, 'confirmCheckin']);
+$router->post('/api/staff/reject-ktp', [StaffController::class, 'rejectKtp']);
 
 $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI'] ?? '/');

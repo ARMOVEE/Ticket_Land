@@ -18,6 +18,11 @@ if (PHP_SAPI === 'cli-server') {
                 'jpeg' => 'image/jpeg',
                 'webp' => 'image/webp',
                 'ico'  => 'image/x-icon',
+                'woff2' => 'font/woff2',
+                'woff'  => 'font/woff',
+                'ttf'   => 'font/ttf',
+                'eot'   => 'application/vnd.ms-fontobject',
+                'otf'   => 'font/otf',
             ];
             if (isset($mimes[$ext])) {
                 header('Content-Type: ' . $mimes[$ext]);

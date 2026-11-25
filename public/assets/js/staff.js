@@ -60,9 +60,9 @@
       var d1 = document.getElementById('qrDemo1');
       var d2 = document.getElementById('qrDemo2');
       var d3 = document.getElementById('qrDemo3');
-      if (d1) d1.innerHTML = QrGen.svg(demoCodes.code1, 4, 1);
-      if (d2) d2.innerHTML = QrGen.svg(demoCodes.code2, 4, 1);
-      if (d3) d3.innerHTML = QrGen.svg(demoCodes.code3, 4, 1);
+      if (d1) d1.innerHTML = QrGen.svg(demoCodes.code1, 8, 2);
+      if (d2) d2.innerHTML = QrGen.svg(demoCodes.code2, 8, 2);
+      if (d3) d3.innerHTML = QrGen.svg(demoCodes.code3, 8, 2);
     }
   }
 
@@ -455,7 +455,13 @@
 
     if (!html5QrCode) {
       try {
-        html5QrCode = new Html5Qrcode('reader');
+        var qrFormats = (typeof Html5QrcodeSupportedFormats !== 'undefined')
+          ? [ Html5QrcodeSupportedFormats.QR_CODE ]
+          : [ 0 ];
+        html5QrCode = new Html5Qrcode('reader', {
+          formatsToSupport: qrFormats,
+          verbose: false
+        });
       } catch (e) {
         // Abaikan
       }
@@ -463,13 +469,16 @@
 
     var qrBoxFn = function (viewfinderWidth, viewfinderHeight) {
       var edge = Math.min(viewfinderWidth, viewfinderHeight);
-      var size = Math.max(160, Math.floor(edge * 0.72));
+      var size = Math.max(160, Math.floor(edge * 0.85));
       return { width: size, height: size };
     };
 
     var config = {
-      fps: 10,
+      fps: 30,
       qrbox: qrBoxFn,
+      formatsToSupport: (typeof Html5QrcodeSupportedFormats !== 'undefined')
+        ? [ Html5QrcodeSupportedFormats.QR_CODE ]
+        : [ 0 ],
       experimentalFeatures: {
         useBarCodeDetectorIfSupported: true
       }
@@ -577,10 +586,16 @@
         return html5QrCode.start(
           nextCam.id,
           {
-            fps: 10,
+            fps: 30,
             qrbox: function (w, h) {
               var m = Math.min(w, h);
-              return { width: Math.floor(m * 0.72), height: Math.floor(m * 0.72) };
+              return { width: Math.floor(m * 0.85), height: Math.floor(m * 0.85) };
+            },
+            formatsToSupport: (typeof Html5QrcodeSupportedFormats !== 'undefined')
+              ? [ Html5QrcodeSupportedFormats.QR_CODE ]
+              : [ 0 ],
+            experimentalFeatures: {
+              useBarCodeDetectorIfSupported: true
             }
           },
           function (decodedText) {

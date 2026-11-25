@@ -6,10 +6,10 @@
     <meta name="color-scheme" content="light" />
     <link rel="icon" href="data:," />
     <title>Ticket Land - Staff Check-in (Scan QR)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="/assets/css/boxicons.min.css" rel="stylesheet" />
+    <link href="/assets/css/plus-jakarta-sans.css" rel="stylesheet" />
     <link rel="stylesheet" href="/assets/css/staff.css" />
   </head>
   <body>
@@ -358,13 +358,8 @@
         }
       };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/html5-qrcode.min.js"></script>
-    <script>
-      if (typeof Html5Qrcode === 'undefined') {
-        document.write('<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"><\/script>');
-      }
-    </script>
     <script src="/assets/js/qrgen.js"></script>
     <script src="/assets/js/staff.js"></script>
   </body>

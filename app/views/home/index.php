@@ -19,9 +19,7 @@ $catIcons = [
     <meta name="color-scheme" content="light" />
     <link rel="icon" href="data:," />
     <title>Ticket Land - Your Best Event Partner</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="/assets/css/plus-jakarta-sans.css" rel="stylesheet" />
     <link rel="stylesheet" href="/assets/css/landing.css" />
   </head>
   <body>

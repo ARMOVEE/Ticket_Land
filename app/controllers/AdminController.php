@@ -97,7 +97,7 @@ class AdminController extends Controller
         if ($admin === null && !empty($_SESSION['staff_user'])) {
             http_response_code(403);
             echo '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>403 Akses Ditolak - Ticket Land</title>'
-                . '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"></head>'
+                . '<link href="/assets/css/bootstrap.min.css" rel="stylesheet"></head>'
                 . '<body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh">'
                 . '<div class="card border-0 shadow-sm p-4 text-center" style="max-width:460px">'
                 . '<h1 class="h4 text-danger fw-bold mb-2">403 - Akses Ditolak</h1>'

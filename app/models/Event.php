@@ -15,6 +15,11 @@ class Event extends Model
             return [];
         }
 
+        try {
+            (new Order())->releaseExpiredHolds();
+        } catch (\Throwable) {
+        }
+
         $tcStmt = $this->db->query(
             'SELECT id, event_id, nama, harga, kuota_awal, stok_sisa,
                     CASE WHEN stok_sisa >= 1 THEN "On Sale" ELSE "Habis" END AS status

@@ -39,44 +39,48 @@ class CheckoutController extends Controller
             return;
         }
 
+        $jumlah = (int) ($input['jumlah'] ?? 1);
+        if ($jumlah < 1 || $jumlah > 5) {
+            $this->json([
+                'ok'      => false,
+                'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).',
+                'sisa'    => 0,
+            ], 422);
+            return;
+        }
+
         $orderModel = new Order();
-        $tc = $orderModel->getTicketCategoryStock($tcId);
-        if ($tc === null || $tc['deleted_at'] !== null || $tc['event_status'] !== 'aktif') {
-            $this->json(['ok' => false, 'message' => 'Kategori tiket atau event tidak ditemukan.'], 404);
-            return;
+
+        // Release any existing hold for this session
+        if (!empty($_SESSION['checkout_session']['token'])) {
+            $orderModel->releaseHoldByToken((string) $_SESSION['checkout_session']['token']);
+            unset($_SESSION['checkout_session']);
         }
 
-        $stokSisa = (int) $tc['stok_sisa'];
-        if ($stokSisa < 1) {
-            $this->json(['ok' => false, 'message' => 'Mohon maaf, stok tiket untuk kategori ini sudah habis.'], 422);
-            return;
-        }
-
-        $now = time();
-        $expiresAt = $now + self::SESSION_DURATION_SECONDS;
         $checkoutToken = bin2hex(random_bytes(16));
+        $hold = $orderModel->holdStock($tcId, $jumlah, $checkoutToken, self::SESSION_DURATION_SECONDS);
+
+        if (!$hold['ok']) {
+            $this->json($hold, 422);
+            return;
+        }
 
         $_SESSION['checkout_session'] = [
             'ticket_category_id' => $tcId,
-            'event_id'           => (int) $tc['event_id'],
-            'started_at'         => $now,
-            'expires_at'         => $expiresAt,
+            'event_id'           => (int) $hold['ticket_category']['event_id'],
+            'jumlah'             => $jumlah,
+            'started_at'         => time(),
+            'expires_at'         => time() + self::SESSION_DURATION_SECONDS,
             'token'              => $checkoutToken,
             'paid'               => false,
         ];
 
         $this->json([
             'ok'                => true,
-            'ticket_category'   => [
-                'id'        => (int) $tc['id'],
-                'event_id'  => (int) $tc['event_id'],
-                'nama'      => $tc['nama'],
-                'harga'     => (int) $tc['harga'],
-                'stok_sisa' => $stokSisa,
-                'status'    => $stokSisa >= 1 ? 'On Sale' : 'Habis',
-            ],
+            'ticket_category'   => $hold['ticket_category'],
+            'jumlah'            => $jumlah,
             'remaining_seconds' => self::SESSION_DURATION_SECONDS,
-            'expires_at'        => $expiresAt,
+            'expires_at'        => time() + self::SESSION_DURATION_SECONDS,
             'checkout_token'    => $checkoutToken,
         ]);
     }
@@ -90,8 +94,51 @@ class CheckoutController extends Controller
             return;
         }
 
+        $session = $_SESSION['checkout_session'] ?? null;
+        if (is_array($session) && !empty($session['token'])) {
+            $orderModel = new Order();
+            $orderModel->releaseHoldByToken((string) $session['token']);
+        }
+
         unset($_SESSION['checkout_session']);
         $this->json(['ok' => true]);
+    }
+
+    public function updateQty(): void
+    {
+        $input = $this->readInput();
+        $_POST['csrf_token'] = $input['csrf_token'] ?? ($_POST['csrf_token'] ?? '');
+        if (!$this->verifyCsrf()) {
+            $this->json(['ok' => false, 'message' => 'Token keamanan (CSRF) tidak valid.'], 403);
+            return;
+        }
+
+        $session = $_SESSION['checkout_session'] ?? null;
+        if (!is_array($session) || empty($session['token'])) {
+            $this->json(['ok' => false, 'message' => 'Sesi pemesanan tidak ditemukan.'], 404);
+            return;
+        }
+
+        $token = (string) $session['token'];
+        $newQty = (int) ($input['jumlah'] ?? 1);
+        if ($newQty < 1 || $newQty > 5) {
+            $this->json(['ok' => false, 'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).'], 422);
+            return;
+        }
+
+        $orderModel = new Order();
+        $res = $orderModel->updateHoldQuantity($token, $newQty);
+
+        if (!$res['ok']) {
+            $this->json($res, 422);
+            return;
+        }
+
+        $_SESSION['checkout_session']['jumlah'] = $newQty;
+        $this->json([
+            'ok'     => true,
+            'jumlah' => $newQty,
+        ]);
     }
 
     public function pay(): void
@@ -113,7 +160,12 @@ class CheckoutController extends Controller
             return;
         }
 
+        $orderModel = new Order();
+
         if (time() > (int) $session['expires_at']) {
+            if (!empty($session['token'])) {
+                $orderModel->releaseHoldByToken((string) $session['token']);
+            }
             unset($_SESSION['checkout_session']);
             $this->json([
                 'ok'      => false,
@@ -141,10 +193,15 @@ class CheckoutController extends Controller
         }
 
         $tcId = (int) ($input['ticket_category_id'] ?? $session['ticket_category_id'] ?? 0);
-        $jumlah = (int) ($input['jumlah'] ?? 1);
+        $jumlah = (int) ($input['jumlah'] ?? $session['jumlah'] ?? 1);
         $metode = trim((string) ($input['metode'] ?? 'QRIS'));
         $buyer = is_array($input['buyer'] ?? null) ? $input['buyer'] : [];
         $attendees = is_array($input['attendees'] ?? null) ? $input['attendees'] : [];
+
+        if ($jumlah < 1 || $jumlah > 5) {
+            $this->json(['ok' => false, 'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).'], 422);
+            return;
+        }
 
         if (
             trim((string) ($buyer['nama'] ?? '')) === '' ||
@@ -186,6 +243,7 @@ class CheckoutController extends Controller
                 'jumlah'             => $jumlah,
                 'metode'             => $metode,
                 'akun_user_id'       => $akunUserId,
+                'checkout_token'     => (string) ($session['token'] ?? ''),
                 'buyer'              => $buyer,
                 'attendees'          => $attendees,
             ]);

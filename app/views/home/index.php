@@ -327,6 +327,14 @@ $catIcons = [
                   <span class="s-price" id="summaryPrice">Rp 0</span>
                 </div>
                 <p class="summary-cat" id="summaryCat"></p>
+                <div class="summary-qty-wrap" id="summaryQtyWrap" style="display:none; align-items:center; justify-content:space-between; margin:12px 0 16px; padding:10px 14px; background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0;">
+                  <span style="font-size:13px; font-weight:600; color:#334155;">Jumlah Tiket</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <button type="button" id="summaryQtyMinus" class="qty-btn" aria-label="Kurangi jumlah tiket" style="width:28px; height:28px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:pointer; font-weight:bold; display:flex; align-items:center; justify-content:center;">-</button>
+                    <span id="summaryQtyVal" style="font-weight:700; min-width:24px; text-align:center; font-size:14px; color:#0f172a;">1</span>
+                    <button type="button" id="summaryQtyPlus" class="qty-btn" aria-label="Tambah jumlah tiket" style="width:28px; height:28px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; cursor:pointer; font-weight:bold; display:flex; align-items:center; justify-content:center;">+</button>
+                  </div>
+                </div>
                 <button class="btn-beli" id="btnBeli" type="button" disabled>Beli Sekarang</button>
               </div>
             </aside>

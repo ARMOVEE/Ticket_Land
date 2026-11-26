@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
     session_set_cookie_params([
         'httponly' => true,
         'samesite' => 'Lax',
-        'secure'   => true,
+        'secure'   => $isHttps,
     ]);
     session_start();
 }
@@ -54,6 +56,7 @@ $router->post('/api/customer/logout', [CustomerAuthController::class, 'logout'])
 // Checkout 4-Step Routes (Guest & Logged-in User)
 $router->post('/api/checkout/start', [CheckoutController::class, 'startSession']);
 $router->post('/api/checkout/reset', [CheckoutController::class, 'resetSession']);
+$router->post('/api/checkout/update-qty', [CheckoutController::class, 'updateQty']);
 $router->post('/api/checkout/pay', [CheckoutController::class, 'pay']);
 
 // Contact Route

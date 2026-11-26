@@ -14,6 +14,7 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2800);
   }
+  window.showToast = showToast;
 
   function fmtRupiah(n) {
     return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
@@ -734,8 +735,47 @@
   var btnBeli = document.getElementById('btnBeli');
   var summaryPrice = document.getElementById('summaryPrice');
   var summaryCat = document.getElementById('summaryCat');
+  var summaryQtyWrap = document.getElementById('summaryQtyWrap');
+  var summaryQtyVal = document.getElementById('summaryQtyVal');
+  var summaryQtyMinus = document.getElementById('summaryQtyMinus');
+  var summaryQtyPlus = document.getElementById('summaryQtyPlus');
   var selectedTc = null;
+  var selectedTicketQty = 1;
   var checkoutToken = '';
+
+  function updateSummaryQtyControls() {
+    if (!summaryQtyWrap || !summaryQtyVal) return;
+    if (selectedTc) {
+      summaryQtyWrap.style.display = 'flex';
+      summaryQtyVal.textContent = String(selectedTicketQty);
+      var maxQ = Math.min(5, Number(selectedTc.stok_sisa));
+      if (summaryQtyMinus) summaryQtyMinus.disabled = selectedTicketQty <= 1;
+      if (summaryQtyPlus) summaryQtyPlus.disabled = selectedTicketQty >= maxQ;
+    } else {
+      summaryQtyWrap.style.display = 'none';
+      selectedTicketQty = 1;
+    }
+  }
+
+  if (summaryQtyMinus) {
+    summaryQtyMinus.addEventListener('click', function () {
+      if (selectedTicketQty > 1) {
+        selectedTicketQty--;
+        updateSummaryQtyControls();
+      }
+    });
+  }
+  if (summaryQtyPlus) {
+    summaryQtyPlus.addEventListener('click', function () {
+      var maxQ = selectedTc ? Math.min(5, Number(selectedTc.stok_sisa)) : 5;
+      if (selectedTicketQty < maxQ) {
+        selectedTicketQty++;
+        updateSummaryQtyControls();
+      } else {
+        showToast(maxQ < 5 ? ('Sisa stok kategori ini hanya ' + maxQ + ' tiket.') : 'Maksimal pembelian 5 tiket dalam 1 kali transaksi.');
+      }
+    });
+  }
 
   function renderTicketCategories() {
     ticketCategoryList.innerHTML = '';
@@ -818,6 +858,8 @@
     });
 
     if (selectedTc) {
+      selectedTicketQty = 1;
+      updateSummaryQtyControls();
       var isFree = Number(selectedTc.harga) === 0;
       summaryPrice.textContent = isFree ? 'GRATIS' : fmtRupiah(selectedTc.harga);
       summaryPrice.classList.toggle('free', isFree);
@@ -825,6 +867,7 @@
       summaryCat.classList.add('show');
       btnBeli.disabled = false;
     } else {
+      updateSummaryQtyControls();
       var freeEvent = Number(currentEvent.harga_mulai) === 0;
       summaryPrice.textContent = freeEvent ? 'GRATIS' : fmtRupiah(currentEvent.harga_mulai);
       summaryPrice.classList.toggle('free', freeEvent);
@@ -852,20 +895,38 @@
   document.getElementById('btnPesanDetail').addEventListener('click', openTicket);
   document.getElementById('btnBackTicket').addEventListener('click', closeTicket);
 
-  btnBeli.addEventListener('click', function () {
+  function startCheckout(qtyToRequest) {
     if (!selectedTc) return;
+    var reqQty = qtyToRequest || selectedTicketQty || 1;
     btnBeli.disabled = true;
-    apiPost('/api/checkout/start', { ticket_category_id: selectedTc.id }).then(function (res) {
+    apiPost('/api/checkout/start', { ticket_category_id: selectedTc.id, jumlah: reqQty }).then(function (res) {
       btnBeli.disabled = false;
       if (!res.body || !res.body.ok) {
-        showToast((res.body && res.body.message) || 'Stok tiket tidak mencukupi.');
+        var msg = (res.body && res.body.message) || 'Stok tiket tidak mencukupi.';
+        var sisa = res.body && typeof res.body.sisa === 'number' ? res.body.sisa : 0;
+        if (sisa > 0) {
+          var offer = confirm(msg + '\n\nApakah Anda ingin membeli ' + sisa + ' tiket yang masih tersisa?');
+          if (offer) {
+            selectedTicketQty = sisa;
+            updateSummaryQtyControls();
+            startCheckout(sisa);
+            return;
+          }
+        }
+        showToast(msg);
         refreshCatalogFromServer();
         return;
       }
       selectedTc.stok_sisa = Number(res.body.ticket_category.stok_sisa);
       checkoutToken = res.body.checkout_token || '';
-      openOrder(Number(res.body.remaining_seconds || 600));
+      var rem = Number(res.body.remaining_seconds || 600);
+      var grantedQty = Number(res.body.jumlah || reqQty);
+      openOrder(rem, grantedQty);
     });
+  }
+
+  btnBeli.addEventListener('click', function () {
+    startCheckout(selectedTicketQty);
   });
 
   function refreshCatalogFromServer() {
@@ -1084,16 +1145,38 @@
     syncAttendeeCardsCount(currentQty);
   }
 
+  function maxAllowedQty() {
+    var stok = selectedTc ? Number(selectedTc.stok_sisa) : 5;
+    return Math.max(1, Math.min(5, currentQty + stok));
+  }
+
   function setQty(n) {
-    var maxQ = maxAllowedQty();
-    if (n > maxQ) {
-      showToast(maxQ < 5
-        ? ('Sisa stok kategori ini hanya ' + maxQ + ' tiket.')
-        : 'Maksimal pembelian 5 tiket dalam 1 kali transaksi.');
+    if (n > 5) {
+      showToast('Maksimal pembelian 5 tiket dalam 1 kali transaksi (BR-02).');
+      return;
     }
-    var next = Math.max(1, Math.min(maxQ, n));
-    currentQty = next;
-    updateRincian();
+    if (n < 1) return;
+    if (n === currentQty) return;
+
+    qtyMinus.disabled = true;
+    qtyPlus.disabled = true;
+    apiPost('/api/checkout/update-qty', {
+      ticket_category_id: selectedTc ? selectedTc.id : 0,
+      checkout_token: checkoutToken,
+      jumlah: n
+    }).then(function (res) {
+      qtyMinus.disabled = false;
+      qtyPlus.disabled = false;
+      if (!res.body || !res.body.ok) {
+        showToast((res.body && res.body.message) || 'Tidak dapat mengubah jumlah tiket.');
+        if (res.body && res.body.expired) {
+          closeOrder(true);
+        }
+        return;
+      }
+      currentQty = Number(res.body.jumlah || n);
+      updateRincian();
+    });
   }
 
   qtyMinus.addEventListener('click', function () { setQty(currentQty - 1); });
@@ -1133,10 +1216,10 @@
     }, 1000);
   }
 
-  function openOrder(durationSec) {
+  function openOrder(durationSec, initialQty) {
     if (!currentEvent || !selectedTc) return;
     unitPrice = Number(selectedTc.harga) || 0;
-    currentQty = 1;
+    currentQty = initialQty || 1;
     syncOn = false;
     attendeesContainer.innerHTML = '';
 
@@ -1165,6 +1248,8 @@
     if (!skipResetCall) {
       apiPost('/api/checkout/reset', {}).catch(function () {});
     }
+    selectedTicketQty = 1;
+    updateSummaryQtyControls();
     orderSection.hidden = true;
     paySection.hidden = true;
     resultSection.hidden = true;

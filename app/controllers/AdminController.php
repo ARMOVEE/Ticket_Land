@@ -233,6 +233,45 @@ class AdminController extends Controller
             return;
         }
 
+        // Process poster image upload if provided
+        if (isset($_FILES['poster']) && is_array($_FILES['poster']) && $_FILES['poster']['error'] === UPLOAD_ERR_OK) {
+            $file = $_FILES['poster'];
+            if ($file['size'] > 2 * 1024 * 1024) {
+                $this->json(['ok' => false, 'message' => 'Ukuran file poster maksimal 2MB.'], 422);
+                return;
+            }
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+            $allowedMimes = [
+                'image/jpeg'  => 'jpg',
+                'image/pjpeg' => 'jpg',
+                'image/png'   => 'png',
+                'image/x-png' => 'png',
+                'image/webp'  => 'webp',
+            ];
+            if (!isset($allowedMimes[$mime])) {
+                $this->json(['ok' => false, 'message' => 'Format poster harus berupa JPG, PNG, atau WebP.'], 422);
+                return;
+            }
+            $ext = $allowedMimes[$mime];
+            $filename = 'poster_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $uploadDir = dirname(__DIR__, 2) . '/public/uploads/posters';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $destPath = $uploadDir . '/' . $filename;
+            if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+                $this->json(['ok' => false, 'message' => 'Gagal mengunggah file poster.'], 500);
+                return;
+            }
+            $input['poster'] = '/uploads/posters/' . $filename;
+        } elseif (isset($input['hapus_poster']) && (string) $input['hapus_poster'] === '1') {
+            $input['poster'] = '';
+        } elseif (isset($input['existing_poster'])) {
+            $input['poster'] = trim((string) $input['existing_poster']);
+        }
+
         try {
             $isUpdate = !empty($input['id']) && (int) $input['id'] > 0;
             $eventModel = new Event();

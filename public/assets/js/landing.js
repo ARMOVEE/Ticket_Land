@@ -141,7 +141,7 @@
     Bisnis: ['#334155', '#1e293b']
   };
 
-  function bannerSvg(ev, idx) {
+  function bannerFallbackSvg(ev, idx) {
     var catName = ev.kategori_nama || 'Musik';
     var c = CAT_COLORS[catName] || CAT_COLORS.Musik;
     var gid = 'xg' + idx + '_' + ev.id;
@@ -157,7 +157,16 @@
       + '</svg>';
   }
 
-  function detailBannerSvg(ev) {
+  function bannerSvg(ev, idx) {
+    if (ev.poster && String(ev.poster).trim() !== '') {
+      var pSrc = String(ev.poster).trim();
+      return '<img src="' + escapeXml(pSrc) + '" alt="' + escapeXml(ev.nama) + '" loading="lazy" style="width: 100%; height: 164px; object-fit: cover; display: block;" onerror="this.style.display=\'none\';if(this.nextElementSibling){this.nextElementSibling.style.display=\'block\';}">'
+        + '<div style="display:none;">' + bannerFallbackSvg(ev, idx) + '</div>';
+    }
+    return bannerFallbackSvg(ev, idx);
+  }
+
+  function detailBannerFallbackSvg(ev) {
     var catName = ev.kategori_nama || 'Event';
     var titleShort = String(ev.nama || '').length > 26 ? String(ev.nama).slice(0, 26) + '...' : String(ev.nama || '');
     return '<svg viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
@@ -170,6 +179,23 @@
       + '<text x="36" y="214" font-family="Plus Jakarta Sans, sans-serif" font-size="22" font-weight="700" fill="#f2a63b">' + escapeXml(catName.toUpperCase()) + ' • ' + escapeXml(ev.kode || '') + '</text>'
       + '<text x="36" y="262" font-family="Plus Jakarta Sans, sans-serif" font-size="16" fill="#E2F2E9">' + escapeXml(ev.tanggal_label || '') + ' • ' + escapeXml(ev.kota || '') + '</text>'
       + '</svg>';
+  }
+
+  function detailBannerSvg(ev) {
+    if (ev.poster && String(ev.poster).trim() !== '') {
+      var pSrc = String(ev.poster).trim();
+      var catName = ev.kategori_nama || 'Event';
+      return '<div class="detail-poster-wrap" style="position:relative;width:100%;height:320px;overflow:hidden;background:#084A2E;border-radius:12px;">'
+        + '<img src="' + escapeXml(pSrc) + '" alt="' + escapeXml(ev.nama) + '" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display=\'none\';if(this.parentElement.nextElementSibling){this.parentElement.nextElementSibling.style.display=\'block\';}">'
+        + '<div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:24px 28px;">'
+        + '<div style="font-size:12px;font-weight:700;color:#f2a63b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">' + escapeXml(catName) + ' • ' + escapeXml(ev.kode || '') + '</div>'
+        + '<div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;margin-bottom:6px;">' + escapeXml(ev.nama || '') + '</div>'
+        + '<div style="font-size:14px;color:#E2F2E9;">' + escapeXml(ev.tanggal_label || '') + ' • ' + escapeXml(ev.venue || '') + ', ' + escapeXml(ev.kota || '') + '</div>'
+        + '</div>'
+        + '</div>'
+        + '<div style="display:none;">' + detailBannerFallbackSvg(ev) + '</div>';
+    }
+    return detailBannerFallbackSvg(ev);
   }
 
   function escapeXml(unsafe) {

@@ -125,7 +125,12 @@ $catIcons = [
             ?>
             <article class="card" tabindex="0" role="button" data-event-id="<?= (int) $rec['id'] ?>" aria-label="Lihat detail <?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>">
               <div class="thumb" role="img" aria-label="Gambar event <?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
+                <?php if (!empty($rec['poster'])): ?>
+                  <img src="<?= htmlspecialchars($rec['poster'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='block';}" />
+                  <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
+                <?php else: ?>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
+                <?php endif; ?>
               </div>
               <h3><?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?></h3>
               <p class="meta"><?= htmlspecialchars($rec['tanggal_label'], ENT_QUOTES, 'UTF-8') ?> at <?= htmlspecialchars($rec['kota'], ENT_QUOTES, 'UTF-8') ?></p>

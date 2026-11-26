@@ -50,14 +50,28 @@
   }
 
   function apiPost(url, data) {
-    var payload = Object.assign({}, data, { csrf_token: csrfToken });
-    return fetch(url, {
-      method: 'POST',
-      headers: {
+    var isFd = (typeof FormData !== 'undefined' && data instanceof FormData);
+    var body, headers;
+    if (isFd) {
+      if (!data.has('csrf_token')) {
+        data.append('csrf_token', csrfToken);
+      }
+      headers = {
+        'X-CSRF-Token': csrfToken
+      };
+      body = data;
+    } else {
+      var payload = Object.assign({}, data, { csrf_token: csrfToken });
+      headers = {
         'Content-Type': 'application/json',
         'X-CSRF-Token': csrfToken
-      },
-      body: JSON.stringify(payload)
+      };
+      body = JSON.stringify(payload);
+    }
+    return fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: body
     }).then(function (res) {
       var ct = res.headers.get('content-type') || '';
       if (ct.indexOf('application/json') === -1) {
@@ -288,8 +302,14 @@
         var hargaText = Number(ev.harga_mulai) === 0 ? 'GRATIS' : fmtRupiah(ev.harga_mulai);
 
         var tr = document.createElement('tr');
+        var posterThumb = '';
+        if (ev.poster && String(ev.poster).trim() !== '') {
+          posterThumb = '<img src="' + esc(ev.poster) + '" alt="' + esc(ev.nama) + '" class="rounded object-fit-cover" style="width: 48px; height: 48px;" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'bg-secondary bg-opacity-25 text-secondary d-flex align-items-center justify-content-center rounded fw-bold\\\' style=\\\'width: 48px; height: 48px; font-size: 13px;\\\'>' + esc(ev.kode) + '</div>\';">';
+        } else {
+          posterThumb = '<div class="bg-secondary bg-opacity-25 text-secondary d-flex align-items-center justify-content-center rounded fw-bold" style="width: 48px; height: 48px; font-size: 13px;">' + esc(ev.kode) + '</div>';
+        }
         tr.innerHTML =
-          '<td><div class="bg-secondary bg-opacity-25 text-secondary d-flex align-items-center justify-content-center rounded fw-bold" style="width: 48px; height: 48px; font-size: 13px;">' + esc(ev.kode) + '</div></td>'
+          '<td>' + posterThumb + '</td>'
           + '<td><code>' + esc(ev.kode) + '</code></td>'
           + '<td>' + esc(ev.nama) + '</td>'
           + '<td>' + esc(ev.kategori_nama) + '</td>'
@@ -423,6 +443,15 @@
     document.getElementById('detailHarga').textContent = Number(ev.harga_mulai) === 0 ? 'GRATIS' : fmtRupiah(ev.harga_mulai);
     document.getElementById('detailDeskripsi').textContent = ev.deskripsi;
 
+    var detailPosterBox = document.getElementById('detailPosterBox');
+    if (detailPosterBox) {
+      if (ev.poster && String(ev.poster).trim() !== '') {
+        detailPosterBox.innerHTML = '<img src="' + esc(ev.poster) + '" class="w-100 rounded object-fit-cover" style="height: 240px;" alt="' + esc(ev.nama) + '" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded w-100\\\' style=\\\'height: 240px\\\'> <i class=\\\'bi bi-image\\\' style=\\\'font-size: 3rem\\\' aria-hidden=\\\'true\\\'></i> <small class=\\\'text-muted mt-2\\\'>Poster event Ticket Land</small> </div>\';">';
+      } else {
+        detailPosterBox.innerHTML = '<div class="bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded w-100" style="height: 240px"> <i class="bi bi-image" style="font-size: 3rem" aria-hidden="true"></i> <small class="text-muted mt-2">Poster event Ticket Land</small> </div>';
+      }
+    }
+
     var stokBadge = document.getElementById('detailStok');
     stokBadge.textContent = Number(ev.total_stok) + ' tiket';
     stokBadge.className = 'badge ' + (Number(ev.total_stok) <= 5 ? 'bg-danger' : 'bg-primary');
@@ -456,11 +485,67 @@
   var modalFormEventEl = document.getElementById('modalFormEvent');
   var modalFormEvent = (window.bootstrap && modalFormEventEl) ? new bootstrap.Modal(modalFormEventEl) : null;
 
+  function resetEventPosterInputs() {
+    var fileInput = document.getElementById('eventPosterFile');
+    if (fileInput) fileInput.value = '';
+    var existInput = document.getElementById('eventExistingPoster');
+    if (existInput) existInput.value = '';
+    var delInput = document.getElementById('eventHapusPoster');
+    if (delInput) delInput.value = '0';
+    var prevBox = document.getElementById('eventPosterPreviewBox');
+    if (prevBox) prevBox.classList.add('d-none');
+    var btnDel = document.getElementById('btnHapusPoster');
+    if (btnDel) btnDel.classList.add('d-none');
+  }
+
+  // Setup file preview and remove buttons
+  var posterFileInputEl = document.getElementById('eventPosterFile');
+  if (posterFileInputEl) {
+    posterFileInputEl.addEventListener('change', function () {
+      var f = (this.files && this.files[0]) ? this.files[0] : null;
+      var prevBox = document.getElementById('eventPosterPreviewBox');
+      var prevImg = document.getElementById('eventPosterPreviewImg');
+      var prevName = document.getElementById('eventPosterPreviewName');
+      var prevSize = document.getElementById('eventPosterPreviewSize');
+      var btnDel = document.getElementById('btnHapusPoster');
+      var delInput = document.getElementById('eventHapusPoster');
+      if (f) {
+        if (f.size > 2 * 1024 * 1024) {
+          alert('Ukuran file poster maksimal 2MB.');
+          this.value = '';
+          return;
+        }
+        if (delInput) delInput.value = '0';
+        if (prevImg) prevImg.src = URL.createObjectURL(f);
+        if (prevName) prevName.textContent = f.name;
+        if (prevSize) prevSize.textContent = (f.size / 1024).toFixed(1) + ' KB';
+        if (prevBox) prevBox.classList.remove('d-none');
+        if (btnDel) btnDel.classList.remove('d-none');
+      }
+    });
+  }
+
+  var btnHapusPosterEl = document.getElementById('btnHapusPoster');
+  if (btnHapusPosterEl) {
+    btnHapusPosterEl.addEventListener('click', function () {
+      var fileInput = document.getElementById('eventPosterFile');
+      if (fileInput) fileInput.value = '';
+      var existInput = document.getElementById('eventExistingPoster');
+      if (existInput) existInput.value = '';
+      var delInput = document.getElementById('eventHapusPoster');
+      if (delInput) delInput.value = '1';
+      var prevBox = document.getElementById('eventPosterPreviewBox');
+      if (prevBox) prevBox.classList.add('d-none');
+      this.classList.add('d-none');
+    });
+  }
+
   document.getElementById('btnTambahEvent').addEventListener('click', function () {
     document.getElementById('formEvent').reset();
     document.getElementById('eventId').value = '0';
     document.getElementById('modalFormEventLabel').innerHTML = '<i class="bi bi-calendar-plus me-1"></i>Tambah Event Baru';
     document.getElementById('eventNamaKategoriTiket').value = 'Reguler';
+    resetEventPosterInputs();
     if (modalFormEvent) modalFormEvent.show();
   });
 
@@ -482,27 +567,50 @@
     document.getElementById('eventStok').value = String(firstTc.stok_sisa);
     document.getElementById('eventDeskripsi').value = ev.deskripsi;
     document.getElementById('modalFormEventLabel').innerHTML = '<i class="bi bi-pencil-square me-1"></i>Edit Event ' + esc(ev.kode);
+
+    resetEventPosterInputs();
+    var existInput = document.getElementById('eventExistingPoster');
+    if (existInput) existInput.value = ev.poster || '';
+    if (ev.poster && String(ev.poster).trim() !== '') {
+      var prevBox = document.getElementById('eventPosterPreviewBox');
+      var prevImg = document.getElementById('eventPosterPreviewImg');
+      var prevName = document.getElementById('eventPosterPreviewName');
+      var prevSize = document.getElementById('eventPosterPreviewSize');
+      var btnDel = document.getElementById('btnHapusPoster');
+      if (prevImg) prevImg.src = ev.poster;
+      if (prevName) prevName.textContent = 'Poster saat ini';
+      if (prevSize) prevSize.textContent = 'Klik tombol Hapus Poster jika ingin menghapus poster ini.';
+      if (prevBox) prevBox.classList.remove('d-none');
+      if (btnDel) btnDel.classList.remove('d-none');
+    }
+
     if (modalFormEvent) modalFormEvent.show();
   }
 
   document.getElementById('formEvent').addEventListener('submit', function (e) {
     e.preventDefault();
-    var payload = {
-      id: parseInt(document.getElementById('eventId').value || '0', 10),
-      nama: document.getElementById('eventNama').value.trim(),
-      category_id: parseInt(document.getElementById('eventKategoriId').value || '0', 10),
-      tanggal_mulai: document.getElementById('eventTanggalMulai').value,
-      jam_label: document.getElementById('eventJamLabel').value.trim(),
-      venue: document.getElementById('eventVenue').value.trim(),
-      kota: document.getElementById('eventKota').value.trim(),
-      penyelenggara: document.getElementById('eventPenyelenggara').value.trim(),
-      nama_kategori_tiket: document.getElementById('eventNamaKategoriTiket').value.trim(),
-      harga_reguler: parseInt(document.getElementById('eventHarga').value || '0', 10),
-      stok_reguler: parseInt(document.getElementById('eventStok').value || '0', 10),
-      deskripsi: document.getElementById('eventDeskripsi').value.trim()
-    };
+    var fd = new FormData();
+    fd.append('id', document.getElementById('eventId').value || '0');
+    fd.append('nama', document.getElementById('eventNama').value.trim());
+    fd.append('category_id', document.getElementById('eventKategoriId').value || '0');
+    fd.append('tanggal_mulai', document.getElementById('eventTanggalMulai').value);
+    fd.append('jam_label', document.getElementById('eventJamLabel').value.trim());
+    fd.append('venue', document.getElementById('eventVenue').value.trim());
+    fd.append('kota', document.getElementById('eventKota').value.trim());
+    fd.append('penyelenggara', document.getElementById('eventPenyelenggara').value.trim());
+    fd.append('nama_kategori_tiket', document.getElementById('eventNamaKategoriTiket').value.trim());
+    fd.append('harga_reguler', document.getElementById('eventHarga').value || '0');
+    fd.append('stok_reguler', document.getElementById('eventStok').value || '0');
+    fd.append('deskripsi', document.getElementById('eventDeskripsi').value.trim());
+    fd.append('existing_poster', document.getElementById('eventExistingPoster').value || '');
+    fd.append('hapus_poster', document.getElementById('eventHapusPoster').value || '0');
 
-    apiPost('/api/admin/events/save', payload).then(function (res) {
+    var posterFileInput = document.getElementById('eventPosterFile');
+    if (posterFileInput && posterFileInput.files && posterFileInput.files[0]) {
+      fd.append('poster', posterFileInput.files[0]);
+    }
+
+    apiPost('/api/admin/events/save', fd).then(function (res) {
       if (!res.body || !res.body.ok) {
         showFlash('<i class="bi bi-x-octagon me-1"></i>' + esc((res.body && res.body.message) || 'Gagal menyimpan event.'), 'danger');
         return;

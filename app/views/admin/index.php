@@ -338,8 +338,8 @@
             <div class="row g-3 mb-3">
               <div class="col-md-4">
                 <div class="card h-100">
-                  <div class="card-body">
-                    <div class="bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded" style="height: 240px">
+                  <div class="card-body p-2 d-flex flex-column align-items-center justify-content-center" id="detailPosterBox">
+                    <div class="bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded w-100" style="height: 240px">
                       <i class="bi bi-image" style="font-size: 3rem" aria-hidden="true"></i>
                       <small class="text-muted mt-2">Poster event Ticket Land</small>
                     </div>
@@ -695,6 +695,25 @@
                 <div class="col-md-4">
                   <label for="eventStok" class="form-label">Kuota / Sisa Tiket</label>
                   <input type="number" class="form-control" id="eventStok" min="0" value="100" required />
+                </div>
+                <div class="col-12">
+                  <label for="eventPosterFile" class="form-label">Poster Event (Opsional)</label>
+                  <div class="input-group">
+                    <input type="file" class="form-control" id="eventPosterFile" accept="image/jpeg,image/png,image/webp" />
+                    <button type="button" class="btn btn-outline-danger d-none" id="btnHapusPoster"><i class="bi bi-trash me-1" aria-hidden="true"></i>Hapus Poster</button>
+                  </div>
+                  <div class="form-text">Format: JPG, PNG, atau WebP (maks. 2MB). Jika dikosongkan, poster otomatis memakai banner dinamis per kategori.</div>
+                  <input type="hidden" id="eventExistingPoster" value="" />
+                  <input type="hidden" id="eventHapusPoster" value="0" />
+                  <div id="eventPosterPreviewBox" class="mt-2 d-none">
+                    <div class="d-flex align-items-center gap-3 p-2 border rounded bg-light">
+                      <img id="eventPosterPreviewImg" src="" alt="Preview Poster" class="rounded object-fit-cover" style="width: 100px; height: 60px;" />
+                      <div>
+                        <small class="d-block fw-semibold text-dark" id="eventPosterPreviewName">Poster terpilih</small>
+                        <small class="text-muted" id="eventPosterPreviewSize"></small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-12">
                   <label for="eventDeskripsi" class="form-label">Deskripsi Event</label>

@@ -206,6 +206,10 @@ class Event extends Model
             $snk = "1. Tiket resmi hanya dijual melalui Ticket Land.\n2. Satu tiket berlaku untuk satu orang.\n3. Wajib membawa KTP sesuai nama pemegang tiket saat check-in.";
         }
 
+        $poster = array_key_exists('poster', $data)
+            ? (trim((string) $data['poster']) !== '' ? trim((string) $data['poster']) : null)
+            : null;
+
         $this->db->beginTransaction();
         try {
             if ($id <= 0) {
@@ -214,26 +218,27 @@ class Event extends Model
                     'INSERT INTO events (
                         kode, nama, category_id, tanggal_mulai, tanggal_selesai, tanggal_label,
                         jam_label, venue, kota, penyelenggara, deskripsi, syarat_ketentuan,
-                        status, created_at
+                        poster, status, created_at
                      ) VALUES (
                         :kode, :nama, :cid, :tm, :ts, :tl,
                         :jl, :venue, :kota, :org, :desc, :snk,
-                        "aktif", NOW()
+                        :poster, "aktif", NOW()
                      )'
                 );
                 $stmt->execute([
-                    ':kode'  => $kode,
-                    ':nama'  => $nama,
-                    ':cid'   => $categoryId,
-                    ':tm'    => $tanggalMulai,
-                    ':ts'    => $tanggalMulai,
-                    ':tl'    => $tanggalLabel,
-                    ':jl'    => $jamLabel,
-                    ':venue' => $venue,
-                    ':kota'  => $kota,
-                    ':org'   => $penyelenggara,
-                    ':desc'  => $deskripsi,
-                    ':snk'   => $snk,
+                    ':kode'   => $kode,
+                    ':nama'   => $nama,
+                    ':cid'    => $categoryId,
+                    ':tm'     => $tanggalMulai,
+                    ':ts'     => $tanggalMulai,
+                    ':tl'     => $tanggalLabel,
+                    ':jl'     => $jamLabel,
+                    ':venue'  => $venue,
+                    ':kota'   => $kota,
+                    ':org'    => $penyelenggara,
+                    ':desc'   => $deskripsi,
+                    ':snk'    => $snk,
+                    ':poster' => $poster,
                 ]);
                 $eventId = (int) $this->db->lastInsertId();
 
@@ -276,26 +281,32 @@ class Event extends Model
                 throw new RuntimeException('Event tidak ditemukan.');
             }
 
+            $posterToSave = array_key_exists('poster', $data)
+                ? (trim((string) $data['poster']) !== '' ? trim((string) $data['poster']) : null)
+                : ($existing['poster'] ?? null);
+
             $stmt = $this->db->prepare(
                 'UPDATE events
                  SET nama = :nama, category_id = :cid, tanggal_mulai = :tm, tanggal_selesai = :ts,
                      tanggal_label = :tl, jam_label = :jl, venue = :venue, kota = :kota,
-                     penyelenggara = :org, deskripsi = :desc, syarat_ketentuan = :snk
+                     penyelenggara = :org, deskripsi = :desc, syarat_ketentuan = :snk,
+                     poster = :poster
                  WHERE id = :id'
             );
             $stmt->execute([
-                ':nama'  => $nama,
-                ':cid'   => $categoryId,
-                ':tm'    => $tanggalMulai,
-                ':ts'    => $tanggalMulai,
-                ':tl'    => $tanggalLabel,
-                ':jl'    => $jamLabel,
-                ':venue' => $venue,
-                ':kota'  => $kota,
-                ':org'   => $penyelenggara,
-                ':desc'  => $deskripsi,
-                ':snk'   => $snk,
-                ':id'    => $id,
+                ':nama'   => $nama,
+                ':cid'    => $categoryId,
+                ':tm'     => $tanggalMulai,
+                ':ts'     => $tanggalMulai,
+                ':tl'     => $tanggalLabel,
+                ':jl'     => $jamLabel,
+                ':venue'  => $venue,
+                ':kota'   => $kota,
+                ':org'    => $penyelenggara,
+                ':desc'   => $deskripsi,
+                ':snk'    => $snk,
+                ':poster' => $posterToSave,
+                ':id'     => $id,
             ]);
 
             // Update primary ticket category price & stock

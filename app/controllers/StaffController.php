@@ -216,8 +216,31 @@ class StaffController extends Controller
             return;
         }
 
-        // Kasus 3: Status pembayaran tidak lunas atau dibatalkan
-        if ($ticket['status_pembayaran'] !== 'Lunas' || $ticket['status_checkin'] === 'Dibatalkan') {
+        // Kasus 3: Status pesanan atau tiket telah DIBATALKAN (Fase 4)
+        if ($ticket['status_pembayaran'] === 'Dibatalkan' || $ticket['status_checkin'] === 'Dibatalkan') {
+            $ticketModel->logRejection(
+                (int) $ticket['id'],
+                $ticket['kode_tiket'],
+                $ticket['nama_pemegang'],
+                $ticket['event_nama'],
+                'Tiket sudah dibatalkan (Pesanan Dibatalkan)',
+                $staff['id'],
+                $staff['nama']
+            );
+            $this->json([
+                'ok'      => false,
+                'status'  => 'CANCELLED',
+                'message' => 'Tiket sudah dibatalkan. E-tiket tidak berlaku lagi untuk check-in.',
+                'data'    => [
+                    'nama'  => $ticket['nama_pemegang'],
+                    'event' => $ticket['event_nama'],
+                ],
+            ], 422);
+            return;
+        }
+
+        // Kasus 3b: Status pembayaran tidak lunas
+        if ($ticket['status_pembayaran'] !== 'Lunas') {
             $ticketModel->logRejection(
                 (int) $ticket['id'],
                 $ticket['kode_tiket'],
@@ -230,7 +253,7 @@ class StaffController extends Controller
             $this->json([
                 'ok'      => false,
                 'status'  => 'INVALID',
-                'message' => 'Status pemesanan tiket belum Lunas atau telah dibatalkan.',
+                'message' => 'Status pemesanan tiket belum Lunas atau telah kedaluwarsa.',
             ], 422);
             return;
         }

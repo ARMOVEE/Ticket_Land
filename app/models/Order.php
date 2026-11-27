@@ -139,10 +139,10 @@ class Order extends Model
      */
     public function holdStock(int $ticketCategoryId, int $jumlah, string $checkoutToken, int $durationSeconds = 600): array
     {
-        if ($jumlah < 1 || $jumlah > 5) {
+        if ($jumlah < 1 || $jumlah > 4) {
             return [
                 'ok'      => false,
-                'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).',
+                'message' => 'Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.',
                 'sisa'    => 0,
             ];
         }
@@ -325,10 +325,10 @@ class Order extends Model
      */
     public function updateHoldQuantity(string $checkoutToken, int $newQuantity): array
     {
-        if ($newQuantity < 1 || $newQuantity > 5) {
+        if ($newQuantity < 1 || $newQuantity > 4) {
             return [
                 'ok'      => false,
-                'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).',
+                'message' => 'Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.',
             ];
         }
 
@@ -447,6 +447,27 @@ class Order extends Model
     }
 
     /**
+     * Extend stock hold expiration time (e.g. when entering payment step - 10 minutes)
+     */
+    public function extendHoldByToken(string $checkoutToken, int $additionalSeconds = 600): bool
+    {
+        if (trim($checkoutToken) === '') {
+            return false;
+        }
+
+        $newExpiresAt = date('Y-m-d H:i:s', time() + $additionalSeconds);
+        $stmt = $this->db->prepare(
+            'UPDATE stock_transactions
+             SET expires_at = :new_exp
+             WHERE checkout_token = :token AND status_hold = "HOLD"'
+        );
+        return $stmt->execute([
+            ':new_exp' => $newExpiresAt,
+            ':token'   => $checkoutToken,
+        ]);
+    }
+
+    /**
      * Atomic checkout per BR-05, BR-06, BR-07, BR-08, BR-09.
      * Steps (1) order Lunas, (2) tickets + QR issued, (3) stock transaction OUT recorded, (4) stock decremented
      * all run inside one database transaction with row-level lock FOR UPDATE.
@@ -461,8 +482,8 @@ class Order extends Model
         $attendees = $payload['attendees'] ?? [];
         $checkoutToken = trim((string) ($payload['checkout_token'] ?? ''));
 
-        if ($jumlah < 1 || $jumlah > 5) {
-            throw new RuntimeException('Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).');
+        if ($jumlah < 1 || $jumlah > 4) {
+            throw new RuntimeException('Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.');
         }
         if (count($attendees) !== $jumlah) {
             throw new RuntimeException('Jumlah data pemegang tiket harus sama dengan jumlah tiket yang dipesan (BR-03).');
@@ -527,35 +548,37 @@ class Order extends Model
             }
 
             $nomorInvoice = $this->generateUniqueInvoiceNo();
+            $cancelCode = $this->generateUniqueCancelCode();
             $eventId = (int) $tc['event_id'];
 
             // (1) Pesanan Lunas
             $stmtOrder = $this->db->prepare(
                 'INSERT INTO orders (
                     nomor_invoice, akun_user_id, event_id, ticket_category_id, jumlah,
-                    subtotal, biaya_layanan, total, metode_pembayaran, status,
+                    subtotal, biaya_layanan, total, metode_pembayaran, status, cancel_code,
                     pemesan_nama, pemesan_tipe_identitas, pemesan_nomor_identitas, pemesan_email, pemesan_wa, created_at
                  ) VALUES (
                     :inv, :uid, :eid, :tcid, :jml,
-                    :sub, :fee, :tot, :metode, "Lunas",
+                    :sub, :fee, :tot, :metode, "Lunas", :cancel_code,
                     :pnama, :ptipe, :pno, :pemail, :pwa, NOW()
                  )'
             );
             $stmtOrder->execute([
-                ':inv'    => $nomorInvoice,
-                ':uid'    => $akunUserId,
-                ':eid'    => $eventId,
-                ':tcid'   => $ticketCategoryId,
-                ':jml'    => $jumlah,
-                ':sub'    => $subtotal,
-                ':fee'    => $biayaLayanan,
-                ':tot'    => $total,
-                ':metode' => $metode,
-                ':pnama'  => trim((string) ($buyer['nama'] ?? '')),
-                ':ptipe'  => trim((string) ($buyer['tipe_identitas'] ?? 'KTP')),
-                ':pno'    => trim((string) ($buyer['nomor_identitas'] ?? '')),
-                ':pemail' => trim((string) ($buyer['email'] ?? '')),
-                ':pwa'    => trim((string) ($buyer['wa'] ?? '')),
+                ':inv'         => $nomorInvoice,
+                ':uid'         => $akunUserId,
+                ':eid'         => $eventId,
+                ':tcid'        => $ticketCategoryId,
+                ':jml'         => $jumlah,
+                ':sub'         => $subtotal,
+                ':fee'         => $biayaLayanan,
+                ':tot'         => $total,
+                ':metode'      => $metode,
+                ':cancel_code' => $cancelCode,
+                ':pnama'       => trim((string) ($buyer['nama'] ?? '')),
+                ':ptipe'       => trim((string) ($buyer['tipe_identitas'] ?? 'KTP')),
+                ':pno'         => trim((string) ($buyer['nomor_identitas'] ?? '')),
+                ':pemail'      => trim((string) ($buyer['email'] ?? '')),
+                ':pwa'         => trim((string) ($buyer['wa'] ?? '')),
             ]);
             $orderId = (int) $this->db->lastInsertId();
 
@@ -686,6 +709,7 @@ class Order extends Model
             return [
                 'order_id'            => $orderId,
                 'nomor_invoice'       => $nomorInvoice,
+                'cancel_code'         => $cancelCode,
                 'tanggal_transaksi'   => date('j F Y • H:i') . ' WIB',
                 'event_id'            => $eventId,
                 'event_kode'          => $tc['event_kode'],
@@ -710,6 +734,239 @@ class Order extends Model
                     'wa'    => trim((string) ($buyer['wa'] ?? '')),
                 ],
                 'tickets'             => $issuedTickets,
+            ];
+        } catch (\Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Generate unique 6-character uppercase cancellation code (A-Z, 0-9)
+     */
+    public function generateUniqueCancelCode(): string
+    {
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // exclude confusing chars like 0, O, 1, I
+        $len = strlen($chars);
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM orders WHERE cancel_code = :code');
+
+        for ($i = 0; $i < 100; $i++) {
+            $code = '';
+            for ($j = 0; $j < 6; $j++) {
+                $code .= $chars[random_int(0, $len - 1)];
+            }
+            $stmt->execute([':code' => $code]);
+            if ((int) $stmt->fetchColumn() === 0) {
+                return $code;
+            }
+        }
+
+        return strtoupper(bin2hex(random_bytes(3)));
+    }
+
+    /**
+     * Cari detail order berdasarkan cancel_code untuk prefill form pembatalan
+     */
+    public function findOrderByCancelCode(string $code): ?array
+    {
+        $code = strtoupper(trim($code));
+        if ($code === '') {
+            return null;
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT o.*, e.nama AS event_nama, e.kode AS event_kode, e.venue, e.kota,
+                    tc.nama AS kategori_tiket_nama, tc.harga AS harga_satuan
+             FROM orders o
+             JOIN events e ON e.id = o.event_id
+             JOIN ticket_categories tc ON tc.id = o.ticket_category_id
+             WHERE o.cancel_code = :code
+             LIMIT 1'
+        );
+        $stmt->execute([':code' => $code]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    /**
+     * Cari detail order berdasarkan nomor invoice
+     */
+    public function findOrderByInvoice(string $invoice): ?array
+    {
+        $invoice = trim($invoice);
+        if ($invoice === '') {
+            return null;
+        }
+
+        $stmt = $this->db->prepare(
+            'SELECT o.*, e.nama AS event_nama, e.kode AS event_kode, e.venue, e.kota,
+                    tc.nama AS kategori_tiket_nama, tc.harga AS harga_satuan
+             FROM orders o
+             JOIN events e ON e.id = o.event_id
+             JOIN ticket_categories tc ON tc.id = o.ticket_category_id
+             WHERE o.nomor_invoice = :inv
+             LIMIT 1'
+        );
+        $stmt->execute([':inv' => $invoice]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    /**
+     * Proses pembatalan pesanan tiket secara ketat (server-side verification).
+     *
+     * Validasi:
+     * 1. cancel_code cocok
+     * 2. nomor_invoice cocok
+     * 3. pemesan_nama cocok (case-insensitive trim)
+     * 4. pemesan_email cocok (case-insensitive trim)
+     * 5. event_id cocok
+     * 6. status belum 'Dibatalkan'
+     */
+    public function cancelOrder(array $params): array
+    {
+        $cancelCode = strtoupper(trim((string) ($params['cancel_code'] ?? '')));
+        $nomorInvoice = trim((string) ($params['nomor_invoice'] ?? ''));
+        $namaInput = trim((string) ($params['pemesan_nama'] ?? ''));
+        $emailInput = trim((string) ($params['pemesan_email'] ?? ''));
+        $eventIdInput = (int) ($params['event_id'] ?? 0);
+        $alasan = trim((string) ($params['alasan'] ?? ''));
+
+        if ($cancelCode === '' || strlen($cancelCode) !== 6) {
+            throw new \RuntimeException('Kode unik pembatalan wajib 6 karakter.');
+        }
+        if ($nomorInvoice === '') {
+            throw new \RuntimeException('Nomor invoice wajib diisi.');
+        }
+        if ($namaInput === '') {
+            throw new \RuntimeException('Nama pemesan wajib diisi.');
+        }
+        if ($emailInput === '' || !filter_var($emailInput, FILTER_VALIDATE_EMAIL)) {
+            throw new \RuntimeException('Alamat email pemesan tidak valid.');
+        }
+        if ($eventIdInput <= 0) {
+            throw new \RuntimeException('Event yang dipesan harus dipilih.');
+        }
+
+        // Cari pesanan berdasarkan cancel_code
+        $order = $this->findOrderByCancelCode($cancelCode);
+        if (!$order) {
+            throw new \RuntimeException('Kode unik pembatalan tidak cocok dengan data transaksi kami.');
+        }
+
+        // Verifikasi Nomor Invoice
+        if (strcasecmp((string) $order['nomor_invoice'], $nomorInvoice) !== 0) {
+            throw new \RuntimeException('Nomor invoice tidak cocok dengan kode unik pembatalan yang dimasukkan.');
+        }
+
+        // Verifikasi apakah sudah pernah dibatalkan
+        if (strcasecmp((string) $order['status'], 'Dibatalkan') === 0) {
+            $ref = $order['cancellation_ref'] ?: '-';
+            $tgl = $order['cancelled_at'] ?: 'sebelumnya';
+            throw new \RuntimeException("Pesanan ini sudah pernah dibatalkan sebelumnya pada {$tgl} (Ref: {$ref}).");
+        }
+
+        // Verifikasi Nama Pemesan (case-insensitive trim)
+        if (strcasecmp(trim((string) $order['pemesan_nama']), $namaInput) !== 0) {
+            throw new \RuntimeException('Nama pemesan tidak sesuai dengan data pemesanan faktur ini.');
+        }
+
+        // Verifikasi Email Pemesan (case-insensitive trim)
+        if (strcasecmp(trim((string) $order['pemesan_email']), $emailInput) !== 0) {
+            throw new \RuntimeException('Email pemesan tidak sesuai dengan data pemesanan faktur ini.');
+        }
+
+        // Verifikasi Event ID
+        if ((int) $order['event_id'] !== $eventIdInput) {
+            throw new \RuntimeException('Event yang dipilih tidak sesuai dengan data pemesanan faktur ini.');
+        }
+
+        $this->db->beginTransaction();
+        try {
+            // Generate cancellation ref (CXL-XXXXXX)
+            $cancellationRef = 'CXL-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+            $orderId = (int) $order['id'];
+            $tcId = (int) $order['ticket_category_id'];
+            $jumlahTiket = (int) $order['jumlah'];
+            $eventId = (int) $order['event_id'];
+
+            // 1. Update orders status to 'Dibatalkan'
+            $stmtUpdateOrder = $this->db->prepare(
+                'UPDATE orders
+                 SET status = "Dibatalkan",
+                     cancelled_at = NOW(),
+                     cancellation_ref = :ref,
+                     cancellation_reason = :reason
+                 WHERE id = :id'
+            );
+            $stmtUpdateOrder->execute([
+                ':ref'    => $cancellationRef,
+                ':reason' => $alasan !== '' ? $alasan : 'Pembatalan mandiri oleh pelanggan',
+                ':id'     => $orderId,
+            ]);
+
+            // 2. Nonaktifkan tiket di tickets (status_checkin = 'Dibatalkan')
+            $stmtUpdateTickets = $this->db->prepare(
+                'UPDATE tickets
+                 SET status_checkin = "Dibatalkan"
+                 WHERE order_id = :oid'
+            );
+            $stmtUpdateTickets->execute([':oid' => $orderId]);
+
+            // 3. Kembalikan stok ke ticket_categories dan pastikan status On Sale
+            $stmtUpdateTc = $this->db->prepare(
+                'UPDATE ticket_categories
+                 SET stok_sisa = stok_sisa + :jml,
+                     status = "On Sale"
+                 WHERE id = :tcid'
+            );
+            $stmtUpdateTc->execute([
+                ':jml'  => $jumlahTiket,
+                ':tcid' => $tcId,
+            ]);
+
+            // Dapatkan sisa stok terkini
+            $stmtSisa = $this->db->prepare('SELECT stok_sisa FROM ticket_categories WHERE id = :tcid');
+            $stmtSisa->execute([':tcid' => $tcId]);
+            $sisaTerkini = (int) $stmtSisa->fetchColumn();
+
+            // 4. Catat mutasi stok IN di stock_transactions
+            $stmtSt = $this->db->prepare(
+                'INSERT INTO stock_transactions (
+                    event_id, ticket_category_id, jenis, jumlah, sisa_sesudah,
+                    pelaku, catatan, order_id, status_hold, waktu
+                 ) VALUES (
+                    :eid, :tcid, "IN", :jml, :sisa,
+                    "Sistem (Pembatalan)", :catatan, :oid, "RELEASED", NOW()
+                 )'
+            );
+            $stmtSt->execute([
+                ':eid'     => $eventId,
+                ':tcid'    => $tcId,
+                ':jml'     => $jumlahTiket,
+                ':sisa'    => $sisaTerkini,
+                ':catatan' => "Pembatalan pesanan {$order['nomor_invoice']} ({$cancellationRef})",
+                ':oid'     => $orderId,
+            ]);
+
+            $this->db->commit();
+
+            return [
+                'ok'                  => true,
+                'order_id'            => $orderId,
+                'nomor_invoice'       => $order['nomor_invoice'],
+                'cancellation_ref'    => $cancellationRef,
+                'cancelled_at'        => date('d F Y • H:i') . ' WIB',
+                'pemesan_nama'        => $order['pemesan_nama'],
+                'pemesan_email'       => $order['pemesan_email'],
+                'event_nama'          => $order['event_nama'],
+                'kategori_tiket_nama' => $order['kategori_tiket_nama'],
+                'jumlah'              => $jumlahTiket,
+                'total'               => (int) $order['total'],
+                'alasan'              => $alasan,
+                'stok_sisa_baru'      => $sisaTerkini,
             ];
         } catch (\Throwable $e) {
             if ($this->db->inTransaction()) {

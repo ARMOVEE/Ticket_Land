@@ -261,6 +261,15 @@
     }
   }
 
+  function resolvePoster(p) {
+    if (!p || String(p).trim() === '') return '';
+    var s = String(p).trim();
+    if (s.indexOf('/') === 0 || s.indexOf('http://') === 0 || s.indexOf('https://') === 0) {
+      return s;
+    }
+    return '/assets/img/events/' + s;
+  }
+
   function renderEventsSection() {
     var q = (document.getElementById('cariBarang').value || '').trim().toLowerCase();
     var cat = document.getElementById('filterKategori').value || '';
@@ -303,8 +312,9 @@
 
         var tr = document.createElement('tr');
         var posterThumb = '';
-        if (ev.poster && String(ev.poster).trim() !== '') {
-          posterThumb = '<img src="' + esc(ev.poster) + '" alt="' + esc(ev.nama) + '" class="rounded object-fit-cover" style="width: 48px; height: 48px;" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'bg-secondary bg-opacity-25 text-secondary d-flex align-items-center justify-content-center rounded fw-bold\\\' style=\\\'width: 48px; height: 48px; font-size: 13px;\\\'>' + esc(ev.kode) + '</div>\';">';
+        var pUrl = resolvePoster(ev.poster);
+        if (pUrl !== '') {
+          posterThumb = '<img src="' + esc(pUrl) + '" alt="' + esc(ev.nama) + '" class="rounded object-fit-cover" style="width: 48px; height: 48px; object-position: center;" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'bg-secondary bg-opacity-25 text-secondary d-flex align-items-center justify-content-center rounded fw-bold\\\' style=\\\'width: 48px; height: 48px; font-size: 13px;\\\'>' + esc(ev.kode) + '</div>\';">';
         } else {
           posterThumb = '<div class="bg-secondary bg-opacity-25 text-secondary d-flex align-items-center justify-content-center rounded fw-bold" style="width: 48px; height: 48px; font-size: 13px;">' + esc(ev.kode) + '</div>';
         }
@@ -445,8 +455,9 @@
 
     var detailPosterBox = document.getElementById('detailPosterBox');
     if (detailPosterBox) {
-      if (ev.poster && String(ev.poster).trim() !== '') {
-        detailPosterBox.innerHTML = '<img src="' + esc(ev.poster) + '" class="w-100 rounded object-fit-cover" style="height: 240px;" alt="' + esc(ev.nama) + '" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded w-100\\\' style=\\\'height: 240px\\\'> <i class=\\\'bi bi-image\\\' style=\\\'font-size: 3rem\\\' aria-hidden=\\\'true\\\'></i> <small class=\\\'text-muted mt-2\\\'>Poster event Ticket Land</small> </div>\';">';
+      var pUrlDetail = resolvePoster(ev.poster);
+      if (pUrlDetail !== '') {
+        detailPosterBox.innerHTML = '<img src="' + esc(pUrlDetail) + '" class="w-100 rounded object-fit-cover" style="height: 240px; object-position: center;" alt="' + esc(ev.nama) + '" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div class=\\\'bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded w-100\\\' style=\\\'height: 240px\\\'> <i class=\\\'bi bi-image\\\' style=\\\'font-size: 3rem\\\' aria-hidden=\\\'true\\\'></i> <small class=\\\'text-muted mt-2\\\'>Poster event Ticket Land</small> </div>\';">';
       } else {
         detailPosterBox.innerHTML = '<div class="bg-secondary bg-opacity-25 text-secondary d-flex flex-column align-items-center justify-content-center rounded w-100" style="height: 240px"> <i class="bi bi-image" style="font-size: 3rem" aria-hidden="true"></i> <small class="text-muted mt-2">Poster event Ticket Land</small> </div>';
       }

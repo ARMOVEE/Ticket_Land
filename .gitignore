@@ -6,8 +6,11 @@ Thumbs.db
 
 # Environment & credentials
 .env
+/storage/logs/*.log
+!/storage/logs/.gitkeep
 
 # Reference files (non-runtime)
 /Dashboard Admin_Staff.html
 /Ticket Land - Landing Page (1).html
 /prd-tiket-land-sistem-pemesanan-tiket-event.pdf
+/foto-event-ticket-land-4k-semua/

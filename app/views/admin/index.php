@@ -16,8 +16,13 @@
 
     <!-- Halaman Login Admin -->
     <div id="page-login" class="page container">
-      <div class="row justify-content-center" style="margin-top: 8vh">
+      <div class="row justify-content-center" style="margin-top: 6vh">
         <div class="col-md-5 col-lg-4">
+          <div class="mb-3">
+            <a href="/" class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 d-inline-flex align-items-center gap-2" id="btnBackHomeAdminLogin" style="border-width: 1.5px; border-radius: 10px; color: #0B5D3B; border-color: #0B5D3B;">
+              <i class="bi bi-arrow-left" aria-hidden="true"></i>← Kembali ke Beranda
+            </a>
+          </div>
           <div class="text-center mb-4">
             <svg viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo tiket Ticket Land" class="text-primary" style="width:48px;height:48px" fill="none" stroke="currentColor" stroke-width="2.6"><rect x="2.5" y="4" width="43" height="22" rx="5"/><path d="M31 5.5v19" stroke-width="2" stroke-dasharray="3 3.4" stroke-linecap="round"/><circle cx="31" cy="4" r="2.4" fill="#FFFFFF"/><circle cx="31" cy="26" r="2.4" fill="#FFFFFF"/></svg>
             <h1 class="h3 fw-bold mt-2 mb-0">Ticket Land</h1>

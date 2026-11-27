@@ -10,7 +10,8 @@ use App\Models\Order;
 
 class CheckoutController extends Controller
 {
-    private const SESSION_DURATION_SECONDS = 600;
+    private const SESSION_STEP1_2_SECONDS = 900; // 15 menit (Langkah Pilih Kategori + Detail Pesanan)
+    private const SESSION_STEP3_SECONDS = 600;   // 10 menit (Langkah Metode Pembayaran)
 
     private function readInput(): array
     {
@@ -40,10 +41,10 @@ class CheckoutController extends Controller
         }
 
         $jumlah = (int) ($input['jumlah'] ?? 1);
-        if ($jumlah < 1 || $jumlah > 5) {
+        if ($jumlah < 1 || $jumlah > 4) {
             $this->json([
                 'ok'      => false,
-                'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).',
+                'message' => 'Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.',
                 'sisa'    => 0,
             ], 422);
             return;
@@ -58,7 +59,7 @@ class CheckoutController extends Controller
         }
 
         $checkoutToken = bin2hex(random_bytes(16));
-        $hold = $orderModel->holdStock($tcId, $jumlah, $checkoutToken, self::SESSION_DURATION_SECONDS);
+        $hold = $orderModel->holdStock($tcId, $jumlah, $checkoutToken, self::SESSION_STEP1_2_SECONDS);
 
         if (!$hold['ok']) {
             $this->json($hold, 422);
@@ -70,7 +71,7 @@ class CheckoutController extends Controller
             'event_id'           => (int) $hold['ticket_category']['event_id'],
             'jumlah'             => $jumlah,
             'started_at'         => time(),
-            'expires_at'         => time() + self::SESSION_DURATION_SECONDS,
+            'expires_at'         => time() + self::SESSION_STEP1_2_SECONDS,
             'token'              => $checkoutToken,
             'paid'               => false,
         ];
@@ -79,8 +80,8 @@ class CheckoutController extends Controller
             'ok'                => true,
             'ticket_category'   => $hold['ticket_category'],
             'jumlah'            => $jumlah,
-            'remaining_seconds' => self::SESSION_DURATION_SECONDS,
-            'expires_at'        => time() + self::SESSION_DURATION_SECONDS,
+            'remaining_seconds' => self::SESSION_STEP1_2_SECONDS,
+            'expires_at'        => time() + self::SESSION_STEP1_2_SECONDS,
             'checkout_token'    => $checkoutToken,
         ]);
     }
@@ -121,8 +122,8 @@ class CheckoutController extends Controller
 
         $token = (string) $session['token'];
         $newQty = (int) ($input['jumlah'] ?? 1);
-        if ($newQty < 1 || $newQty > 5) {
-            $this->json(['ok' => false, 'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).'], 422);
+        if ($newQty < 1 || $newQty > 4) {
+            $this->json(['ok' => false, 'message' => 'Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.'], 422);
             return;
         }
 
@@ -139,6 +140,67 @@ class CheckoutController extends Controller
             'ok'     => true,
             'jumlah' => $newQty,
         ]);
+    }
+
+    public function extendPaymentSession(): void
+    {
+        $input = $this->readInput();
+        $_POST['csrf_token'] = $input['csrf_token'] ?? ($_POST['csrf_token'] ?? '');
+        if (!$this->verifyCsrf()) {
+            $this->json(['ok' => false, 'message' => 'Token keamanan (CSRF) tidak valid.'], 403);
+            return;
+        }
+
+        $session = $_SESSION['checkout_session'] ?? null;
+        if (!is_array($session) || empty($session['token'])) {
+            $this->json(['ok' => false, 'message' => 'Sesi pemesanan tidak ditemukan.'], 408);
+            return;
+        }
+
+        $orderModel = new Order();
+        $orderModel->extendHoldByToken((string) $session['token'], self::SESSION_STEP3_SECONDS);
+
+        $newExpiresAt = time() + self::SESSION_STEP3_SECONDS;
+        $_SESSION['checkout_session']['expires_at'] = $newExpiresAt;
+
+        $this->json([
+            'ok'                => true,
+            'remaining_seconds' => self::SESSION_STEP3_SECONDS,
+            'expires_at'        => $newExpiresAt,
+        ]);
+    }
+
+    private function validatePerson(array $data, string $label): ?string
+    {
+        $nama = trim((string) ($data['nama'] ?? ''));
+        $nik = trim((string) ($data['nomor_identitas'] ?? ''));
+        $email = strtolower(trim((string) ($data['email'] ?? '')));
+        $wa = trim((string) ($data['wa'] ?? ''));
+        $waDigits = preg_replace('/^\+?62/', '', $wa);
+        $gender = trim((string) ($data['jenis_kelamin'] ?? ''));
+
+        if ($nama === '') {
+            return "{$label}: Nama Lengkap wajib diisi.";
+        }
+        if (!preg_match('/^[0-9]+$/', $nik)) {
+            return "{$label}: Nomor Identitas (KTP/NIK) hanya boleh berisi angka (0-9).";
+        }
+        if (strlen($nik) !== 16) {
+            return "{$label}: Nomor Identitas (KTP/NIK) harus tepat 16 digit, tidak boleh kurang atau lebih.";
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !str_ends_with($email, '@gmail.com')) {
+            return "{$label}: Email harus menggunakan alamat @gmail.com.";
+        }
+        if (!preg_match('/^[0-9]+$/', $waDigits)) {
+            return "{$label}: No. WhatsApp hanya boleh berisi angka (0-9).";
+        }
+        if (strlen($waDigits) < 9) {
+            return "{$label}: No. WhatsApp minimal 9 digit angka.";
+        }
+        if (!in_array($gender, ['Laki-laki', 'Perempuan'], true)) {
+            return "{$label}: Jenis Kelamin wajib dipilih (Laki-laki / Perempuan).";
+        }
+        return null;
     }
 
     public function pay(): void
@@ -198,19 +260,14 @@ class CheckoutController extends Controller
         $buyer = is_array($input['buyer'] ?? null) ? $input['buyer'] : [];
         $attendees = is_array($input['attendees'] ?? null) ? $input['attendees'] : [];
 
-        if ($jumlah < 1 || $jumlah > 5) {
-            $this->json(['ok' => false, 'message' => 'Jumlah tiket harus antara 1 sampai 5 tiket per transaksi (BR-02).'], 422);
+        if ($jumlah < 1 || $jumlah > 4) {
+            $this->json(['ok' => false, 'message' => 'Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.'], 422);
             return;
         }
 
-        if (
-            trim((string) ($buyer['nama'] ?? '')) === '' ||
-            trim((string) ($buyer['tipe_identitas'] ?? '')) === '' ||
-            trim((string) ($buyer['nomor_identitas'] ?? '')) === '' ||
-            !filter_var(trim((string) ($buyer['email'] ?? '')), FILTER_VALIDATE_EMAIL) ||
-            trim((string) ($buyer['wa'] ?? '')) === ''
-        ) {
-            $this->json(['ok' => false, 'message' => 'Data Pemesan belum lengkap atau email belum valid.'], 422);
+        $buyerErr = $this->validatePerson($buyer, 'Data Pemesan');
+        if ($buyerErr !== null) {
+            $this->json(['ok' => false, 'message' => $buyerErr], 422);
             return;
         }
 
@@ -221,15 +278,9 @@ class CheckoutController extends Controller
 
         foreach ($attendees as $idx => $att) {
             $num = $idx + 1;
-            if (
-                trim((string) ($att['nama'] ?? '')) === '' ||
-                trim((string) ($att['tipe_identitas'] ?? '')) === '' ||
-                trim((string) ($att['nomor_identitas'] ?? '')) === '' ||
-                !filter_var(trim((string) ($att['email'] ?? '')), FILTER_VALIDATE_EMAIL) ||
-                trim((string) ($att['jenis_kelamin'] ?? '')) === '' ||
-                trim((string) ($att['wa'] ?? '')) === ''
-            ) {
-                $this->json(['ok' => false, 'message' => "Detail Pesanan - {$num} belum lengkap atau email tidak valid."], 422);
+            $attErr = $this->validatePerson($att, "Data Pemegang Tiket - {$num}");
+            if ($attErr !== null) {
+                $this->json(['ok' => false, 'message' => $attErr], 422);
                 return;
             }
         }
@@ -251,7 +302,9 @@ class CheckoutController extends Controller
             $_SESSION['checkout_session']['paid'] = true;
             unset($_SESSION['checkout_session']);
 
-            // (5) Email notification (FR-N-01..FR-N-05: does not expose full identity number, QR contains only code)
+            // (5) Kirim email faktur / invoice resmi lewat Mailer (PHPMailer SMTP / fallback log)
+            \App\Core\Mailer::sendInvoiceEmail($invoice);
+
             $emailSubject = "Ticket Land - Invoice {$invoice['nomor_invoice']} - {$invoice['event_nama']}";
             $pelakuLog = !empty($_SESSION['customer']['email']) ? (string) $_SESSION['customer']['email'] : 'tamu (' . $invoice['pemesan']['email'] . ')';
 
@@ -265,9 +318,13 @@ class CheckoutController extends Controller
                 "Pemesanan tiket lunas {$invoice['nomor_invoice']} ({$invoice['jumlah']} tiket {$invoice['kategori_tiket_nama']}) untuk event {$invoice['event_nama']}."
             );
 
+            // Kode unik dan link pembatalan TIDAK BOLEH muncul di halaman web mana pun
+            $webInvoice = $invoice;
+            unset($webInvoice['cancel_code']);
+
             $this->json([
                 'ok'                 => true,
-                'invoice'            => $invoice,
+                'invoice'            => $webInvoice,
                 'email_notification' => [
                     'recipient' => $invoice['pemesan']['email'],
                     'sender'    => 'Ticket Land <no-reply@ticketland.id>',

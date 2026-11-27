@@ -24,6 +24,28 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim());
   }
 
+  function validGmail(v) {
+    return /^[a-zA-Z0-9._%+-]+@gmail\.com$/i.test(String(v || '').trim());
+  }
+
+  function validNik(v) {
+    return /^\d{16}$/.test(String(v || '').trim());
+  }
+
+  function validWa(v) {
+    var d = String(v || '').replace(/\D/g, '');
+    return d.length >= 9;
+  }
+
+  function resolvePoster(p) {
+    if (!p || String(p).trim() === '') return '';
+    var s = String(p).trim();
+    if (s.indexOf('/') === 0 || s.indexOf('http://') === 0 || s.indexOf('https://') === 0) {
+      return s;
+    }
+    return '/assets/img/events/' + s;
+  }
+
   function initialsOf(name) {
     return String(name || '')
       .split(/\s+/)
@@ -116,6 +138,23 @@
     });
   });
 
+  document.querySelectorAll('.nav-event').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (mobileMenu) mobileMenu.classList.remove('open');
+      if (burger) burger.setAttribute('aria-expanded', 'false');
+      exploreState.sort = 'relevan';
+      if (sortItems) {
+        sortItems.forEach(function (si) {
+          var isCur = (si.getAttribute('data-sort') === 'relevan');
+          si.classList.toggle('active', isCur);
+          si.setAttribute('aria-selected', isCur ? 'true' : 'false');
+        });
+      }
+      openExplore('Semua', '');
+    });
+  });
+
   /* Explore & Search */
   var exploreGrid = document.getElementById('exploreGrid');
   var exploreCount = document.getElementById('exploreCount');
@@ -158,9 +197,9 @@
   }
 
   function bannerSvg(ev, idx) {
-    if (ev.poster && String(ev.poster).trim() !== '') {
-      var pSrc = String(ev.poster).trim();
-      return '<img src="' + escapeXml(pSrc) + '" alt="' + escapeXml(ev.nama) + '" loading="lazy" style="width: 100%; height: 164px; object-fit: cover; display: block;" onerror="this.style.display=\'none\';if(this.nextElementSibling){this.nextElementSibling.style.display=\'block\';}">'
+    var pSrc = resolvePoster(ev.poster);
+    if (pSrc !== '') {
+      return '<img src="' + escapeXml(pSrc) + '" alt="' + escapeXml(ev.nama) + '" loading="lazy" style="width: 100%; height: 164px; object-fit: cover; object-position: center; display: block;" onerror="this.style.display=\'none\';if(this.nextElementSibling){this.nextElementSibling.style.display=\'block\';}">'
         + '<div style="display:none;">' + bannerFallbackSvg(ev, idx) + '</div>';
     }
     return bannerFallbackSvg(ev, idx);
@@ -182,11 +221,11 @@
   }
 
   function detailBannerSvg(ev) {
-    if (ev.poster && String(ev.poster).trim() !== '') {
-      var pSrc = String(ev.poster).trim();
+    var pSrc = resolvePoster(ev.poster);
+    if (pSrc !== '') {
       var catName = ev.kategori_nama || 'Event';
       return '<div class="detail-poster-wrap" style="position:relative;width:100%;height:320px;overflow:hidden;background:#084A2E;border-radius:12px;">'
-        + '<img src="' + escapeXml(pSrc) + '" alt="' + escapeXml(ev.nama) + '" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display=\'none\';if(this.parentElement.nextElementSibling){this.parentElement.nextElementSibling.style.display=\'block\';}">'
+        + '<img src="' + escapeXml(pSrc) + '" alt="' + escapeXml(ev.nama) + '" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" onerror="this.parentElement.style.display=\'none\';if(this.parentElement.nextElementSibling){this.parentElement.nextElementSibling.style.display=\'block\';}">'
         + '<div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:24px 28px;">'
         + '<div style="font-size:12px;font-weight:700;color:#f2a63b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">' + escapeXml(catName) + ' • ' + escapeXml(ev.kode || '') + '</div>'
         + '<div style="font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;margin-bottom:6px;">' + escapeXml(ev.nama || '') + '</div>'
@@ -362,6 +401,14 @@
   var btnExploreAll = document.getElementById('btnExploreAll');
   if (btnExploreAll) {
     btnExploreAll.addEventListener('click', function () {
+      exploreState.sort = 'tanggal';
+      if (sortItems) {
+        sortItems.forEach(function (si) {
+          var isCur = (si.getAttribute('data-sort') === 'tanggal');
+          si.classList.toggle('active', isCur);
+          si.setAttribute('aria-selected', isCur ? 'true' : 'false');
+        });
+      }
       openExplore('Semua', '');
     });
   }
@@ -774,13 +821,17 @@
     if (selectedTc) {
       summaryQtyWrap.style.display = 'flex';
       summaryQtyVal.textContent = String(selectedTicketQty);
-      var maxQ = Math.min(5, Number(selectedTc.stok_sisa));
+      var maxQ = Math.min(4, Number(selectedTc.stok_sisa));
       if (summaryQtyMinus) summaryQtyMinus.disabled = selectedTicketQty <= 1;
       if (summaryQtyPlus) summaryQtyPlus.disabled = selectedTicketQty >= maxQ;
+      var isFree = Number(selectedTc.harga) === 0;
+      summaryPrice.textContent = isFree ? 'GRATIS' : fmtRupiah(Number(selectedTc.harga) * selectedTicketQty);
+      summaryPrice.classList.toggle('free', isFree);
     } else {
       summaryQtyWrap.style.display = 'none';
       selectedTicketQty = 1;
     }
+    if (typeof updateMobileBar === 'function') updateMobileBar();
   }
 
   if (summaryQtyMinus) {
@@ -793,12 +844,12 @@
   }
   if (summaryQtyPlus) {
     summaryQtyPlus.addEventListener('click', function () {
-      var maxQ = selectedTc ? Math.min(5, Number(selectedTc.stok_sisa)) : 5;
+      var maxQ = selectedTc ? Math.min(4, Number(selectedTc.stok_sisa)) : 4;
       if (selectedTicketQty < maxQ) {
         selectedTicketQty++;
         updateSummaryQtyControls();
       } else {
-        showToast(maxQ < 5 ? ('Sisa stok kategori ini hanya ' + maxQ + ' tiket.') : 'Maksimal pembelian 5 tiket dalam 1 kali transaksi.');
+        showToast(maxQ < 4 ? ('Sisa stok kategori ini hanya ' + maxQ + ' tiket.') : 'Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.');
       }
     });
   }
@@ -945,7 +996,7 @@
       }
       selectedTc.stok_sisa = Number(res.body.ticket_category.stok_sisa);
       checkoutToken = res.body.checkout_token || '';
-      var rem = Number(res.body.remaining_seconds || 600);
+      var rem = Number(res.body.remaining_seconds || 900);
       var grantedQty = Number(res.body.jumlah || reqQty);
       openOrder(rem, grantedQty);
     });
@@ -985,16 +1036,123 @@
   var qtyPlus = document.getElementById('qtyPlus');
   var attendeesContainer = document.getElementById('attendeesContainer');
   var syncOn = false;
-
-  function maxAllowedQty() {
-    var stok = selectedTc ? Number(selectedTc.stok_sisa) : 5;
-    return Math.max(1, Math.min(5, stok));
-  }
+  var attendeeDrafts = {};
 
   function priceText(amount) {
     return (selectedTc && Number(selectedTc.harga) === 0) ? 'GRATIS' : fmtRupiah(amount);
   }
 
+  function setGenderRowValue(gRow, val) {
+    if (!gRow) return;
+    var cleanVal = val || '';
+    gRow.setAttribute('data-gender-value', cleanVal);
+    gRow.querySelectorAll('.gender-chip').forEach(function (c) {
+      var on = cleanVal !== '' && c.getAttribute('data-gender') === cleanVal;
+      c.classList.toggle('active', on);
+      c.classList.toggle('on', on);
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if (cleanVal !== '') {
+      gRow.classList.remove('invalid');
+    }
+  }
+
+  function saveAttendeeDraftFromDom(index) {
+    var nameEl = document.getElementById('attName_' + index);
+    var idNumEl = document.getElementById('attIdNum_' + index);
+    var emailEl = document.getElementById('attEmail_' + index);
+    var waEl = document.getElementById('attWa_' + index);
+    var gRow = document.getElementById('genderRow_' + index);
+    if (!nameEl && !idNumEl && !emailEl && !waEl && !gRow) return;
+    attendeeDrafts[index] = {
+      nama: nameEl ? nameEl.value : '',
+      nik: idNumEl ? idNumEl.value : '',
+      email: emailEl ? emailEl.value : '',
+      wa: waEl ? waEl.value : '',
+      gender: gRow ? (gRow.getAttribute('data-gender-value') || '') : ''
+    };
+  }
+
+  function applySyncToAllAttendees() {
+    if (!syncOn) return;
+    var extraCount = Math.max(0, currentQty - 1);
+    var bGenderRow = document.getElementById('buyerGenderRow');
+    var bGenderVal = bGenderRow ? (bGenderRow.getAttribute('data-gender-value') || '') : '';
+
+    for (var i = 0; i < extraCount; i++) {
+      var pairs = [
+        ['buyerName', 'attName_' + i],
+        ['buyerIdType', 'attIdType_' + i],
+        ['buyerIdNum', 'attIdNum_' + i],
+        ['buyerEmail', 'attEmail_' + i],
+        ['buyerWa', 'attWa_' + i]
+      ];
+      pairs.forEach(function (pair) {
+        var buyerEl = document.getElementById(pair[0]);
+        var attEl = document.getElementById(pair[1]);
+        if (!buyerEl || !attEl) return;
+        attEl.value = buyerEl.value;
+        attEl.classList.remove('invalid');
+        attEl.disabled = false;
+      });
+
+      var aGenderRow = document.getElementById('genderRow_' + i);
+      if (aGenderRow) {
+        setGenderRowValue(aGenderRow, bGenderVal);
+        aGenderRow.querySelectorAll('.gender-chip').forEach(function (chip) {
+          chip.disabled = false;
+        });
+      }
+      saveAttendeeDraftFromDom(i);
+    }
+  }
+
+  /* Wire Buyer input restrictions & gender chips */
+  var buyerIdNumInput = document.getElementById('buyerIdNum');
+  if (buyerIdNumInput) {
+    buyerIdNumInput.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 16);
+      this.classList.remove('invalid');
+      if (syncOn) applySyncToAllAttendees();
+    });
+  }
+
+  var buyerWaInput = document.getElementById('buyerWa');
+  if (buyerWaInput) {
+    buyerWaInput.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '');
+      this.classList.remove('invalid');
+      if (syncOn) applySyncToAllAttendees();
+    });
+  }
+
+  var buyerGenderRow = document.getElementById('buyerGenderRow');
+  if (buyerGenderRow) {
+    var bgChips = buyerGenderRow.querySelectorAll('.gender-chip');
+    bgChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var val = chip.getAttribute('data-gender');
+        setGenderRowValue(buyerGenderRow, val);
+        if (syncOn) applySyncToAllAttendees();
+      });
+    });
+  }
+
+  ['buyerName', 'buyerEmail'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function () {
+        el.classList.remove('invalid');
+        if (syncOn) applySyncToAllAttendees();
+      });
+      el.addEventListener('change', function () {
+        el.classList.remove('invalid');
+        if (syncOn) applySyncToAllAttendees();
+      });
+    }
+  });
+
+  /* Attendee Card (Form pemegang tiket tambahan: 1..(currentQty - 1) saat currentQty >= 2) */
   function createAttendeeCard(index) {
     var num = index + 1;
     var isFirst = index === 0;
@@ -1025,21 +1183,26 @@
       + '<div class="o-row">'
       + '<div class="o-field">'
       + '<label class="o-label" for="attIdType_' + index + '">Tipe Identitas <span class="req">*</span></label>'
-      + '<select class="o-select att-idtype" id="attIdType_' + index + '">'
-      + '<option value="" selected>Pilih tipe identitas</option>'
-      + '<option value="KTP">KTP</option>'
-      + '<option value="Paspor">Paspor</option>'
-      + '<option value="SIM">SIM</option>'
-      + '</select>'
+      + '<input class="o-input o-readonly-static att-idtype" id="attIdType_' + index + '" type="text" value="KTP" readonly aria-readonly="true" />'
       + '</div>'
       + '<div class="o-field">'
-      + '<label class="o-label" for="attIdNum_' + index + '">Nomor Identitas <span class="req">*</span></label>'
-      + '<input class="o-input att-idnum" id="attIdNum_' + index + '" type="text" placeholder="Masukkan nomor identitas" />'
+      + '<label class="o-label" for="attIdNum_' + index + '">Nomor Identitas (KTP/NIK) <span class="req">*</span></label>'
+      + '<input class="o-input att-idnum" id="attIdNum_' + index + '" type="text" inputmode="numeric" maxlength="16" placeholder="Masukkan 16 digit NIK KTP pemegang tiket" />'
       + '</div>'
       + '</div>'
       + '<div class="o-field">'
       + '<label class="o-label" for="attEmail_' + index + '">Email <span class="req">*</span></label>'
-      + '<input class="o-input att-email" id="attEmail_' + index + '" type="email" placeholder="Masukkan email pemegang tiket" />'
+      + '<input class="o-input att-email" id="attEmail_' + index + '" type="email" placeholder="nama@gmail.com" />'
+      + '</div>'
+      + '<div class="o-field">'
+      + '<label class="o-label" for="attWa_' + index + '">No. WhatsApp <span class="req">*</span></label>'
+      + '<div class="phone-group">'
+      + '<span class="phone-prefix">'
+      + '<svg viewBox="0 0 19 13" aria-hidden="true"><rect width="19" height="6.5" fill="#e70011"/><rect y="6.5" width="19" height="6.5" fill="#f4f4f4"/></svg>'
+      + '+62'
+      + '</span>'
+      + '<input class="o-input att-wa" id="attWa_' + index + '" type="tel" inputmode="numeric" placeholder="81234567890" />'
+      + '</div>'
       + '</div>'
       + '<div class="o-field">'
       + '<span class="o-label" id="genderLabel_' + index + '">Jenis Kelamin <span class="req">*</span></span>'
@@ -1053,39 +1216,65 @@
       + 'Perempuan'
       + '</button>'
       + '</div>'
-      + '</div>'
-      + '<div class="o-field">'
-      + '<label class="o-label" for="attWa_' + index + '">No. WhatsApp <span class="req">*</span></label>'
-      + '<div class="phone-group">'
-      + '<span class="phone-prefix">'
-      + '<svg viewBox="0 0 19 13" aria-hidden="true"><rect width="19" height="6.5" fill="#e70011"/><rect y="6.5" width="19" height="6.5" fill="#f4f4f4"/></svg>'
-      + '+62'
-      + '</span>'
-      + '<input class="o-input att-wa" id="attWa_' + index + '" type="tel" inputmode="tel" placeholder="81234567890" />'
-      + '</div>'
       + '</div>';
 
-    // Wire inputs to clear invalid state
-    card.querySelectorAll('.o-input, .o-select').forEach(function (el) {
-      el.addEventListener('input', function () { el.classList.remove('invalid'); });
-      el.addEventListener('change', function () { el.classList.remove('invalid'); });
-    });
+    // Restore any draft values for this index
+    var draft = attendeeDrafts[index];
+    if (draft) {
+      var nEl = card.querySelector('#attName_' + index);
+      var nikEl = card.querySelector('#attIdNum_' + index);
+      var emEl = card.querySelector('#attEmail_' + index);
+      var wEl = card.querySelector('#attWa_' + index);
+      var grEl = card.querySelector('#genderRow_' + index);
+      if (nEl && draft.nama) nEl.value = draft.nama;
+      if (nikEl && draft.nik) nikEl.value = draft.nik;
+      if (emEl && draft.email) emEl.value = draft.email;
+      if (wEl && draft.wa) wEl.value = draft.wa;
+      if (grEl && draft.gender) setGenderRowValue(grEl, draft.gender);
+    }
 
-    // Wire gender chips
-    var gRow = card.querySelector('.att-gender-row');
-    var gChips = gRow.querySelectorAll('.gender-chip');
-    gChips.forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        var val = chip.getAttribute('data-gender');
-        gRow.setAttribute('data-gender-value', val);
-        gChips.forEach(function (c) {
-          var on = c === chip;
-          c.classList.toggle('on', on);
-          c.setAttribute('aria-pressed', on ? 'true' : 'false');
-        });
-        gRow.classList.remove('invalid');
+    // Restrict NIK & WA to digits
+    var idNumEl = card.querySelector('#attIdNum_' + index);
+    if (idNumEl) {
+      idNumEl.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 16);
+        this.classList.remove('invalid');
+        saveAttendeeDraftFromDom(index);
+      });
+    }
+
+    var waEl = card.querySelector('#attWa_' + index);
+    if (waEl) {
+      waEl.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '');
+        this.classList.remove('invalid');
+        saveAttendeeDraftFromDom(index);
+      });
+    }
+
+    card.querySelectorAll('.o-input').forEach(function (el) {
+      el.addEventListener('input', function () {
+        el.classList.remove('invalid');
+        saveAttendeeDraftFromDom(index);
+      });
+      el.addEventListener('change', function () {
+        el.classList.remove('invalid');
+        saveAttendeeDraftFromDom(index);
       });
     });
+
+    // Wire gender chips (tetap bisa diedit manual meskipun toggle Samakan aktif)
+    var gRow = card.querySelector('.att-gender-row');
+    if (gRow) {
+      var gChips = gRow.querySelectorAll('.gender-chip');
+      gChips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          var val = chip.getAttribute('data-gender');
+          setGenderRowValue(gRow, val);
+          saveAttendeeDraftFromDom(index);
+        });
+      });
+    }
 
     if (isFirst) {
       var sw = card.querySelector('#syncSwitch');
@@ -1093,7 +1282,9 @@
         sw.addEventListener('click', function () {
           syncOn = !syncOn;
           sw.setAttribute('aria-checked', syncOn ? 'true' : 'false');
-          applySyncToFirstAttendee();
+          if (syncOn) {
+            applySyncToAllAttendees();
+          }
         });
       }
     }
@@ -1103,57 +1294,40 @@
 
   function syncAttendeeCardsCount(targetQty) {
     var existing = attendeesContainer.querySelectorAll('.attendee-card');
-    if (existing.length < targetQty) {
-      for (var i = existing.length; i < targetQty; i++) {
-        attendeesContainer.appendChild(createAttendeeCard(i));
+    // Data Pemesan = Pemegang Tiket 1; jumlah form tambahan = (targetQty - 1)
+    var neededExtra = Math.max(0, targetQty - 1);
+
+    if (neededExtra === 0) {
+      for (var k = 0; k < existing.length; k++) {
+        var idxAttr = Number(existing[k].getAttribute('data-att-index'));
+        saveAttendeeDraftFromDom(idxAttr);
       }
-    } else if (existing.length > targetQty) {
-      for (var j = existing.length - 1; j >= targetQty; j--) {
+      attendeesContainer.innerHTML = '';
+      return;
+    }
+
+    var existingCount = existing.length;
+    if (existingCount < neededExtra) {
+      for (var i = existingCount; i < neededExtra; i++) {
+        var hadDraft = !!attendeeDrafts[i];
+        attendeesContainer.appendChild(createAttendeeCard(i));
+        if (syncOn && !hadDraft) {
+          applySyncToAllAttendees();
+        }
+      }
+    } else if (existingCount > neededExtra) {
+      for (var j = existingCount - 1; j >= neededExtra; j--) {
+        saveAttendeeDraftFromDom(j);
         attendeesContainer.removeChild(existing[j]);
       }
     }
+
     // Update category band labels
     var catName = selectedTc ? selectedTc.nama : 'Tiket Masuk Reguler';
     attendeesContainer.querySelectorAll('.att-band').forEach(function (b) {
       b.textContent = catName;
     });
-    if (syncOn) {
-      applySyncToFirstAttendee();
-    }
   }
-
-  function applySyncToFirstAttendee() {
-    var pairs = [
-      ['buyerName', 'attName_0'],
-      ['buyerIdType', 'attIdType_0'],
-      ['buyerIdNum', 'attIdNum_0'],
-      ['buyerEmail', 'attEmail_0'],
-      ['buyerWa', 'attWa_0']
-    ];
-    pairs.forEach(function (pair) {
-      var buyerEl = document.getElementById(pair[0]);
-      var attEl = document.getElementById(pair[1]);
-      if (!buyerEl || !attEl) return;
-      if (syncOn) {
-        attEl.value = buyerEl.value;
-        attEl.classList.remove('invalid');
-      }
-      attEl.disabled = syncOn;
-    });
-  }
-
-  ['buyerName', 'buyerIdType', 'buyerIdNum', 'buyerEmail', 'buyerWa'].forEach(function (id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('input', function () {
-      el.classList.remove('invalid');
-      if (syncOn) applySyncToFirstAttendee();
-    });
-    el.addEventListener('change', function () {
-      el.classList.remove('invalid');
-      if (syncOn) applySyncToFirstAttendee();
-    });
-  });
 
   function updateRincian() {
     var total = unitPrice * currentQty;
@@ -1172,13 +1346,13 @@
   }
 
   function maxAllowedQty() {
-    var stok = selectedTc ? Number(selectedTc.stok_sisa) : 5;
-    return Math.max(1, Math.min(5, currentQty + stok));
+    var stok = selectedTc ? Number(selectedTc.stok_sisa) : 4;
+    return Math.max(1, Math.min(4, currentQty + stok));
   }
 
   function setQty(n) {
-    if (n > 5) {
-      showToast('Maksimal pembelian 5 tiket dalam 1 kali transaksi (BR-02).');
+    if (n > 4) {
+      showToast('Maksimal pembelian adalah 4 tiket dalam 1 kali transaksi.');
       return;
     }
     if (n < 1) return;
@@ -1200,7 +1374,11 @@
         }
         return;
       }
+      var prevQty = currentQty;
       currentQty = Number(res.body.jumlah || n);
+      if (selectedTc && typeof selectedTc.stok_sisa !== 'undefined') {
+        selectedTc.stok_sisa = Math.max(0, Number(selectedTc.stok_sisa) - (currentQty - prevQty));
+      }
       updateRincian();
     });
   }
@@ -1225,7 +1403,7 @@
 
   function startTimer(durationSec) {
     stopTimer();
-    orderSeconds = durationSec || (10 * 60);
+    orderSeconds = durationSec || (15 * 60);
     renderTimer();
     orderTimer = setInterval(function () {
       orderSeconds--;
@@ -1247,6 +1425,7 @@
     unitPrice = Number(selectedTc.harga) || 0;
     currentQty = initialQty || 1;
     syncOn = false;
+    attendeeDrafts = {};
     attendeesContainer.innerHTML = '';
 
     document.getElementById('orderPageTitle').textContent = currentEvent.nama;
@@ -1254,7 +1433,6 @@
       escapeXml(currentEvent.tanggal_label) + ' &bull; ' + escapeXml(currentEvent.jam_label)
       + '<br />' + escapeXml(currentEvent.venue + ', ' + currentEvent.kota);
 
-    // Pre-fill buyer name/email if customer is logged in and fields are empty
     if (currentCustomer) {
       var bName = document.getElementById('buyerName');
       var bEmail = document.getElementById('buyerEmail');
@@ -1266,7 +1444,7 @@
     ticketSection.hidden = true;
     orderSection.hidden = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    startTimer(durationSec || 600);
+    startTimer(durationSec || 900);
   }
 
   function closeOrder(skipResetCall) {
@@ -1295,28 +1473,59 @@
 
   document.getElementById('btnLanjut').addEventListener('click', function () {
     var results = [];
+    var toastError = null;
+
     function val(id) {
       var el = document.getElementById(id);
       return el ? el.value.trim() : '';
     }
 
-    results.push(checkField('buyerName', val('buyerName') !== ''));
-    results.push(checkField('buyerIdType', val('buyerIdType') !== ''));
-    results.push(checkField('buyerIdNum', val('buyerIdNum') !== ''));
-    results.push(checkField('buyerEmail', validEmail(val('buyerEmail'))));
-    results.push(checkField('buyerWa', val('buyerWa') !== ''));
+    // Buyer validations
+    var buyerNameOk = val('buyerName') !== '';
+    var buyerNikOk = validNik(val('buyerIdNum'));
+    var buyerEmailOk = validGmail(val('buyerEmail'));
+    var buyerWaOk = validWa(val('buyerWa'));
+    var bGenderRow = document.getElementById('buyerGenderRow');
+    var buyerGenderOk = bGenderRow ? (bGenderRow.getAttribute('data-gender-value') || '') !== '' : false;
 
-    for (var i = 0; i < currentQty; i++) {
-      results.push(checkField('attName_' + i, val('attName_' + i) !== ''));
-      results.push(checkField('attIdType_' + i, val('attIdType_' + i) !== ''));
-      results.push(checkField('attIdNum_' + i, val('attIdNum_' + i) !== ''));
-      results.push(checkField('attEmail_' + i, validEmail(val('attEmail_' + i))));
-      var gRow = document.getElementById('genderRow_' + i);
-      var gVal = gRow ? (gRow.getAttribute('data-gender-value') || '') : '';
-      var gOk = gVal !== '';
-      if (gRow) gRow.classList.toggle('invalid', !gOk);
-      results.push({ el: gRow, ok: gOk });
-      results.push(checkField('attWa_' + i, val('attWa_' + i) !== ''));
+    results.push(checkField('buyerName', buyerNameOk));
+    results.push(checkField('buyerIdNum', buyerNikOk));
+    results.push(checkField('buyerEmail', buyerEmailOk));
+    results.push(checkField('buyerWa', buyerWaOk));
+    if (bGenderRow) {
+      bGenderRow.classList.toggle('invalid', !buyerGenderOk);
+      results.push({ el: bGenderRow, ok: buyerGenderOk });
+    }
+
+    if (!buyerNikOk && !toastError) toastError = 'Nomor KTP/NIK Data Pemesan harus berupa 16 digit angka.';
+    if (!buyerEmailOk && !toastError) toastError = 'Email Data Pemesan harus menggunakan alamat @gmail.com.';
+    if (!buyerWaOk && !toastError) toastError = 'Nomor WhatsApp Data Pemesan harus berupa angka (minimal 9 digit).';
+    if (!buyerGenderOk && !toastError) toastError = 'Jenis Kelamin Data Pemesan wajib dipilih.';
+
+    // Attendee validations: form tambahan sebanyak (currentQty - 1) saat currentQty >= 2
+    var extraCount = Math.max(0, currentQty - 1);
+    for (var i = 0; i < extraCount; i++) {
+      var num = i + 1;
+      var attNameOk = val('attName_' + i) !== '';
+      var attNikOk = validNik(val('attIdNum_' + i));
+      var attEmailOk = validGmail(val('attEmail_' + i));
+      var attWaOk = validWa(val('attWa_' + i));
+      var aGenderRow = document.getElementById('genderRow_' + i);
+      var attGenderOk = aGenderRow ? (aGenderRow.getAttribute('data-gender-value') || '') !== '' : false;
+
+      results.push(checkField('attName_' + i, attNameOk));
+      results.push(checkField('attIdNum_' + i, attNikOk));
+      results.push(checkField('attEmail_' + i, attEmailOk));
+      results.push(checkField('attWa_' + i, attWaOk));
+      if (aGenderRow) {
+        aGenderRow.classList.toggle('invalid', !attGenderOk);
+        results.push({ el: aGenderRow, ok: attGenderOk });
+      }
+
+      if (!attNikOk && !toastError) toastError = 'Nomor KTP/NIK Detail Pesanan - ' + num + ' harus berupa 16 digit angka.';
+      if (!attEmailOk && !toastError) toastError = 'Email Detail Pesanan - ' + num + ' harus menggunakan alamat @gmail.com.';
+      if (!attWaOk && !toastError) toastError = 'No. WhatsApp Detail Pesanan - ' + num + ' harus berupa angka (minimal 9 digit).';
+      if (!attGenderOk && !toastError) toastError = 'Jenis Kelamin Detail Pesanan - ' + num + ' wajib dipilih.';
     }
 
     var firstBad = null;
@@ -1325,7 +1534,7 @@
     });
 
     if (firstBad) {
-      showToast('Masih ada data yang belum lengkap atau belum valid. Cek kolom yang ditandai merah.');
+      showToast(toastError || 'Masih ada data yang belum lengkap atau belum valid. Cek kolom yang ditandai merah.');
       firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (firstBad.focus) firstBad.focus({ preventScroll: true });
       return;
@@ -1352,7 +1561,6 @@
   document.getElementById('btnEditData').addEventListener('click', function () { confirmDlg.close(); });
   document.getElementById('btnMengerti').addEventListener('click', function () {
     confirmDlg.close();
-    // BR-04: Event gratis (Rp0) melewati pemilihan metode bayar dan langsung ke invoice
     if (selectedTc && Number(selectedTc.harga) === 0) {
       selectedMethod = 'Tanpa pembayaran (GRATIS)';
       startPayment();
@@ -1394,6 +1602,14 @@
 
   function openPay() {
     updatePay();
+    apiPost('/api/checkout/extend-payment-session', {
+      checkout_token: checkoutToken
+    }).then(function (res) {
+      var rem = (res.body && res.body.remaining_seconds) ? Number(res.body.remaining_seconds) : 600;
+      startTimer(rem);
+    }).catch(function () {
+      startTimer(600);
+    });
     orderSection.hidden = true;
     paySection.hidden = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1409,7 +1625,8 @@
   document.getElementById('btnPayBack').addEventListener('click', closePay);
 
   function updateBayarBtn() {
-    btnBayar.disabled = !(selectedMethod !== '' && agreeTnc.checked && agreePrivacy.checked);
+    var canPay = (selectedMethod !== '' && agreeTnc.checked && agreePrivacy.checked);
+    btnBayar.disabled = !canPay;
   }
 
   document.querySelectorAll('[data-method]').forEach(function (el) {
@@ -1427,7 +1644,44 @@
   agreeTnc.addEventListener('change', updateBayarBtn);
   agreePrivacy.addEventListener('change', updateBayarBtn);
 
-  btnBayar.addEventListener('click', function () {
+  /* Attendees Payload for Checkout Pay */
+  function collectBuyerPayload() {
+    var bGenderRow = document.getElementById('buyerGenderRow');
+    var bGenderVal = bGenderRow ? (bGenderRow.getAttribute('data-gender-value') || 'Laki-laki') : 'Laki-laki';
+    return {
+      nama: document.getElementById('buyerName').value.trim(),
+      tipe_identitas: 'KTP',
+      nomor_identitas: document.getElementById('buyerIdNum').value.trim(),
+      email: document.getElementById('buyerEmail').value.trim(),
+      jenis_kelamin: bGenderVal,
+      wa: waDisplay(document.getElementById('buyerWa').value)
+    };
+  }
+
+  function collectAttendeesPayload() {
+    var list = [];
+    // Tiket ke-1 selalu dibuat dari Data Pemesan (Form 1)
+    list.push(collectBuyerPayload());
+
+    // Tiket ke-2 s/d ke-N dibuat dari form tambahan 1 s/d (N-1)
+    var extraCount = Math.max(0, currentQty - 1);
+    for (var i = 0; i < extraCount; i++) {
+      var gRow = document.getElementById('genderRow_' + i);
+      var gVal = gRow ? (gRow.getAttribute('data-gender-value') || 'Laki-laki') : 'Laki-laki';
+      list.push({
+        nama: document.getElementById('attName_' + i).value.trim(),
+        tipe_identitas: 'KTP',
+        nomor_identitas: document.getElementById('attIdNum_' + i).value.trim(),
+        email: document.getElementById('attEmail_' + i).value.trim(),
+        jenis_kelamin: gVal,
+        wa: waDisplay(document.getElementById('attWa_' + i).value)
+      });
+    }
+
+    return list;
+  }
+
+    btnBayar.addEventListener('click', function () {
     if (btnBayar.disabled) return;
     startPayment();
   });
@@ -1445,32 +1699,6 @@
   var paySuccess = document.getElementById('paySuccess');
   var paySuccessDlg = document.getElementById('paySuccessDlg');
   var lastInvoice = null;
-
-  function collectBuyerPayload() {
-    return {
-      nama: document.getElementById('buyerName').value.trim(),
-      tipe_identitas: document.getElementById('buyerIdType').value.trim(),
-      nomor_identitas: document.getElementById('buyerIdNum').value.trim(),
-      email: document.getElementById('buyerEmail').value.trim(),
-      wa: waDisplay(document.getElementById('buyerWa').value)
-    };
-  }
-
-  function collectAttendeesPayload() {
-    var list = [];
-    for (var i = 0; i < currentQty; i++) {
-      var gRow = document.getElementById('genderRow_' + i);
-      list.push({
-        nama: document.getElementById('attName_' + i).value.trim(),
-        tipe_identitas: document.getElementById('attIdType_' + i).value.trim(),
-        nomor_identitas: document.getElementById('attIdNum_' + i).value.trim(),
-        email: document.getElementById('attEmail_' + i).value.trim(),
-        jenis_kelamin: gRow ? (gRow.getAttribute('data-gender-value') || 'Laki-laki') : 'Laki-laki',
-        wa: waDisplay(document.getElementById('attWa_' + i).value)
-      });
-    }
-    return list;
-  }
 
   function renderQr(el, text) {
     try {

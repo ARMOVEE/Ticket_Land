@@ -46,11 +46,19 @@
   </head>
   <body class="bg-light">
     <div class="container">
-      <div class="row justify-content-center" style="margin-top: 8vh">
+      <div class="row justify-content-center" style="margin-top: 6vh">
         <div class="col-md-5 col-lg-4">
+          <div class="mb-3">
+            <a href="/" class="btn btn-outline-primary btn-sm fw-bold px-3 py-2 d-inline-flex align-items-center gap-2" id="btnBackHomeStaffLogin" style="border-width: 1.5px; border-radius: 10px;">
+              <i class="bi bi-arrow-left" aria-hidden="true"></i>← Kembali ke Beranda
+            </a>
+          </div>
           <div class="text-center mb-4">
-            <i class="bx bx-qr-scan text-success" style="font-size: 3.5rem; color: #0B5D3B !important"></i>
-            <h1 class="h3 fw-bold mt-2 mb-0">Login Staff</h1>
+            <div class="d-inline-flex align-items-center justify-content-center gap-2 fw-bold" style="color: #0B5D3B; font-size: 1.5rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="width:32px;height:32px;color:#0B5D3B;flex:0 0 auto;" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
+              <span>Ticket Land</span>
+            </div>
+            <h1 class="h4 fw-bold mt-2 mb-0">Login Staff</h1>
             <small class="text-muted">Check-in Tiket Event - Ticket Land</small>
           </div>
           <div class="card border-0 shadow-sm">

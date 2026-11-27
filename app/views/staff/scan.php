@@ -10,18 +10,13 @@
     <link href="/assets/css/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="/assets/css/boxicons.min.css" rel="stylesheet" />
     <link href="/assets/css/plus-jakarta-sans.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/assets/css/staff.css" />
+    <link rel="stylesheet" href="/assets/css/staff.css?v=<?= @filemtime(dirname(__DIR__, 3) . '/public/assets/css/staff.css') ?: time() ?>" />
   </head>
   <body>
     <!-- Staff Navbar -->
     <header class="staff-navbar d-flex align-items-center justify-content-between">
-      <a href="/staff" class="staff-logo">
-        <svg viewBox="0 0 48 30" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo tiket Ticket Land" style="width:32px;height:32px" fill="none" stroke="currentColor" stroke-width="2.6">
-          <rect x="2.5" y="4" width="43" height="22" rx="5" />
-          <path d="M31 5.5v19" stroke-width="2" stroke-dasharray="3 3.4" stroke-linecap="round" />
-          <circle cx="31" cy="4" r="2.4" fill="#FFFFFF" />
-          <circle cx="31" cy="26" r="2.4" fill="#FFFFFF" />
-        </svg>
+      <a href="/staff" class="staff-logo" aria-label="Ticket Land">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="width:28px;height:28px;color:#0B5D3B;flex:0 0 auto;" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
         <span>Ticket Land <span class="badge badge-mint ms-1 fs-6">Staff Check-in</span></span>
       </a>
       <div class="d-flex align-items-center gap-3">
@@ -46,22 +41,12 @@
       </div>
 
       <!-- Stat Cards -->
-      <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
-        <div class="col">
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
           <div class="card stat-card h-100">
             <div class="card-body">
               <div class="stat-label">Check-in Hari Ini</div>
               <div class="stat-value" id="staffCheckinCount"><?= (int) $todayCount ?></div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card stat-card h-100">
-            <div class="card-body">
-              <div class="stat-label">Event Berlangsung</div>
-              <div class="stat-value" style="font-size: 1.1rem; color: #111827">
-                <?= htmlspecialchars($activeEvent['nama'] ?? 'Tulus Live in Concert', ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($activeEvent['venue'] ?? 'Istora Senayan, Jakarta', ENT_QUOTES, 'UTF-8') ?>
-              </div>
             </div>
           </div>
         </div>
@@ -95,20 +80,17 @@
                 </p>
                 <div id="httpSecurityNotice" class="alert alert-info py-2 px-3 small text-start mt-3 mb-0 d-none" style="font-size: 0.82rem">
                   <i class="bi bi-info-circle-fill me-1 text-primary"></i>
-                  <strong>Akses HP di Jaringan Lokal (HTTP):</strong> Jika streaming kamera tidak muncul karena kebijakan izin browser HP, gunakan tombol <strong>Foto QR (Kamera HP)</strong> di bawah untuk membuka kamera ponsel secara langsung.
+                  <strong>Akses HP di Jaringan Lokal (HTTP):</strong> Jika streaming kamera tidak muncul karena kebijakan izin browser HP, gunakan tombol <strong>Gunakan Kamera</strong> di bawah untuk membuka kamera ponsel secara langsung.
                 </div>
                 <div class="mt-3 d-flex flex-wrap justify-content-center gap-2">
                   <button type="button" class="btn btn-primary px-3" id="btnKamera">
-                    <i class="bi bi-camera-video me-1"></i>Aktifkan Kamera
+                    <i class="bi bi-camera-video me-1"></i>Scan QR
                   </button>
                   <button type="button" class="btn btn-outline-danger d-none px-3" id="btnStopKamera">
                     <i class="bi bi-camera-video-off me-1"></i>Matikan Kamera
                   </button>
                   <button type="button" class="btn btn-outline-success px-3" id="btnFotoQr">
-                    <i class="bi bi-camera me-1"></i>Foto QR (Kamera HP)
-                  </button>
-                  <button type="button" class="btn btn-outline-secondary d-none px-2" id="btnGantiKamera" title="Ganti Kamera">
-                    <i class="bi bi-arrow-repeat me-1"></i>Ganti Kamera
+                    <i class="bi bi-camera me-1"></i>Gunakan Kamera
                   </button>
                   <input type="file" id="qrFileInput" accept="image/*" capture="environment" class="d-none" />
                 </div>
@@ -145,53 +127,6 @@
               <div class="text-center py-5 text-muted">
                 <i class="bi bi-qr-code fs-1 d-block mb-2 text-secondary opacity-50"></i>
                 <p class="mb-0">Belum ada tiket yang dipindai pada sesi ini.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Contoh QR Tiket Demo (Buat Dicoba Dipindai) -->
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white border-bottom py-3">
-          <h2 class="h6 mb-0 fw-bold text-success" style="color: #0B5D3B !important">
-            <i class="bi bi-qr-code me-2 align-middle"></i>Contoh QR Tiket Demo - Buat Dicoba Dipindai
-          </h2>
-        </div>
-        <div class="card-body p-3 p-md-4">
-          <p class="text-muted small mb-3">Tiga QR di bawah ini berisi kode tiket demo resmi. Anda dapat mengarahkannya ke kamera atau klik tombol <strong>Uji Kode</strong> untuk memeriksa langsung alurnya.</p>
-          <div class="row text-center g-3">
-            <div class="col-md-4">
-              <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column align-items-center">
-                <div class="qr-demo mb-2" id="qrDemo1" title="Klik untuk menguji kode TKL-A1B2C3"></div>
-                <div class="fw-bold mt-1 fs-5 text-dark">Andi Pratama</div>
-                <div class="mb-1"><code>TKL-A1B2C3</code> <span class="badge bg-primary">VIP</span></div>
-                <small class="text-success fw-semibold mb-2"><i class="bi bi-check-circle me-1"></i>Tiket valid - siap check-in</small>
-                <button type="button" class="btn btn-sm btn-outline-success mt-auto w-100 btn-quick-test" data-code="TKL-A1B2C3">
-                  <i class="bi bi-arrow-right-circle me-1"></i>Uji Kode Ini
-                </button>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column align-items-center">
-                <div class="qr-demo mb-2" id="qrDemo2" title="Klik untuk menguji kode TKL-D4E5F6"></div>
-                <div class="fw-bold mt-1 fs-5 text-dark">Sari Wulandari</div>
-                <div class="mb-1"><code>TKL-D4E5F6</code> <span class="badge bg-secondary">Reguler</span></div>
-                <small class="text-success fw-semibold mb-2"><i class="bi bi-check-circle me-1"></i>Tiket valid - siap check-in</small>
-                <button type="button" class="btn btn-sm btn-outline-success mt-auto w-100 btn-quick-test" data-code="TKL-D4E5F6">
-                  <i class="bi bi-arrow-right-circle me-1"></i>Uji Kode Ini
-                </button>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column align-items-center">
-                <div class="qr-demo mb-2" id="qrDemo3" title="Klik untuk menguji kode TKL-USED99"></div>
-                <div class="fw-bold mt-1 fs-5 text-dark">Rina Amelia</div>
-                <div class="mb-1"><code>TKL-USED99</code> <span class="badge bg-danger">Sudah Dipakai</span></div>
-                <small class="text-danger fw-semibold mb-2"><i class="bi bi-x-octagon me-1"></i>Tiket ditolak (sudah check-in)</small>
-                <button type="button" class="btn btn-sm btn-outline-danger mt-auto w-100 btn-quick-test" data-code="TKL-USED99">
-                  <i class="bi bi-arrow-right-circle me-1"></i>Uji Penolakan
-                </button>
               </div>
             </div>
           </div>
@@ -350,17 +285,12 @@
     <script>
       window.TICKET_LAND_STAFF = {
         csrfToken: <?= json_encode($csrfToken, JSON_HEX_TAG | JSON_HEX_AMP) ?>,
-        staff: <?= json_encode($staff, JSON_HEX_TAG | JSON_HEX_AMP) ?>,
-        demoCodes: {
-          code1: 'TKL-A1B2C3',
-          code2: 'TKL-D4E5F6',
-          code3: 'TKL-USED99'
-        }
+        staff: <?= json_encode($staff, JSON_HEX_TAG | JSON_HEX_AMP) ?>
       };
     </script>
     <script src="/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/html5-qrcode.min.js"></script>
     <script src="/assets/js/qrgen.js"></script>
-    <script src="/assets/js/staff.js"></script>
+    <script src="/assets/js/staff.js?v=<?= @filemtime(dirname(__DIR__, 3) . '/public/assets/js/staff.js') ?: time() ?>"></script>
   </body>
 </html>

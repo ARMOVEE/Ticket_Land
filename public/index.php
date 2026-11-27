@@ -40,6 +40,19 @@ use App\Controllers\CheckoutController;
 use App\Controllers\ContactController;
 use App\Controllers\AdminController;
 use App\Controllers\StaffController;
+use App\Controllers\CancellationController;
+
+// Direct fallback for event poster webp files
+$reqUri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
+if (preg_match('#^/([a-zA-Z0-9_-]+\.webp)$#', $reqUri, $webpMatch)) {
+    $candPath = __DIR__ . '/assets/img/events/' . $webpMatch[1];
+    if (is_file($candPath)) {
+        header('Content-Type: image/webp');
+        header('Content-Length: ' . (string) filesize($candPath));
+        readfile($candPath);
+        exit;
+    }
+}
 
 $router = new Router();
 
@@ -57,10 +70,15 @@ $router->post('/api/customer/logout', [CustomerAuthController::class, 'logout'])
 $router->post('/api/checkout/start', [CheckoutController::class, 'startSession']);
 $router->post('/api/checkout/reset', [CheckoutController::class, 'resetSession']);
 $router->post('/api/checkout/update-qty', [CheckoutController::class, 'updateQty']);
+$router->post('/api/checkout/extend-payment-session', [CheckoutController::class, 'extendPaymentSession']);
 $router->post('/api/checkout/pay', [CheckoutController::class, 'pay']);
 
 // Contact Route
 $router->post('/api/contact', [ContactController::class, 'send']);
+
+// Batalkan Pesanan Routes (Fase 3)
+$router->get('/batalkan', [CancellationController::class, 'index']);
+$router->post('/batalkan', [CancellationController::class, 'submit']);
 
 // Dashboard Admin Routes (Langkah 2)
 $router->get('/admin', [AdminController::class, 'index']);

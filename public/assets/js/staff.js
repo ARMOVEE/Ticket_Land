@@ -2,11 +2,6 @@
   var boot = window.TICKET_LAND_STAFF || {};
   var csrfToken = boot.csrfToken || '';
   var staff = boot.staff || {};
-  var demoCodes = boot.demoCodes || {
-    code1: 'TKL-A1B2C3',
-    code2: 'TKL-D4E5F6',
-    code3: 'TKL-USED99'
-  };
 
   var flashArea = document.getElementById('flashAreaStaff');
   var inputKode = document.getElementById('inputKodeTiket');
@@ -51,47 +46,6 @@
       return res.json().then(function (json) {
         return { status: res.status, body: json };
       });
-    });
-  }
-
-  /* Render Demo QR codes using QrGen */
-  function renderDemoQrs() {
-    if (window.QrGen) {
-      var d1 = document.getElementById('qrDemo1');
-      var d2 = document.getElementById('qrDemo2');
-      var d3 = document.getElementById('qrDemo3');
-      if (d1) d1.innerHTML = QrGen.svg(demoCodes.code1, 8, 2);
-      if (d2) d2.innerHTML = QrGen.svg(demoCodes.code2, 8, 2);
-      if (d3) d3.innerHTML = QrGen.svg(demoCodes.code3, 8, 2);
-    }
-  }
-
-  document.querySelectorAll('.btn-quick-test').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var code = this.getAttribute('data-code');
-      if (code) {
-        if (inputKode) inputKode.value = code;
-        periksaKodeTiket(code);
-      }
-    });
-  });
-
-  if (document.getElementById('qrDemo1')) {
-    document.getElementById('qrDemo1').addEventListener('click', function () {
-      if (inputKode) inputKode.value = demoCodes.code1;
-      periksaKodeTiket(demoCodes.code1);
-    });
-  }
-  if (document.getElementById('qrDemo2')) {
-    document.getElementById('qrDemo2').addEventListener('click', function () {
-      if (inputKode) inputKode.value = demoCodes.code2;
-      periksaKodeTiket(demoCodes.code2);
-    });
-  }
-  if (document.getElementById('qrDemo3')) {
-    document.getElementById('qrDemo3').addEventListener('click', function () {
-      if (inputKode) inputKode.value = demoCodes.code3;
-      periksaKodeTiket(demoCodes.code3);
     });
   }
 
@@ -144,6 +98,16 @@
         if (modalCheckin) modalCheckin.show();
         updateHasilTerakhir(usedData, code, 'ALREADY_USED');
         prependRiwayat(code, usedData.nama || '-', usedData.event || '-', 'Ditolak');
+        return;
+      }
+
+      // Kasus 2b: Tiket Dibatalkan (Fase 4)
+      if (res.body && res.body.status === 'CANCELLED') {
+        var cxlData = res.body.data || {};
+        var cancelMsg = res.body.message || 'Tiket sudah dibatalkan. E-tiket tidak berlaku lagi untuk check-in.';
+        showFlashStaff('<i class="bi bi-x-circle-fill me-1"></i><strong>DITOLAK:</strong> ' + esc(cancelMsg), 'danger');
+        updateHasilTerakhir(cxlData, code, 'CANCELLED');
+        prependRiwayat(code, cxlData.nama || '-', cxlData.event || '-', 'Dibatalkan');
         return;
       }
 
@@ -287,6 +251,15 @@
         + '<div class="badge bg-warning text-dark py-2 px-3 fs-6 mb-3">Dibatalkan: KTP Tidak Cocok</div>'
         + '<p class="small text-muted mb-0">Tiket tetap belum digunakan.</p>'
         + '</div>';
+    } else if (status === 'CANCELLED') {
+      hasilTerakhirEl.innerHTML =
+        '<div class="text-center py-2">'
+        + '<i class="bi bi-x-circle-fill text-danger fs-1 d-block mb-2"></i>'
+        + '<h3 class="h5 fw-bold text-danger mb-1">' + esc(data.nama || 'Pemesan') + '</h3>'
+        + '<p class="text-muted small mb-3"><code>' + esc(code) + '</code> &middot; ' + esc(data.event || '-') + '</p>'
+        + '<div class="badge bg-danger py-2 px-3 fs-6 mb-3"><i class="bi bi-x-circle me-1"></i>Tiket Sudah Dibatalkan</div>'
+        + '<p class="small text-danger mb-0">Pesanan tiket ini telah resmi dibatalkan. Akses check-in ditolak.</p>'
+        + '</div>';
     } else if (status === 'NOT_FOUND') {
       hasilTerakhirEl.innerHTML =
         '<div class="text-center py-2">'
@@ -424,26 +397,22 @@
     });
   }
 
-  /* 2. Streaming Kamera Langsung dengan Penanganan Khusus Mobile */
+  /* 2. Streaming Kamera Langsung (Scan QR Live Viewfinder) */
   function startKamera() {
     if (!window.Html5Qrcode) {
-      showFlashStaff('<i class="bi bi-x-octagon me-1"></i>Library pemindai QR belum termuat. Periksa koneksi internet.', 'warning');
+      showFlashStaff('<i class="bi bi-x-octagon me-1"></i>Library pemindai QR belum termuat. Muat ulang halaman.', 'warning');
       return;
     }
 
     var hasMediaDevices = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
-    // Kasus HP mengakses via HTTP IP (bukan HTTPS / localhost)
-    if (!hasMediaDevices || !isSecure) {
+    // Jika browser memblokir navigator.mediaDevices (mis. akses HTTP IP non-HTTPS tanpa flag secure origin),
+    // tampilkan peringatan jelas tanpa mengalihkan otomatis ke mode input file foto.
+    if (!hasMediaDevices) {
       showFlashStaff(
-        '<i class="bi bi-shield-exclamation me-1"></i><strong>Live Streaming Dibatasi Browser HP:</strong> Browser ponsel membatasi live streaming kamera pada koneksi HTTP (bukan HTTPS). Beralih otomatis ke mode <strong>Foto QR HP</strong>...',
-        'info'
+        '<i class="bi bi-shield-exclamation me-1"></i><strong>Live Scan Memerlukan HTTPS atau Localhost:</strong> Browser memblokir akses live camera pada koneksi HTTP IP biasa. Buka halaman ini melalui <strong>HTTPS</strong> (atau <code>localhost</code>) untuk Live Scan, atau tekan tombol <strong>Gunakan Kamera</strong> di samping untuk memindai dari foto.',
+        'warning'
       );
-      if (qrFileInput) {
-        setTimeout(function () {
-          qrFileInput.click();
-        }, 350);
-      }
       return;
     }
 
@@ -549,7 +518,7 @@
       var errMsg = (finalErr && finalErr.message) ? finalErr.message : String(finalErr || '');
       showFlashStaff(
         '<i class="bi bi-camera-video-off me-1"></i>Streaming kamera tidak dapat dimulai (' + esc(errMsg)
-        + '). Silakan gunakan tombol <strong>Foto QR (Kamera HP)</strong> di samping.',
+        + '). Silakan gunakan tombol <strong>Gunakan Kamera</strong> di samping.',
         'warning'
       );
       stopKamera();
@@ -626,9 +595,6 @@
       window.location.href = '/staff/logout';
     });
   }
-
-  // Initialize
-  renderDemoQrs();
 
   // Auto-check query parameter for automated testing / screenshots
   var qCheck = new URLSearchParams(window.location.search).get('check');

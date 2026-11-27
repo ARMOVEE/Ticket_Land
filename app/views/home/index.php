@@ -20,7 +20,7 @@ $catIcons = [
     <link rel="icon" href="data:," />
     <title>Ticket Land - Your Best Event Partner</title>
     <link href="/assets/css/plus-jakarta-sans.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/assets/css/landing.css" />
+    <link rel="stylesheet" href="/assets/css/landing.css?v=<?= @filemtime(dirname(__DIR__, 3) . '/public/assets/css/landing.css') ?: time() ?>" />
   </head>
   <body>
 
@@ -33,7 +33,7 @@ $catIcons = [
         <nav class="nav-links" aria-label="Navigasi utama">
           <a href="#" class="active nav-home">Beranda</a>
           <a href="#kategori" class="nav-home">Kategori</a>
-          <a href="#rekomendasi" class="nav-home">Tentang</a>
+          <a href="#" class="nav-event" id="navEvent">Event</a>
           <a href="#" class="nav-contact">Hubungi Kami</a>
         </nav>
         <button class="btn-masuk" id="btnMasuk" type="button">Masuk</button>
@@ -49,7 +49,7 @@ $catIcons = [
       <div class="mobile-menu" id="mobileMenu">
         <a href="#" class="nav-home">Beranda</a>
         <a href="#kategori" class="nav-home">Kategori</a>
-        <a href="#rekomendasi" class="nav-home">Tentang</a>
+        <a href="#" class="nav-event" id="mobileNavEvent">Event</a>
         <a href="#" class="nav-contact">Hubungi Kami</a>
         <a href="#" id="mobileMasuk">Masuk</a>
         <a href="#" id="mobileKeluar" style="display:none;color:#b91c1c">Keluar (<span id="mobileUserName">Pengguna</span>)</a>
@@ -59,20 +59,8 @@ $catIcons = [
     <main>
       <section class="hero">
         <div class="wrap">
-          <div class="hero-art" role="img" aria-label="Ilustrasi pegunungan hijau dengan matahari terbit">
-            <svg viewBox="0 0 880 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-              <defs>
-                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="#c2ded2"/>
-                  <stop offset=".62" stop-color="#dfe5cd"/>
-                  <stop offset="1" stop-color="#eef0da"/>
-                </linearGradient>
-              </defs>
-              <rect width="880" height="400" fill="url(#sky)"/>
-              <ellipse cx="648" cy="96" rx="82" ry="48" fill="#f2a63b"/>
-              <polygon points="0,252 190,152 348,228 512,118 690,232 880,172 880,400 0,400" fill="#6fae97"/>
-              <polygon points="0,330 168,248 338,322 522,228 700,330 880,282 880,400 0,400" fill="#0B5D3B"/>
-            </svg>
+          <div class="hero-art" role="img" aria-label="Foto panggung Synchronize Fest">
+            <img src="/assets/img/events/synchronize-fest-banner-4k.webp" alt="Synchronize Fest 2027 – Bhinneka Tunggal Musik">
           </div>
 
           <?php if ($heroEvent): ?>
@@ -125,8 +113,14 @@ $catIcons = [
             ?>
             <article class="card" tabindex="0" role="button" data-event-id="<?= (int) $rec['id'] ?>" aria-label="Lihat detail <?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>">
               <div class="thumb" role="img" aria-label="Gambar event <?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>">
-                <?php if (!empty($rec['poster'])): ?>
-                  <img src="<?= htmlspecialchars($rec['poster'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='block';}" />
+                <?php
+                  $pUrl = !empty($rec['poster']) ? trim((string)$rec['poster']) : '';
+                  if ($pUrl !== '' && !str_starts_with($pUrl, '/') && !str_starts_with($pUrl, 'http')) {
+                      $pUrl = '/assets/img/events/' . $pUrl;
+                  }
+                ?>
+                <?php if ($pUrl !== ''): ?>
+                  <img src="<?= htmlspecialchars($pUrl, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($rec['nama'], ENT_QUOTES, 'UTF-8') ?>" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" onerror="this.style.display='none';if(this.nextElementSibling){this.nextElementSibling.style.display='block';}" />
                   <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
                 <?php else: ?>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18.5 10 13l3.5 3L17 12.5l3 2.8"/></svg>
@@ -241,7 +235,7 @@ $catIcons = [
                   Instagram
                 </a>
                 <a class="social-pill tiktok" href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok penyelenggara">
-                  <span class="s-ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.4 2.2 1.8 3.6 4.1 3.8v3c-1.6 0-3-.5-4.1-1.3v6.3a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 1.9 2.7V3h3Z"/></svg></span>
+                  <span class="s-ic"><svg viewBox="0 0 24 24" fill="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M16.6 3c.4 2.2 1.8 3.6 4.1 3.8v3c-1.6 0-3-.5-4.1-1.3v6.3a5.9 5.9 0 1 1-5.9-5.9c.3 0 .7 0 1 .1v3.1a2.8 2.8 0 1 0 1.9 2.7V3h3Z"/></svg></span>
                   TikTok
                 </a>
               </div>
@@ -384,21 +378,16 @@ $catIcons = [
                 <div class="o-row">
                   <div class="o-field">
                     <label class="o-label" for="buyerIdType">Tipe Identitas <span class="req">*</span></label>
-                    <select class="o-select" id="buyerIdType">
-                      <option value="" selected>Pilih tipe identitas Anda</option>
-                      <option value="KTP">KTP</option>
-                      <option value="Paspor">Paspor</option>
-                      <option value="SIM">SIM</option>
-                    </select>
+                    <input class="o-input o-readonly-static" id="buyerIdType" type="text" value="KTP" readonly aria-readonly="true" />
                   </div>
                   <div class="o-field">
-                    <label class="o-label" for="buyerIdNum">Nomor Identitas <span class="req">*</span></label>
-                    <input class="o-input" id="buyerIdNum" type="text" placeholder="Masukkan nomor identitas Anda" />
+                    <label class="o-label" for="buyerIdNum">Nomor Identitas (KTP/NIK) <span class="req">*</span></label>
+                    <input class="o-input" id="buyerIdNum" type="text" inputmode="numeric" maxlength="16" placeholder="Masukkan 16 digit NIK KTP Anda" />
                   </div>
                 </div>
                 <div class="o-field">
                   <label class="o-label" for="buyerEmail">Email <span class="req">*</span></label>
-                  <input class="o-input" id="buyerEmail" type="email" placeholder="Masukkan email Anda" autocomplete="email" />
+                  <input class="o-input" id="buyerEmail" type="email" placeholder="nama@gmail.com" autocomplete="email" />
                 </div>
                 <div class="o-field">
                   <label class="o-label" for="buyerWa">No. WhatsApp <span class="req">*</span></label>
@@ -407,21 +396,47 @@ $catIcons = [
                       <svg viewBox="0 0 19 13" aria-hidden="true"><rect width="19" height="6.5" fill="#e70011"/><rect y="6.5" width="19" height="6.5" fill="#f4f4f4"/></svg>
                       +62
                     </span>
-                    <input class="o-input" id="buyerWa" type="tel" inputmode="tel" placeholder="81234567890" autocomplete="tel" />
+                    <input class="o-input" id="buyerWa" type="tel" inputmode="numeric" placeholder="81234567890" autocomplete="tel" />
+                  </div>
+                </div>
+                <div class="o-field">
+                  <span class="o-label" id="buyerGenderLabel">Jenis Kelamin <span class="req">*</span></span>
+                  <div class="gender-row" id="buyerGenderRow" data-gender-value="" role="group" aria-labelledby="buyerGenderLabel">
+                    <button class="gender-chip" type="button" data-gender="Laki-laki" aria-pressed="false">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="14" r="5"/><path d="M14 10 20 4M15 4h5v5"/></svg>
+                      Laki-laki
+                    </button>
+                    <button class="gender-chip" type="button" data-gender="Perempuan" aria-pressed="false">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="5"/><path d="M12 14v7M8.5 17.5h7"/></svg>
+                      Perempuan
+                    </button>
                   </div>
                 </div>
               </div>
 
               <div id="attendeesContainer"></div>
+
+              <!-- BLOK SUBTOTAL/TOTAL (+ TOMBOL PREV & LANJUTKAN) DI PALING BAWAH HALAMAN (SETELAH FORM PEMEGANG TIKET) -->
+              <div class="rincian-card rincian-summary-block" id="rincianCardBottom">
+                <div class="r-line rincian-line-first"><span>Subtotal</span><span id="rincianSubtotal">Rp 0</span></div>
+                <div class="r-total"><span>Total Bayar</span><span id="rincianTotal">Rp 0</span></div>
+                <div class="r-actions">
+                  <button class="btn-circle" id="btnRincianBack" type="button" aria-label="Kembali ke pilih kategori">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+                  </button>
+                  <button class="btn-lanjut" id="btnLanjut" type="button">Lanjutkan</button>
+                </div>
+              </div>
             </div>
 
             <aside class="order-side">
               <div class="timer-badge" role="timer" aria-label="Batas waktu pemesanan tersisa">
-                <span id="timerText">10:00</span>
+                <span id="timerText">15:00</span>
                 <span class="t-sep">|</span>
                 <span class="t-label">Batas Waktu Tersisa</span>
               </div>
-              <div class="rincian-card">
+              <!-- BLOK 1: Kartu Rincian Pesanan (Judul, Baris Tiket, Stepper Jumlah Tiket — Berakhir di Stepper) -->
+              <div class="rincian-card" id="rincianCardTop">
                 <h3>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z"/><path d="M8.5 10V6.5a3.5 3.5 0 0 1 7 0V10" stroke-linecap="round"/></svg>
                   Rincian Pesanan
@@ -433,7 +448,7 @@ $catIcons = [
                   </div>
                   <span class="r-price" id="rincianLine">Rp 0</span>
                 </div>
-                <div class="qty-row">
+                <div class="qty-row rincian-qty-last">
                   <span class="q-label">Jumlah Tiket</span>
                   <span class="qty-ctrl">
                     <button class="qty-btn" id="qtyMinus" type="button" aria-label="Kurangi jumlah tiket">
@@ -444,14 +459,6 @@ $catIcons = [
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                     </button>
                   </span>
-                </div>
-                <div class="r-line"><span>Subtotal</span><span id="rincianSubtotal">Rp 0</span></div>
-                <div class="r-total"><span>Total Bayar</span><span id="rincianTotal">Rp 0</span></div>
-                <div class="r-actions">
-                  <button class="btn-circle" id="btnRincianBack" type="button" aria-label="Kembali ke pilih kategori">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-                  </button>
-                  <button class="btn-lanjut" id="btnLanjut" type="button">Lanjutkan</button>
                 </div>
               </div>
             </aside>
@@ -492,11 +499,26 @@ $catIcons = [
                 </button>
                 <div class="method-body">
                   <div class="method-grid">
-                    <button class="method-tile" type="button" data-method="QRIS" aria-pressed="false"><span class="wm wm-qris">QRIS</span></button>
-                    <button class="method-tile" type="button" data-method="OVO" aria-pressed="false"><span class="wm wm-ovo">OVO</span></button>
-                    <button class="method-tile" type="button" data-method="DANA" aria-pressed="false"><span class="wm wm-dana">DANA</span></button>
-                    <button class="method-tile" type="button" data-method="LinkAja" aria-pressed="false"><span class="wm wm-linkaja">LinkAja!</span></button>
-                    <button class="method-tile" type="button" data-method="ShopeePay" aria-pressed="false"><span class="wm wm-shopee">ShopeePay</span></button>
+                    <button class="method-tile" type="button" data-method="QRIS" aria-pressed="false">
+                      <span class="wm wm-qris">QRIS</span>
+                      <span class="method-desc">Scan QR pakai e-wallet / m-banking apa pun</span>
+                    </button>
+                    <button class="method-tile" type="button" data-method="OVO" aria-pressed="false">
+                      <span class="wm wm-ovo">OVO</span>
+                      <span class="method-desc">Bayar langsung dari saldo OVO</span>
+                    </button>
+                    <button class="method-tile" type="button" data-method="DANA" aria-pressed="false">
+                      <span class="wm wm-dana">DANA</span>
+                      <span class="method-desc">Bayar langsung dari saldo DANA</span>
+                    </button>
+                    <button class="method-tile" type="button" data-method="LinkAja" aria-pressed="false">
+                      <span class="wm wm-linkaja">LinkAja!</span>
+                      <span class="method-desc">Bayar langsung dari saldo LinkAja!</span>
+                    </button>
+                    <button class="method-tile" type="button" data-method="ShopeePay" aria-pressed="false">
+                      <span class="wm wm-shopee">ShopeePay</span>
+                      <span class="method-desc">Bayar langsung dari saldo ShopeePay</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -509,14 +531,38 @@ $catIcons = [
                 </button>
                 <div class="method-body">
                   <div class="bank-row">
-                    <button class="bank-chip" type="button" data-method="Transfer BCA" aria-pressed="false">BCA</button>
-                    <button class="bank-chip" type="button" data-method="Transfer BNI" aria-pressed="false">BNI</button>
-                    <button class="bank-chip" type="button" data-method="Transfer BRI" aria-pressed="false">BRI</button>
-                    <button class="bank-chip" type="button" data-method="Transfer Mandiri" aria-pressed="false">Mandiri</button>
-                    <button class="bank-chip" type="button" data-method="Transfer CIMB Niaga" aria-pressed="false">CIMB Niaga</button>
-                    <button class="bank-chip" type="button" data-method="Transfer BTN" aria-pressed="false">BTN</button>
-                    <button class="bank-chip" type="button" data-method="Transfer Permata" aria-pressed="false">Permata</button>
-                    <button class="bank-chip" type="button" data-method="Transfer BSI" aria-pressed="false">BSI</button>
+                    <button class="bank-chip" type="button" data-method="Transfer BCA" aria-pressed="false">
+                      <span class="bank-name">BCA</span>
+                      <span class="method-desc">Transfer ke rekening BCA, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer BNI" aria-pressed="false">
+                      <span class="bank-name">BNI</span>
+                      <span class="method-desc">Transfer ke rekening BNI, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer BRI" aria-pressed="false">
+                      <span class="bank-name">BRI</span>
+                      <span class="method-desc">Transfer ke rekening BRI, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer Mandiri" aria-pressed="false">
+                      <span class="bank-name">Mandiri</span>
+                      <span class="method-desc">Transfer ke rekening Mandiri, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer CIMB Niaga" aria-pressed="false">
+                      <span class="bank-name">CIMB Niaga</span>
+                      <span class="method-desc">Transfer ke rekening CIMB Niaga, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer BTN" aria-pressed="false">
+                      <span class="bank-name">BTN</span>
+                      <span class="method-desc">Transfer ke rekening BTN, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer Permata" aria-pressed="false">
+                      <span class="bank-name">Permata</span>
+                      <span class="method-desc">Transfer ke rekening Permata, cek otomatis</span>
+                    </button>
+                    <button class="bank-chip" type="button" data-method="Transfer BSI" aria-pressed="false">
+                      <span class="bank-name">BSI</span>
+                      <span class="method-desc">Transfer ke rekening BSI, cek otomatis</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -543,10 +589,6 @@ $catIcons = [
                 <div class="r-line"><span>Subtotal</span><span id="paySubtotal">Rp 0</span></div>
                 <div class="r-line"><span>Biaya Layanan</span><span id="payFee">Rp 0</span></div>
                 <div class="r-total"><span>Total Bayar</span><span id="payTotal">Rp 0</span></div>
-                <div class="promo-box">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2.2a2.8 2.8 0 0 0 0 5.6V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2.2a2.8 2.8 0 0 0 0-5.6V8Z"/><path d="M13.5 6v2M13.5 11v2M13.5 16v2" stroke-linecap="round" stroke-dasharray="0.5 3"/></svg>
-                  Lebih hemat pakai promo
-                </div>
                 <label class="agree-row">
                   <input type="checkbox" id="agreeTnc" />
                   <span>Saya menyetujui <a href="#rekomendasi" onclick="return false">Syarat &amp; Ketentuan</a> yang berlaku di Ticket Land</span>
@@ -898,6 +940,6 @@ $catIcons = [
       ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
     </script>
     <script src="/assets/js/qrgen.js" defer></script>
-    <script src="/assets/js/landing.js" defer></script>
+    <script src="/assets/js/landing.js?v=<?= @filemtime(dirname(__DIR__, 3) . '/public/assets/js/landing.js') ?: time() ?>" defer></script>
   </body>
 </html>

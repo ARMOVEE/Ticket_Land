@@ -22,4 +22,13 @@ return [
         'pass'    => Env::get('DB_PASS', ''),
         'charset' => 'utf8mb4',
     ],
+    'smtp' => [
+        'host'       => Env::get('SMTP_HOST', 'smtp.gmail.com'),
+        'port'       => (int) Env::get('SMTP_PORT', '587'),
+        'secure'     => Env::get('SMTP_SECURE', 'tls'),
+        'user'       => Env::get('SMTP_USER', ''),
+        'pass'       => Env::get('SMTP_PASS', ''),
+        'from'       => Env::get('SMTP_FROM', ''),
+        'from_name'  => Env::get('SMTP_FROM_NAME', 'Ticket Land'),
+    ],
 ];
